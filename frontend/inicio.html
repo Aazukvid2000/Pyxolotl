@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Acceso – Pixolot</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .form-container {
+      background: var(--card);
+      padding: 32px;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 6px 30px rgba(2,6,23,0.6);
+      animation: fadeIn .4s ease both;
+    }
+    form { display: flex; flex-direction: column; }
+    input {
+      width: 100%;
+      margin-top: 6px;
+      margin-bottom: 14px;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      background: var(--glass);
+      color: #fff;
+    }
+    label {
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+    .hidden { display: none; }
+    .switch-link {
+      color: var(--accent-1);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .switch-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body style="display:flex;align-items:center;justify-content:center;min-height:100vh">
+
+  <div class="form-container">
+    <div style="text-align:center;margin-bottom:20px">
+      <img src="PIXOLOTEL.png" alt="Logo Pixolot" class="brand-logo" style="margin-bottom:8px">
+      <h2 style="margin:0">Bienvenido a Pixolot</h2>
+      <p style="color:var(--muted);font-size:14px" id="formTitle">Inicia sesión en tu cuenta</p>
+    </div>
+
+    <!-- FORMULARIO DE INICIO DE SESIÓN -->
+    <form id="loginForm">
+      <label for="email">Correo electrónico</label>
+      <input id="email" type="email" required>
+
+      <label for="password">Contraseña</label>
+      <input id="password" type="password" required>
+
+      <button type="submit" class="btn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;font-weight:600">Iniciar sesión</button>
+
+      <p style="margin-top:14px;font-size:13px;color:var(--muted);text-align:center">
+        ¿No tienes cuenta?
+        <span class="switch-link" id="showRegister">Crear una</span>
+      </p>
+    </form>
+
+    <!-- FORMULARIO DE REGISTRO -->
+    <form id="registerForm" class="hidden">
+      <label for="newName">Nombre de usuario</label>
+      <input id="newName" type="text" required>
+
+      <label for="newEmail">Correo electrónico</label>
+      <input id="newEmail" type="email" required>
+
+      <label for="newPassword">Contraseña</label>
+      <input id="newPassword" type="password" required>
+
+      <button type="submit" class="btn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;font-weight:600">Crear cuenta</button>
+
+      <p style="margin-top:14px;font-size:13px;color:var(--muted);text-align:center">
+        ¿Ya tienes cuenta?
+        <span class="switch-link" id="showLogin">Iniciar sesión</span>
+      </p>
+    </form>
+
+    <div style="text-align:center;margin-top:20px">
+      <a href="pixolot.html" class="btn btn-ghost" style="width:100%">← Volver al inicio</a>
+    </div>
+  </div>
+
+  <script>
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const formTitle = document.getElementById('formTitle');
+    const showRegister = document.getElementById('showRegister');
+    const showLogin = document.getElementById('showLogin');
+
+    showRegister.addEventListener('click', ()=>{
+      loginForm.classList.add('hidden');
+      registerForm.classList.remove('hidden');
+      formTitle.textContent = 'Crea tu cuenta en Pixolot';
+    });
+
+    showLogin.addEventListener('click', ()=>{
+      registerForm.classList.add('hidden');
+      loginForm.classList.remove('hidden');
+      formTitle.textContent = 'Inicia sesión en tu cuenta';
+    });
+
+    // Manejo del login
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      // Verificar si el usuario existe
+      const users = JSON.parse(localStorage.getItem('pixolot_users') || '[]');
+      const user = users.find(u => u.email === email && u.password === password);
+
+      if (user) {
+        localStorage.setItem('pixolot_current_user', JSON.stringify(user));
+        alert('✅ ¡Bienvenido de vuelta!');
+        window.location.href = 'pixolot.html';
+      } else {
+        alert('❌ Correo o contraseña incorrectos');
+      }
+    });
+
+    // Manejo del registro
+    registerForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('newName').value;
+      const email = document.getElementById('newEmail').value;
+      const password = document.getElementById('newPassword').value;
+
+      // Verificar si el email ya existe
+      const users = JSON.parse(localStorage.getItem('pixolot_users') || '[]');
+      const exists = users.find(u => u.email === email);
+
+      if (exists) {
+        alert('❌ Este correo ya está registrado');
+        return;
+      }
+
+      // Crear nuevo usuario
+      const newUser = {
+        id: Date.now(),
+        name: name,
+        email: email,
+        password: password,
+        createdAt: new Date().toISOString()
+      };
+
+      users.push(newUser);
+      localStorage.setItem('pixolot_users', JSON.stringify(users));
+      localStorage.setItem('pixolot_current_user', JSON.stringify(newUser));
+      
+      // Guardar también en pixolot_user para el perfil
+      const [firstName, ...lastNameParts] = name.split(' ');
+      const lastName = lastNameParts.join(' ');
+      localStorage.setItem('pixolot_user', JSON.stringify({
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        username: email.split('@')[0],
+        bio: ''
+      }));
+
+      alert('✅ ¡Cuenta creada exitosamente!');
+      window.location.href = 'pixolot.html';
+    });
+  </script>
+</body>
+</html>

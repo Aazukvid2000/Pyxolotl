@@ -1,0 +1,760 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Publicar Juego – Pixolot</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .publish-container {
+      max-width: 900px;
+      margin: 40px auto;
+    }
+    .publish-header {
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      padding: 40px;
+      border-radius: 16px;
+      text-align: center;
+      margin-bottom: 32px;
+      color: #07102a;
+    }
+    .publish-header h1 {
+      margin: 0 0 12px;
+      font-size: 42px;
+      color: #07102a;
+    }
+    .publish-header p {
+      margin: 0;
+      font-size: 18px;
+      opacity: 0.8;
+    }
+    .form-card {
+      background: var(--card);
+      padding: 32px;
+      border-radius: 16px;
+      box-shadow: 0 6px 30px rgba(2,6,23,0.6);
+      margin-bottom: 24px;
+    }
+    .form-section {
+      margin-bottom: 32px;
+    }
+    .form-section:last-child {
+      margin-bottom: 0;
+    }
+    .form-section h3 {
+      margin: 0 0 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid rgba(255,255,255,0.06);
+      color: var(--accent-1);
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    .form-group label .required {
+      color: #ff4757;
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: var(--glass);
+      color: #fff;
+      font-size: 15px;
+      transition: border-color 0.2s;
+      font-family: inherit;
+    }
+    .form-group textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--accent-1);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .file-upload {
+      border: 2px dashed rgba(255,255,255,0.2);
+      border-radius: 12px;
+      padding: 32px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--glass);
+    }
+    .file-upload:hover {
+      border-color: var(--accent-1);
+      background: rgba(123,97,255,0.05);
+    }
+    .file-upload input {
+      display: none;
+    }
+    .file-upload-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+    .file-list {
+      margin-top: 16px;
+    }
+    .file-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: var(--glass);
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    .file-item-remove {
+      margin-left: auto;
+      background: transparent;
+      border: none;
+      color: #ff4757;
+      cursor: pointer;
+      font-size: 18px;
+      padding: 4px 8px;
+    }
+    .tag-input-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      background: var(--glass);
+      min-height: 48px;
+    }
+    .tag {
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      color: #07102a;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tag-remove {
+      background: transparent;
+      border: none;
+      color: #07102a;
+      cursor: pointer;
+      font-weight: 700;
+      padding: 0;
+    }
+    .tag-input {
+      border: none;
+      background: transparent;
+      color: #fff;
+      padding: 6px;
+      flex: 1;
+      min-width: 120px;
+      outline: none;
+    }
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      padding: 12px;
+      background: var(--glass);
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+    .checkbox-label:hover {
+      background: rgba(255,255,255,0.08);
+    }
+    .checkbox-label input {
+      width: auto;
+      cursor: pointer;
+    }
+    .price-input {
+      position: relative;
+    }
+    .price-input input {
+      padding-left: 32px;
+    }
+    .price-input::before {
+      content: '$';
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .help-text {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+    .preview-box {
+      background: var(--glass);
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 16px;
+    }
+    .preview-game-card {
+      background: linear-gradient(180deg,var(--card), rgba(255,255,255,0.01));
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(2,6,23,0.6);
+    }
+    .preview-thumb {
+      height: 120px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #07102a;
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+    .success-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(3,6,12,0.95);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      backdrop-filter: blur(4px);
+    }
+    .success-modal.show {
+      display: flex;
+    }
+    .success-content {
+      background: var(--card);
+      padding: 48px;
+      border-radius: 16px;
+      text-align: center;
+      max-width: 500px;
+      animation: slideUp 0.3s ease;
+    }
+    .success-icon {
+      font-size: 80px;
+      margin-bottom: 24px;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 768px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      .publish-header {
+        padding: 24px;
+      }
+      .publish-header h1 {
+        font-size: 32px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="container header" style="background:rgba(52,73,94,0.85);backdrop-filter:blur(10px);position:sticky;top:0;z-index:999;box-shadow:0 2px 20px rgba(0,0,0,0.3)">
+    <div class="brand">
+      <img id="brandImg" src="PIXOLOTEL.png" alt="Logo Pixolot" class="brand-logo" data-initials="PX" onerror="this.style.display='none'">
+      <span id="brandFallback" class="logo" aria-hidden="true" style="display:none">PX</span>
+      <div>
+        <div class="site-title">Pyxolotl</div>
+        <div style="font-size:12px;color:var(--muted)">Indie developers showcase</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="pixolot.html">🏠 Inicio</a>
+      <a href="pixolot.html#gallery">Juegos</a>
+      <a href="perfil.html">👤 Perfil</a>
+    </nav>
+  </header>
+
+  <div class="publish-container container">
+    <div class="publish-header">
+      <h1>🎮 Publica tu juego</h1>
+      <p>Comparte tu creación con miles de jugadores</p>
+    </div>
+
+    <form id="publishForm">
+      <!-- INFORMACIÓN BÁSICA -->
+      <div class="form-card">
+        <div class="form-section">
+          <h3>📋 Información básica</h3>
+          
+          <div class="form-group">
+            <label for="gameTitle">Título del juego <span class="required">*</span></label>
+            <input type="text" id="gameTitle" placeholder="Ej: Pixel Adventures" required>
+          </div>
+
+          <div class="form-group">
+            <label for="shortDesc">Descripción corta <span class="required">*</span></label>
+            <input type="text" id="shortDesc" placeholder="Una línea que describa tu juego" maxlength="100" required>
+            <div class="help-text">Máximo 100 caracteres - Aparecerá en las tarjetas de vista previa</div>
+          </div>
+
+          <div class="form-group">
+            <label for="fullDesc">Descripción completa <span class="required">*</span></label>
+            <textarea id="fullDesc" placeholder="Describe tu juego en detalle: historia, mecánicas, características especiales..." required></textarea>
+            <div class="help-text">Incluye toda la información relevante que los jugadores necesiten saber</div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="genre">Género <span class="required">*</span></label>
+              <select id="genre" required>
+                <option value="">Selecciona un género</option>
+                <option value="accion">Acción</option>
+                <option value="aventura">Aventura</option>
+                <option value="rpg">RPG</option>
+                <option value="estrategia">Estrategia</option>
+                <option value="puzzle">Puzzle</option>
+                <option value="plataformas">Plataformas</option>
+                <option value="simulacion">Simulación</option>
+                <option value="deportes">Deportes</option>
+                <option value="carreras">Carreras</option>
+                <option value="terror">Terror</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="releaseDate">Fecha de lanzamiento <span class="required">*</span></label>
+              <input type="date" id="releaseDate" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Etiquetas</label>
+            <div class="tag-input-container" id="tagContainer">
+              <input type="text" class="tag-input" id="tagInput" placeholder="Escribe y presiona Enter...">
+            </div>
+            <div class="help-text">Agrega etiquetas relevantes (pixel art, multijugador, retro, etc.)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MULTIMEDIA -->
+      <div class="form-card">
+        <div class="form-section">
+          <h3>🖼️ Multimedia</h3>
+          
+          <div class="form-group">
+            <label>Imagen principal <span class="required">*</span></label>
+            <div class="file-upload" onclick="document.getElementById('mainImage').click()">
+              <div class="file-upload-icon">🎨</div>
+              <div><strong>Haz clic para subir</strong> o arrastra aquí</div>
+              <div class="help-text">PNG o JPG, mínimo 1280x720px</div>
+              <input type="file" id="mainImage" accept="image/*" required>
+            </div>
+            <div class="file-list" id="mainImageList"></div>
+          </div>
+
+          <div class="form-group">
+            <label>Capturas de pantalla</label>
+            <div class="file-upload" onclick="document.getElementById('screenshots').click()">
+              <div class="file-upload-icon">📸</div>
+              <div><strong>Haz clic para subir</strong> o arrastra aquí</div>
+              <div class="help-text">Mínimo 3 imágenes, máximo 10</div>
+              <input type="file" id="screenshots" accept="image/*" multiple>
+            </div>
+            <div class="file-list" id="screenshotsList"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="videoUrl">Video de gameplay (YouTube o Vimeo)</label>
+            <input type="url" id="videoUrl" placeholder="https://youtube.com/watch?v=...">
+            <div class="help-text">Opcional pero muy recomendado</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ARCHIVOS DEL JUEGO -->
+      <div class="form-card">
+        <div class="form-section">
+          <h3>💾 Archivos del juego</h3>
+          
+          <div class="form-group">
+            <label>Archivo ejecutable <span class="required">*</span></label>
+            <div class="file-upload" onclick="document.getElementById('gameFile').click()">
+              <div class="file-upload-icon">🎮</div>
+              <div><strong>Haz clic para subir</strong> tu juego</div>
+              <div class="help-text">ZIP, RAR o EXE - Máximo 500MB</div>
+              <input type="file" id="gameFile" accept=".zip,.rar,.exe" required>
+            </div>
+            <div class="file-list" id="gameFileList"></div>
+          </div>
+
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="windows">
+              <span>🪟 Windows</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="mac">
+              <span>🍎 MacOS</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="linux">
+              <span>🐧 Linux</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="web">
+              <span>🌐 Navegador web</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- REQUISITOS DEL SISTEMA -->
+      <div class="form-card">
+        <div class="form-section">
+          <h3>💻 Requisitos del sistema</h3>
+          
+          <h4 style="color:var(--accent-1);margin:0 0 16px">Mínimos</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="minOS">Sistema operativo</label>
+              <input type="text" id="minOS" placeholder="Windows 7/8/10">
+            </div>
+            <div class="form-group">
+              <label for="minCPU">Procesador</label>
+              <input type="text" id="minCPU" placeholder="Intel Core i3">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="minRAM">Memoria RAM</label>
+              <input type="text" id="minRAM" placeholder="4 GB">
+            </div>
+            <div class="form-group">
+              <label for="minGPU">Tarjeta gráfica</label>
+              <input type="text" id="minGPU" placeholder="Intel HD 4000">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="minStorage">Almacenamiento</label>
+            <input type="text" id="minStorage" placeholder="500 MB">
+          </div>
+
+          <h4 style="color:var(--accent-2);margin:24px 0 16px">Recomendados</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="recOS">Sistema operativo</label>
+              <input type="text" id="recOS" placeholder="Windows 10/11">
+            </div>
+            <div class="form-group">
+              <label for="recCPU">Procesador</label>
+              <input type="text" id="recCPU" placeholder="Intel Core i5">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="recRAM">Memoria RAM</label>
+              <input type="text" id="recRAM" placeholder="8 GB">
+            </div>
+            <div class="form-group">
+              <label for="recGPU">Tarjeta gráfica</label>
+              <input type="text" id="recGPU" placeholder="NVIDIA GTX 1050">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="recStorage">Almacenamiento</label>
+            <input type="text" id="recStorage" placeholder="1 GB">
+          </div>
+        </div>
+      </div>
+
+      <!-- PRECIOS Y DISTRIBUCIÓN -->
+      <div class="form-card">
+        <div class="form-section">
+          <h3>💰 Precios y distribución</h3>
+          
+          <div class="form-group">
+            <label>Modelo de distribución <span class="required">*</span></label>
+            <div class="checkbox-group">
+              <label class="checkbox-label">
+                <input type="radio" name="pricing" value="free" id="pricingFree" checked>
+                <span>🎁 Gratuito</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="radio" name="pricing" value="paid" id="pricingPaid">
+                <span>💵 De pago</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="radio" name="pricing" value="pwyw" id="pricingPWYW">
+                <span>💝 Paga lo que quieras</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group" id="priceGroup" style="display:none">
+            <label for="price">Precio (USD) <span class="required">*</span></label>
+            <div class="price-input">
+              <input type="number" id="price" placeholder="9.99" step="0.01" min="0">
+            </div>
+            <div class="help-text">Pixolot cobra una comisión del 10%</div>
+          </div>
+
+          <div class="form-group">
+            <label for="devName">Nombre del desarrollador/estudio <span class="required">*</span></label>
+            <input type="text" id="devName" placeholder="Tu nombre o el de tu estudio" required>
+          </div>
+
+          <div class="form-group">
+            <label for="website">Sitio web / Portfolio</label>
+            <input type="url" id="website" placeholder="https://tu-sitio.com">
+          </div>
+        </div>
+      </div>
+
+      <!-- TÉRMINOS Y CONDICIONES -->
+      <div class="form-card">
+        <div class="form-section">
+          <h3>📜 Términos y condiciones</h3>
+          
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="termsOwnership" required>
+              <span>Confirmo que soy el propietario legal de este juego y todo su contenido</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="termsContent" required>
+              <span>El juego no contiene contenido ilegal, plagiado u ofensivo</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="termsGuidelines" required>
+              <span>He leído y acepto las <a href="#" style="color:var(--accent-1)">guías de publicación</a> de Pixolot</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="termsPrivacy" required>
+              <span>Acepto la <a href="#" style="color:var(--accent-1)">política de privacidad</a></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- VISTA PREVIA -->
+      <div class="form-card">
+        <div class="form-section">
+          <h3>👁️ Vista previa</h3>
+          <p style="color:var(--muted);margin-bottom:20px">Así se verá tu juego en la tienda:</p>
+          
+          <div class="preview-game-card">
+            <div class="preview-thumb" id="previewThumb">?</div>
+            <h3 id="previewTitle">Título del juego</h3>
+            <p style="color:var(--muted);margin:6px 0" id="previewDesc">Descripción corta</p>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+              <span style="font-size:18px;font-weight:700;color:var(--accent-1)" id="previewPrice">GRATIS</span>
+              <button type="button" class="btn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;padding:8px 16px;pointer-events:none">Ver más</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTONES DE ACCIÓN -->
+      <div style="display:flex;gap:12px;justify-content:center;margin-top:32px">
+        <button type="submit" class="btn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;font-weight:700;padding:16px 48px;font-size:16px">
+          🚀 Publicar juego
+        </button>
+        <button type="button" class="btn btn-ghost" onclick="window.history.back()">
+          ❌ Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- MODAL DE ÉXITO -->
+  <div class="success-modal" id="successModal">
+    <div class="success-content">
+      <div class="success-icon">🎉</div>
+      <h2 style="margin:0 0 16px">¡Juego publicado con éxito!</h2>
+      <p style="color:var(--muted);margin:0 0 32px">
+        Tu juego ha sido enviado para revisión. Te notificaremos cuando esté disponible en la tienda.
+      </p>
+      <button class="btn" onclick="window.location.href='pixolot.html'" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;font-weight:700">
+        Volver a la tienda
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Sistema de tags
+    const tags = [];
+    const tagInput = document.getElementById('tagInput');
+    const tagContainer = document.getElementById('tagContainer');
+
+    tagInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const value = tagInput.value.trim();
+        if (value && !tags.includes(value)) {
+          tags.push(value);
+          addTag(value);
+          tagInput.value = '';
+        }
+      }
+    });
+
+    function addTag(text) {
+      const tag = document.createElement('div');
+      tag.className = 'tag';
+      tag.innerHTML = `
+        ${text}
+        <button type="button" class="tag-remove" onclick="removeTag('${text}')">×</button>
+      `;
+      tagContainer.insertBefore(tag, tagInput);
+    }
+
+    function removeTag(text) {
+      const index = tags.indexOf(text);
+      if (index > -1) {
+        tags.splice(index, 1);
+      }
+      updateTagDisplay();
+    }
+
+    function updateTagDisplay() {
+      const existingTags = tagContainer.querySelectorAll('.tag');
+      existingTags.forEach(tag => tag.remove());
+      tags.forEach(text => addTag(text));
+    }
+
+    // Manejo de archivos
+    function handleFileUpload(inputId, listId) {
+      const input = document.getElementById(inputId);
+      const list = document.getElementById(listId);
+      
+      input.addEventListener('change', () => {
+        list.innerHTML = '';
+        Array.from(input.files).forEach(file => {
+          const item = document.createElement('div');
+          item.className = 'file-item';
+          item.innerHTML = `
+            <span>📄</span>
+            <span style="flex:1">${file.name}</span>
+            <span style="color:var(--muted)">${(file.size / 1024 / 1024).toFixed(2)} MB</span>
+            <button type="button" class="file-item-remove">🗑️</button>
+          `;
+          list.appendChild(item);
+        });
+      });
+    }
+
+    handleFileUpload('mainImage', 'mainImageList');
+    handleFileUpload('screenshots', 'screenshotsList');
+    handleFileUpload('gameFile', 'gameFileList');
+
+    // Mostrar/ocultar campo de precio
+    document.querySelectorAll('input[name="pricing"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        const priceGroup = document.getElementById('priceGroup');
+        priceGroup.style.display = radio.value === 'paid' ? 'block' : 'none';
+        updatePreview();
+      });
+    });
+
+    // Actualizar vista previa en tiempo real
+    function updatePreview() {
+      const title = document.getElementById('gameTitle').value || 'Título del juego';
+      const shortDesc = document.getElementById('shortDesc').value || 'Descripción corta';
+      const pricing = document.querySelector('input[name="pricing"]:checked').value;
+      const price = document.getElementById('price').value;
+      
+      document.getElementById('previewTitle').textContent = title;
+      document.getElementById('previewDesc').textContent = shortDesc;
+      document.getElementById('previewThumb').textContent = title[0]?.toUpperCase() || '?';
+      
+      if (pricing === 'free') {
+        document.getElementById('previewPrice').textContent = '🎁 GRATIS';
+      } else if (pricing === 'pwyw') {
+        document.getElementById('previewPrice').textContent = '💝 Paga lo que quieras';
+      } else {
+        document.getElementById('previewPrice').textContent = price ? `$${parseFloat(price).toFixed(2)}` : '$0.00';
+      }
+    }
+
+    document.getElementById('gameTitle').addEventListener('input', updatePreview);
+    document.getElementById('shortDesc').addEventListener('input', updatePreview);
+    document.getElementById('price').addEventListener('input', updatePreview);
+
+    // Envío del formulario
+    document.getElementById('publishForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      // Validar que al menos una plataforma esté seleccionada
+      const platforms = ['windows', 'mac', 'linux', 'web'];
+      const hasPlatform = platforms.some(p => document.getElementById(p).checked);
+      
+      if (!hasPlatform) {
+        alert('⚠️ Por favor selecciona al menos una plataforma');
+        return;
+      }
+      
+      // Recopilar datos
+      const formData = {
+        title: document.getElementById('gameTitle').value,
+        shortDesc: document.getElementById('shortDesc').value,
+        fullDesc: document.getElementById('fullDesc').value,
+        genre: document.getElementById('genre').value,
+        releaseDate: document.getElementById('releaseDate').value,
+        tags: tags,
+        pricing: document.querySelector('input[name="pricing"]:checked').value,
+        price: document.getElementById('price').value,
+        devName: document.getElementById('devName').value,
+        website: document.getElementById('website').value,
+        platforms: platforms.filter(p => document.getElementById(p).checked),
+        requirements: {
+          min: {
+            os: document.getElementById('minOS').value,
+            cpu: document.getElementById('minCPU').value,
+            ram: document.getElementById('minRAM').value,
+            gpu: document.getElementById('minGPU').value,
+            storage: document.getElementById('minStorage').value
+          },
+          rec: {
+            os: document.getElementById('recOS').value,
+            cpu: document.getElementById('recCPU').value,
+            ram: document.getElementById('recRAM').value,
+            gpu: document.getElementById('recGPU').value,
+            storage: document.getElementById('recStorage').value
+          }
+        },
+        videoUrl: document.getElementById('videoUrl').value,
+        submittedAt: new Date().toISOString()
+      };
+      
+      // Guardar en localStorage (simulación)
+      const submissions = JSON.parse(localStorage.getItem('pixolot_submissions') || '[]');
+      submissions.push(formData);
+      localStorage.setItem('pixolot_submissions', JSON.stringify(submissions));
+      
+      console.log('📝 Juego enviado:', formData);
+      
+      // Mostrar modal de éxito
+      document.getElementById('successModal').classList.add('show');
+    });
+  </script>
+</body>
+</html>

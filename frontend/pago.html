@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pago – Pixolot</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .payment-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 28px;
+    }
+    .payment-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 32px;
+      margin-top: 32px;
+    }
+    .payment-form {
+      background: var(--card);
+      padding: 28px;
+      border-radius: 16px;
+      box-shadow: 0 6px 30px rgba(2,6,23,0.6);
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: var(--glass);
+      color: #fff;
+      font-size: 15px;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus {
+      outline: none;
+      border-color: var(--accent-1);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .order-summary {
+      background: var(--card);
+      padding: 28px;
+      border-radius: 16px;
+      box-shadow: 0 6px 30px rgba(2,6,23,0.6);
+      height: fit-content;
+      position: sticky;
+      top: 20px;
+    }
+    .order-item {
+      display: flex;
+      gap: 16px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: 20px;
+    }
+    .order-thumb {
+      width: 80px;
+      height: 80px;
+      border-radius: 10px;
+      background: linear-gradient(135deg,var(--accent-1),var(--accent-2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #07102a;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+    .order-details h4 {
+      margin: 0 0 6px;
+      font-size: 16px;
+    }
+    .order-details p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .price-line {
+      display: flex;
+      justify-content: space-between;
+      margin: 12px 0;
+      font-size: 15px;
+    }
+    .price-line.total {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent-1);
+      padding-top: 16px;
+      border-top: 2px solid rgba(255,255,255,0.1);
+      margin-top: 16px;
+    }
+    .card-logos {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .card-logo {
+      padding: 6px 12px;
+      background: var(--glass);
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .security-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 20px;
+      padding: 12px;
+      background: rgba(78,163,255,0.05);
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .success-message {
+      display: none;
+      text-align: center;
+      padding: 60px 20px;
+      background: var(--card);
+      border-radius: 16px;
+      box-shadow: 0 6px 30px rgba(2,6,23,0.6);
+    }
+    .success-message.show {
+      display: block;
+    }
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg,var(--accent-1),var(--accent-2));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      margin: 0 auto 24px;
+    }
+    @media (max-width: 900px) {
+      .payment-grid {
+        grid-template-columns: 1fr;
+      }
+      .order-summary {
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="container header" style="background:rgba(52,73,94,0.85);backdrop-filter:blur(10px);position:sticky;top:0;z-index:999;box-shadow:0 2px 20px rgba(0,0,0,0.3)">
+    <div class="brand">
+      <img id="brandImg" src="PIXOLOTEL.png" alt="Logo Pixolot" class="brand-logo" data-initials="PX" onerror="this.style.display='none'">
+      <span id="brandFallback" class="logo" aria-hidden="true" style="display:none">PX</span>
+      <div>
+        <div class="site-title">Pyxolotl</div>
+        <div style="font-size:12px;color:var(--muted)">Checkout seguro</div>
+      </div>
+    </div>
+    <a href="pixolot.html" class="btn btn-ghost">← Volver a la tienda</a>
+  </header>
+
+  <div class="payment-container">
+    <div style="text-align:center;margin-bottom:20px">
+      <h1 style="margin:0 0 8px">Completar compra</h1>
+      <p style="color:var(--muted);margin:0">Pago seguro y protegido</p>
+    </div>
+
+    <div id="paymentSection" class="payment-grid">
+      <!-- FORMULARIO DE PAGO -->
+      <div>
+        <div class="payment-form">
+          <h3 style="margin-top:0">Información de pago</h3>
+          
+          <form id="paymentForm">
+            <div class="form-group">
+              <label>Método de pago</label>
+              <select required>
+                <option value="card">Tarjeta de crédito/débito</option>
+                <option value="paypal">PayPal</option>
+                <option value="crypto">Criptomonedas</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Número de tarjeta</label>
+              <input type="text" placeholder="1234 5678 9012 3456" maxlength="19" required id="cardNumber">
+              <div class="card-logos">
+                <span class="card-logo">VISA</span>
+                <span class="card-logo">MASTERCARD</span>
+                <span class="card-logo">AMEX</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Nombre en la tarjeta</label>
+              <input type="text" placeholder="Juan Pérez" required>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Fecha de expiración</label>
+                <input type="text" placeholder="MM/AA" maxlength="5" required id="expiry">
+              </div>
+              <div class="form-group">
+                <label>CVV</label>
+                <input type="text" placeholder="123" maxlength="4" required>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top:28px">
+              <label>Correo electrónico</label>
+              <input type="email" placeholder="tu@email.com" required>
+              <p style="font-size:12px;color:var(--muted);margin:6px 0 0">Recibirás el recibo y enlace de descarga aquí</p>
+            </div>
+
+            <div class="security-badge">
+              <span style="font-size:18px">🔒</span>
+              <div>
+                <strong style="color:#fff">Pago 100% seguro</strong><br>
+                Encriptación SSL de 256 bits
+              </div>
+            </div>
+
+            <button type="submit" class="btn" style="width:100%;margin-top:24px;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;font-weight:600;padding:16px;font-size:16px">
+              Pagar ahora 💳
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- RESUMEN DEL PEDIDO -->
+      <div>
+        <div class="order-summary">
+          <h3 style="margin-top:0">Resumen del pedido</h3>
+          
+          <div class="order-item">
+            <div class="order-thumb" id="gameThumb">G</div>
+            <div class="order-details">
+              <h4 id="gameTitle">Cargando...</h4>
+              <p>Licencia digital · Descarga inmediata</p>
+            </div>
+          </div>
+
+          <div class="price-line">
+            <span style="color:var(--muted)">Subtotal</span>
+            <span id="subtotal">$0.00</span>
+          </div>
+          
+          <div class="price-line">
+            <span style="color:var(--muted)">Impuestos (IVA 16%)</span>
+            <span id="taxes">$0.00</span>
+          </div>
+
+          <div class="price-line">
+            <span style="color:var(--muted)">Comisión de plataforma</span>
+            <span id="fee">$0.99</span>
+          </div>
+
+          <div class="price-line total">
+            <span>Total</span>
+            <span id="total">$0.00</span>
+          </div>
+
+          <div style="margin-top:24px;padding:16px;background:rgba(123,97,255,0.08);border-radius:8px;font-size:13px;color:var(--muted)">
+            <strong style="color:var(--accent-1)">✓ Incluye:</strong><br>
+            • Descarga inmediata<br>
+            • Actualizaciones gratuitas<br>
+            • Soporte del desarrollador
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MENSAJE DE ÉXITO -->
+    <div id="successMessage" class="success-message">
+      <div class="success-icon">✓</div>
+      <h2 style="margin:0 0 12px">¡Pago completado con éxito!</h2>
+      <p style="color:var(--muted);margin:0 0 32px">Tu compra se ha procesado correctamente</p>
+      
+      <div style="background:var(--glass);padding:20px;border-radius:12px;margin:0 auto 28px;max-width:500px;text-align:left">
+        <div style="display:flex;justify-content:space-between;margin-bottom:12px">
+          <span style="color:var(--muted)">Número de orden:</span>
+          <strong id="orderNumber">#PX-00000</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:12px">
+          <span style="color:var(--muted)">Juego:</span>
+          <strong id="successGameTitle">-</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <span style="color:var(--muted)">Total pagado:</span>
+          <strong style="color:var(--accent-1)" id="successTotal">$0.00</strong>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a" onclick="window.location.href='pixolot.html'">
+          📥 Descargar juego
+        </button>
+        <button class="btn btn-ghost" onclick="window.location.href='pixolot.html'">
+          ← Volver a la tienda
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Cargar datos del carrito desde sessionStorage
+    document.addEventListener('DOMContentLoaded', ()=>{
+      const checkoutCart = JSON.parse(sessionStorage.getItem('checkoutCart')) || [];
+      
+      if(checkoutCart.length === 0) {
+        // Si no hay items, redirigir
+        alert('Tu carrito está vacío');
+        window.location.href = 'pixolot.html';
+        return;
+      }
+
+      // Calcular totales
+      let subtotal = 0;
+      checkoutCart.forEach(item => {
+        subtotal += parseFloat(item.price);
+      });
+
+      const taxes = subtotal * 0.16;
+      const fee = 0.99;
+      const total = subtotal + taxes + fee;
+
+      // Mostrar items del carrito
+      const orderItem = document.querySelector('.order-item');
+      if(checkoutCart.length === 1) {
+        // Un solo juego
+        document.getElementById('gameTitle').textContent = checkoutCart[0].title;
+        document.getElementById('gameThumb').textContent = checkoutCart[0].thumb;
+      } else {
+        // Múltiples juegos
+        document.getElementById('gameTitle').textContent = `${checkoutCart.length} juegos`;
+        document.getElementById('gameThumb').textContent = checkoutCart.length;
+        
+        // Agregar lista de juegos
+        const gamesList = document.createElement('div');
+        gamesList.style.cssText = 'margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06)';
+        checkoutCart.forEach(item => {
+          const gameItem = document.createElement('div');
+          gameItem.style.cssText = 'display:flex;justify-content:space-between;margin:8px 0;font-size:14px';
+          gameItem.innerHTML = `
+            <span style="color:var(--muted)">${item.title}</span>
+            <span>${parseFloat(item.price).toFixed(2)}</span>
+          `;
+          gamesList.appendChild(gameItem);
+        });
+        orderItem.parentElement.insertBefore(gamesList, orderItem.nextSibling);
+      }
+
+      // Actualizar precios
+      document.getElementById('subtotal').textContent = `${subtotal.toFixed(2)}`;
+      document.getElementById('taxes').textContent = `${taxes.toFixed(2)}`;
+      document.getElementById('total').textContent = `${total.toFixed(2)} USD`;
+
+      // Formatear número de tarjeta
+      document.getElementById('cardNumber').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\s/g, '');
+        let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+        e.target.value = formattedValue;
+      });
+
+      // Formatear fecha de expiración
+      document.getElementById('expiry').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if(value.length >= 2) {
+          value = value.slice(0,2) + '/' + value.slice(2,4);
+        }
+        e.target.value = value;
+      });
+
+      // Procesar pago
+      document.getElementById('paymentForm').addEventListener('submit', (e)=>{
+        e.preventDefault();
+        
+        // Simular procesamiento
+        const btn = e.target.querySelector('button[type="submit"]');
+        btn.textContent = 'Procesando...';
+        btn.disabled = true;
+
+        setTimeout(()=>{
+          // Mostrar mensaje de éxito
+          document.getElementById('paymentSection').style.display = 'none';
+          const successMsg = document.getElementById('successMessage');
+          successMsg.classList.add('show');
+          
+          // Actualizar datos de éxito
+          document.getElementById('orderNumber').textContent = `#PX-${Math.floor(Math.random()*999999)}`;
+          document.getElementById('successGameTitle').textContent = checkoutCart.length === 1 ? checkoutCart[0].title : `${checkoutCart.length} juegos`;
+          document.getElementById('successTotal').textContent = `${total.toFixed(2)} USD`;
+
+          // Limpiar carrito y sessionStorage
+          localStorage.removeItem('pixolotCart');
+          sessionStorage.removeItem('checkoutCart');
+
+          // Scroll to top
+          window.scrollTo({top:0, behavior:'smooth'});
+        }, 2000);
+      });
+    });
+  </script>
+</body>
+</html>

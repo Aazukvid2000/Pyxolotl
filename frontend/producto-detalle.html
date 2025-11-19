@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Detalles del Juego – Pixolot</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .product-hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin: 40px 0;
+      align-items: start;
+    }
+    .product-gallery {
+      position: sticky;
+      top: 100px;
+    }
+    .main-image {
+      width: 100%;
+      height: 400px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 80px;
+      color: #07102a;
+      font-weight: 700;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 40px rgba(123,97,255,0.3);
+    }
+    .thumbnail-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    .thumbnail {
+      height: 80px;
+      border-radius: 8px;
+      background: var(--glass);
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 2px solid transparent;
+    }
+    .thumbnail:hover {
+      border-color: var(--accent-1);
+      transform: scale(1.05);
+    }
+    .product-info {
+      background: var(--card);
+      padding: 32px;
+      border-radius: 16px;
+      box-shadow: 0 6px 30px rgba(2,6,23,0.6);
+    }
+    .price-section {
+      background: linear-gradient(135deg, rgba(123,97,255,0.1), rgba(78,163,255,0.1));
+      padding: 24px;
+      border-radius: 12px;
+      margin: 24px 0;
+    }
+    .original-price {
+      text-decoration: line-through;
+      color: var(--muted);
+      font-size: 18px;
+    }
+    .current-price {
+      font-size: 42px;
+      font-weight: 700;
+      color: var(--accent-1);
+      margin: 8px 0;
+    }
+    .discount-badge {
+      background: linear-gradient(135deg, #ff4757, #ff6348);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-weight: 600;
+      display: inline-block;
+      margin-left: 12px;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      margin: 24px 0;
+    }
+    .features-list {
+      list-style: none;
+      margin: 20px 0;
+    }
+    .features-list li {
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .features-list li:last-child {
+      border-bottom: none;
+    }
+    .tab-navigation {
+      display: flex;
+      gap: 12px;
+      border-bottom: 2px solid rgba(255,255,255,0.06);
+      margin: 40px 0 24px;
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      padding: 12px 24px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      color: var(--accent-1);
+      border-bottom-color: var(--accent-1);
+    }
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .requirements-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin: 20px 0;
+    }
+    .requirement-box {
+      background: var(--glass);
+      padding: 20px;
+      border-radius: 12px;
+    }
+    .review-card {
+      background: var(--glass);
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .rating-stars {
+      color: #ffd700;
+      font-size: 18px;
+    }
+    .related-games {
+      margin-top: 60px;
+    }
+    @media (max-width: 1024px) {
+      .product-hero {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      .product-gallery {
+        position: static;
+      }
+      .requirements-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="container header" style="background:rgba(52,73,94,0.85);backdrop-filter:blur(10px);position:sticky;top:0;z-index:999;box-shadow:0 2px 20px rgba(0,0,0,0.3)">
+    <div class="brand">
+      <img id="brandImg" src="PIXOLOTEL.png" alt="Logo Pixolot" class="brand-logo" data-initials="PX" onerror="this.style.display='none'">
+      <span id="brandFallback" class="logo" aria-hidden="true" style="display:none">PX</span>
+      <div>
+        <div class="site-title">Pyxolotl</div>
+        <div style="font-size:12px;color:var(--muted)">Indie developers showcase</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="pixolot.html">🏠 Inicio</a>
+      <a href="pixolot.html#gallery">Juegos</a>
+      <a href="perfil.html">👤 Perfil</a>
+      <button id="cartBtn" class="btn btn-ghost" style="position:relative">
+        🛒 <span id="cartCount" class="cart-badge">0</span>
+      </button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div style="margin: 20px 0">
+      <a href="pixolot.html" style="color:var(--muted);text-decoration:none">← Volver a la tienda</a>
+    </div>
+
+    <div class="product-hero">
+      <!-- GALERÍA -->
+      <div class="product-gallery">
+        <div class="main-image" id="mainImage">NR</div>
+        <div class="thumbnail-grid">
+          <div class="thumbnail" style="background:linear-gradient(135deg,#667eea,#764ba2)"></div>
+          <div class="thumbnail" style="background:linear-gradient(135deg,#f093fb,#f5576c)"></div>
+          <div class="thumbnail" style="background:linear-gradient(135deg,#4facfe,#00f2fe)"></div>
+          <div class="thumbnail" style="background:linear-gradient(135deg,#43e97b,#38f9d7)"></div>
+        </div>
+      </div>
+
+      <!-- INFORMACIÓN DEL PRODUCTO -->
+      <div>
+        <div style="margin-bottom:12px">
+          <span class="kicker">Endless Runner • Pixel Art • 2025</span>
+        </div>
+        
+        <h1 style="margin:0 0 16px;font-size:48px" id="productTitle">Nebula Runner</h1>
+        
+        <p style="color:var(--muted);font-size:18px;line-height:1.6;margin-bottom:24px">
+          Un endless runner espacial con estética retro y música synthwave. Esquiva asteroides, recolecta power-ups y compite por el mejor puntaje en las tablas de clasificación globales.
+        </p>
+
+        <div class="price-section">
+          <div style="display:flex;align-items:center;gap:12px">
+            <span class="original-price">$24.99</span>
+            <span class="discount-badge">-36% OFF</span>
+          </div>
+          <div class="current-price" id="productPrice">$15.99</div>
+          <p style="color:var(--muted);font-size:14px;margin:8px 0 0">
+            ⏰ Oferta termina en 3 días
+          </p>
+        </div>
+
+        <div class="action-buttons">
+          <button class="btn" id="addToCartBtn" style="flex:2;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;font-weight:700;padding:16px">
+            🛒 Agregar al carrito
+          </button>
+          <button class="btn btn-ghost" style="flex:1">
+            💝 Regalar
+          </button>
+          <button class="btn btn-ghost">
+            ❤️
+          </button>
+        </div>
+
+        <div class="product-info">
+          <h3 style="margin-top:0">✨ Características principales</h3>
+          <ul class="features-list">
+            <li>
+              <span style="color:var(--accent-1)">✓</span>
+              <span>Más de 50 niveles procedurales</span>
+            </li>
+            <li>
+              <span style="color:var(--accent-1)">✓</span>
+              <span>Banda sonora original synthwave</span>
+            </li>
+            <li>
+              <span style="color:var(--accent-1)">✓</span>
+              <span>Tabla de clasificación global</span>
+            </li>
+            <li>
+              <span style="color:var(--accent-1)">✓</span>
+              <span>20+ skins desbloqueables</span>
+            </li>
+            <li>
+              <span style="color:var(--accent-1)">✓</span>
+              <span>Modo cooperativo local</span>
+            </li>
+            <li>
+              <span style="color:var(--accent-1)">✓</span>
+              <span>Actualizaciones gratuitas</span>
+            </li>
+          </ul>
+
+          <div style="margin-top:24px;padding:16px;background:rgba(76,175,80,0.1);border-radius:8px;border-left:3px solid #4CAF50">
+            <strong style="color:#4CAF50">🎮 Desarrollado por:</strong> Indie Studio XYZ<br>
+            <strong style="color:#4CAF50">📅 Fecha de lanzamiento:</strong> Enero 2025<br>
+            <strong style="color:#4CAF50">🌍 Idiomas:</strong> Español, Inglés, Francés
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tab-navigation">
+      <button class="tab-btn active" data-tab="description">📝 Descripción</button>
+      <button class="tab-btn" data-tab="requirements">💻 Requisitos</button>
+      <button class="tab-btn" data-tab="reviews">⭐ Reseñas (24)</button>
+    </div>
+
+    <!-- CONTENIDO DESCRIPCIÓN -->
+    <div class="tab-content active" id="description">
+      <div style="background:var(--card);padding:32px;border-radius:16px">
+        <h2>Acerca de este juego</h2>
+        <p style="color:var(--muted);line-height:1.8">
+          Nebula Runner es un endless runner espacial que combina la nostalgia del pixel art con la energía del synthwave. Viaja a través de nebulosas psicodélicas, esquiva asteroides mortales y recolecta cristales de energía para desbloquear nuevas naves y power-ups.
+        </p>
+        <p style="color:var(--muted);line-height:1.8;margin-top:16px">
+          Con más de 50 niveles procedurales, cada partida es única. Compite contra jugadores de todo el mundo en las tablas de clasificación globales o juega en modo cooperativo local con un amigo.
+        </p>
+        
+        <h3 style="margin-top:32px">🎯 Características destacadas:</h3>
+        <ul style="color:var(--muted);line-height:2">
+          <li>Gráficos pixel art detallados con efectos de partículas</li>
+          <li>Banda sonora original de 12 tracks synthwave</li>
+          <li>Sistema de progresión con desbloqueos permanentes</li>
+          <li>Eventos semanales con recompensas exclusivas</li>
+          <li>Modo foto para capturar tus mejores momentos</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- CONTENIDO REQUISITOS -->
+    <div class="tab-content" id="requirements">
+      <div class="requirements-grid">
+        <div class="requirement-box">
+          <h3 style="margin-top:0;color:var(--accent-1)">💻 Requisitos Mínimos</h3>
+          <ul style="color:var(--muted);line-height:1.8;list-style:none">
+            <li><strong>SO:</strong> Windows 7/8/10</li>
+            <li><strong>Procesador:</strong> Intel Core i3</li>
+            <li><strong>Memoria:</strong> 4 GB RAM</li>
+            <li><strong>Gráficos:</strong> Intel HD 4000</li>
+            <li><strong>Almacenamiento:</strong> 500 MB</li>
+          </ul>
+        </div>
+        <div class="requirement-box">
+          <h3 style="margin-top:0;color:var(--accent-2)">🚀 Requisitos Recomendados</h3>
+          <ul style="color:var(--muted);line-height:1.8;list-style:none">
+            <li><strong>SO:</strong> Windows 10/11</li>
+            <li><strong>Procesador:</strong> Intel Core i5</li>
+            <li><strong>Memoria:</strong> 8 GB RAM</li>
+            <li><strong>Gráficos:</strong> NVIDIA GTX 1050</li>
+            <li><strong>Almacenamiento:</strong> 1 GB</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTENIDO RESEÑAS -->
+    <div class="tab-content" id="reviews">
+      <div style="background:var(--card);padding:32px;border-radius:16px;margin-bottom:24px">
+        <div style="display:flex;gap:40px;align-items:center">
+          <div>
+            <div style="font-size:64px;font-weight:700;color:var(--accent-1)">4.8</div>
+            <div class="rating-stars">★★★★★</div>
+            <div style="color:var(--muted);margin-top:8px">24 reseñas</div>
+          </div>
+          <div style="flex:1">
+            <div style="margin:8px 0">
+              <div style="display:flex;align-items:center;gap:12px">
+                <span style="color:var(--muted);width:20px">5★</span>
+                <div style="flex:1;height:8px;background:var(--glass);border-radius:4px;overflow:hidden">
+                  <div style="width:85%;height:100%;background:linear-gradient(90deg,var(--accent-2),var(--accent-1))"></div>
+                </div>
+                <span style="color:var(--muted);width:40px">20</span>
+              </div>
+            </div>
+            <div style="margin:8px 0">
+              <div style="display:flex;align-items:center;gap:12px">
+                <span style="color:var(--muted);width:20px">4★</span>
+                <div style="flex:1;height:8px;background:var(--glass);border-radius:4px;overflow:hidden">
+                  <div style="width:10%;height:100%;background:linear-gradient(90deg,var(--accent-2),var(--accent-1))"></div>
+                </div>
+                <span style="color:var(--muted);width:40px">3</span>
+              </div>
+            </div>
+            <div style="margin:8px 0">
+              <div style="display:flex;align-items:center;gap:12px">
+                <span style="color:var(--muted);width:20px">3★</span>
+                <div style="flex:1;height:8px;background:var(--glass);border-radius:4px;overflow:hidden">
+                  <div style="width:4%;height:100%;background:linear-gradient(90deg,var(--accent-2),var(--accent-1))"></div>
+                </div>
+                <span style="color:var(--muted);width:40px">1</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <div class="review-header">
+          <div>
+            <strong>Carlos M.</strong>
+            <div style="color:var(--muted);font-size:13px">Hace 2 días</div>
+          </div>
+          <div class="rating-stars">★★★★★</div>
+        </div>
+        <p style="color:var(--muted);line-height:1.6">
+          ¡Increíble juego! La estética pixel art es hermosa y la música es adictiva. He pasado horas jugando y sigo descubriendo cosas nuevas. Totalmente recomendado.
+        </p>
+      </div>
+
+      <div class="review-card">
+        <div class="review-header">
+          <div>
+            <strong>Ana P.</strong>
+            <div style="color:var(--muted);font-size:13px">Hace 5 días</div>
+          </div>
+          <div class="rating-stars">★★★★★</div>
+        </div>
+        <p style="color:var(--muted);line-height:1.6">
+          El modo cooperativo es súper divertido. Mi hermano y yo llevamos toda la semana compitiendo por el mejor puntaje. Vale cada centavo.
+        </p>
+      </div>
+
+      <div class="review-card">
+        <div class="review-header">
+          <div>
+            <strong>Luis R.</strong>
+            <div style="color:var(--muted);font-size:13px">Hace 1 semana</div>
+          </div>
+          <div class="rating-stars">★★★★☆</div>
+        </div>
+        <p style="color:var(--muted);line-height:1.6">
+          Muy buen juego, pero me gustaría que tuviera más niveles. Esperando ansioso las próximas actualizaciones.
+        </p>
+      </div>
+    </div>
+
+    <!-- JUEGOS RELACIONADOS -->
+    <div class="related-games">
+      <h2>🎮 También te puede interesar</h2>
+      <div class="grid" style="margin-top:24px">
+        <article class="card" style="cursor:pointer">
+          <div class="thumb">E</div>
+          <h3>Echoes</h3>
+          <p>Aventura · 2024 · Puzzle/Audio</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+            <span style="font-size:18px;font-weight:700;color:var(--accent-1)">$19.99</span>
+          </div>
+        </article>
+
+        <article class="card" style="cursor:pointer">
+          <div class="thumb">M</div>
+          <h3>Moss & Code</h3>
+          <p>Plataformas · 2025 · Indie</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+            <span style="font-size:18px;font-weight:700;color:var(--accent-1)">$12.99</span>
+          </div>
+        </article>
+
+        <article class="card" style="cursor:pointer">
+          <div class="thumb">SC</div>
+          <h3>Starbound Chef</h3>
+          <p>Sim · 2023 · Multijugador</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+            <span style="font-size:18px;font-weight:700;color:var(--accent-1)">$9.99</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer" style="margin-top:60px">
+    <div class="container center" style="flex-direction:column;gap:10px">
+      <div style="width:100%;display:flex;justify-content:space-between;align-items:center">
+        <div>© 2025 Pixolot · Hecho con ♥ para desarrolladores indie</div>
+        <div style="color:var(--muted)">Contacto: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="adddc4d5c2c1c2d9edc8d5ccc0ddc1c883cec2c0">[email&#160;protected]</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    // Tabs
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Obtener datos del juego desde URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const gameId = urlParams.get('id') || '1';
+
+    const games = {
+      '1': { title: 'Nebula Runner', price: 15.99, thumb: 'NR' },
+      '2': { title: 'Echoes', price: 19.99, thumb: 'E' },
+      '3': { title: 'Moss & Code', price: 12.99, thumb: 'M' },
+      '4': { title: 'Starbound Chef', price: 9.99, thumb: 'SC' }
+    };
+
+    const currentGame = games[gameId];
+    if (currentGame) {
+      document.getElementById('productTitle').textContent = currentGame.title;
+      document.getElementById('productPrice').textContent = `$${currentGame.price.toFixed(2)}`;
+      document.getElementById('mainImage').textContent = currentGame.thumb;
+    }
+
+    // Agregar al carrito
+    document.getElementById('addToCartBtn').addEventListener('click', () => {
+      let cart = JSON.parse(localStorage.getItem('pixolot_cart') || '[]');
+      const exists = cart.find(item => item.id === gameId);
+      
+      if (exists) {
+        alert('⚠️ Este juego ya está en tu carrito');
+      } else {
+        cart.push({ id: gameId, ...currentGame });
+        localStorage.setItem('pixolot_cart', JSON.stringify(cart));
+        alert('✅ Juego agregado al carrito');
+        updateCartCount();
+      }
+    });
+
+    // Actualizar contador del carrito
+    function updateCartCount() {
+      const ca
