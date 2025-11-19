@@ -44,13 +44,18 @@ class EmailService:
         Returns:
             True si se envió exitosamente
         """
+        logger.info(f"[EMAIL] Intentando enviar email a {to_email}")
+        logger.info(f"[EMAIL] API Key configurada: {bool(self.api_key)}")
+        logger.info(f"[EMAIL] From: {self.from_email}")
+        
         if not self.client:
             # Modo simulación
-            logger.info(f"[SIMULACIÓN] Email a {to_email}: {subject}")
+            logger.warning(f"[SIMULACIÓN] Email a {to_email}: {subject}")
             logger.debug(f"Contenido: {html_content[:100]}...")
             return True
         
         try:
+            logger.info(f"[EMAIL] Creando mensaje de SendGrid...")
             message = Mail(
                 from_email=Email(self.from_email, self.from_name),
                 to_emails=To(to_email),
@@ -61,17 +66,24 @@ class EmailService:
             if plain_content:
                 message.add_content(Content("text/plain", plain_content))
             
+            logger.info(f"[EMAIL] Enviando a través de SendGrid...")
             response = self.client.send(message)
             
+            logger.info(f"[EMAIL] Respuesta de SendGrid: {response.status_code}")
+            logger.info(f"[EMAIL] Headers: {response.headers}")
+            
             if response.status_code in [200, 201, 202]:
-                logger.info(f"Email enviado a {to_email}: {subject}")
+                logger.info(f"✅ [EMAIL] Email enviado exitosamente a {to_email}")
                 return True
             else:
-                logger.error(f"Error al enviar email: {response.status_code}")
+                logger.error(f"❌ [EMAIL] Error al enviar email: {response.status_code}")
+                logger.error(f"[EMAIL] Body: {response.body}")
                 return False
                 
         except Exception as e:
-            logger.error(f"Error al enviar email: {str(e)}")
+            logger.error(f"❌ [EMAIL] Excepción al enviar email: {str(e)}")
+            import traceback
+            logger.error(f"[EMAIL] Traceback: {traceback.format_exc()}")
             return False
     
     def send_verification_email(self, to_email: str, nombre: str, token: str) -> bool:
@@ -204,7 +216,7 @@ class EmailService:
                 <p>Tenemos excelentes noticias: tu juego <strong>"{titulo_juego}"</strong> ha sido revisado y aprobado.</p>
                 <p>Ya está visible en el catálogo público de Pyxolotl y los usuarios pueden comprarlo.</p>
                 <div style="text-align: center; margin: 30px 0;">
-                    <a href="{settings.FRONTEND_URL}/pixolot.html" style="display: inline-block; padding: 12px 24px; background: #4CAF50; color: white; text-decoration: none; border-radius: 8px;">Ver en catálogo</a>
+                    <a href="{settings.FRONTEND_URL}/" style="display: inline-block; padding: 12px 24px; background: #4CAF50; color: white; text-decoration: none; border-radius: 8px;">Ver en catálogo</a>
                 </div>
                 <p>¡Mucha suerte con las ventas!</p>
                 <p style="color: #666; font-size: 12px; margin-top: 30px;">- El equipo de Pyxolotl</p>
