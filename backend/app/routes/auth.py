@@ -104,11 +104,16 @@ async def registrar_usuario(
     db.commit()
     
     # Enviar email de verificación
-    email_service.send_verification_email(
-        new_user.email,
-        new_user.nombre,
-        verification_token
-    )
+    logger.warning(f"🔔 INTENTANDO ENVIAR EMAIL DE VERIFICACIÓN a {new_user.email}")
+    try:
+        result = email_service.send_verification_email(
+            new_user.email,
+            new_user.nombre,
+            verification_token
+        )
+        logger.warning(f"📧 Resultado del envío de email: {result}")
+    except Exception as e:
+        logger.error(f"❌ ERROR al enviar email: {str(e)}")
     
     logger.info(f"Usuario registrado: {new_user.email}")
     
