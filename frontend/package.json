@@ -1,0 +1,11 @@
+{
+  "name": "pyxolotl-frontend",
+  "version": "1.0.0",
+  "description": "Frontend estático para Pyxolotl",
+  "scripts": {
+    "start": "npx serve@latest . -l $PORT"
+  },
+  "dependencies": {
+    "serve": "^14.2.1"
+  }
+}
