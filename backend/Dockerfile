@@ -9,12 +9,12 @@ RUN apt-get update && apt-get install -y \
     pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
-# Copiar requirements
-COPY requirements.txt .
+# Copiar requirements desde backend/
+COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copiar código de la aplicación
-COPY . .
+# Copiar todo el código del backend
+COPY backend/ .
 
 # Crear directorio de uploads
 RUN mkdir -p uploads/juegos uploads/avatares uploads/temp
