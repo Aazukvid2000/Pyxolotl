@@ -30,6 +30,30 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/auth", tags=["Autenticación"])
 
+# ==================== VERIFICACIÓN MANUAL (TEMPORAL) ====================
+
+@router.get("/force-verify-admin", response_model=Message)
+async def force_verify_admin(db: Session = Depends(get_db)):
+    """
+    Endpoint temporal para forzar la verificación del administrador
+    ⚠️ ELIMINAR EN PRODUCCIÓN
+    """
+    user = db.query(Usuario).filter(Usuario.email == "sinuhevidals@gmail.com").first()
+    
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="Usuario administrador no encontrado"
+        )
+    
+    user.verificado = True
+    db.commit()
+    
+    return Message(
+        message=f"✅ Usuario {user.email} verificado exitosamente",
+        success=True
+    )
+
 # ==================== REGISTRO ====================
 
 @router.post("/registro", response_model=Message, status_code=status.HTTP_201_CREATED)
