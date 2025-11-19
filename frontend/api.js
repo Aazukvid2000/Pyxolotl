@@ -6,7 +6,7 @@
 // URL del backend (cambiar en producción)
 const API_URL = window.location.hostname === 'localhost' 
   ? 'http://localhost:8000'
-  : 'https://pyxolotl-backend.railway.app';
+  : 'https://pyxolotl-production.up.railway.app';
 
 // ============================================
 // AUTENTICACIÓN
