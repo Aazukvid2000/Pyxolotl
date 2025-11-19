@@ -456,12 +456,12 @@
     <div class="container center" style="flex-direction:column;gap:10px">
       <div style="width:100%;display:flex;justify-content:space-between;align-items:center">
         <div>© 2025 Pixolot · Hecho con ♥ para desarrolladores indie</div>
-        <div style="color:var(--muted)">Contacto: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="adddc4d5c2c1c2d9edc8d5ccc0ddc1c883cec2c0">[email&#160;protected]</a></div>
+        <div style="color:var(--muted)">Contacto: pixolot@example.com</div>
       </div>
     </div>
   </footer>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  <script>
     // Tabs
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -508,4 +508,11 @@
 
     // Actualizar contador del carrito
     function updateCartCount() {
-      const ca
+      const cart = JSON.parse(localStorage.getItem('pixolot_cart') || '[]');
+      document.getElementById('cartCount').textContent = cart.length;
+    }
+    updateCartCount();
+  </script>
+  <script src="cart.js"></script>
+</body>
+</html>
