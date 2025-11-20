@@ -32,7 +32,9 @@ class Settings(BaseSettings):
         "http://localhost:3000",
         "http://localhost:8000",
         "https://pyxolotl.railway.app",
-        "https://pyxolotl-backend.railway.app"
+        "https://pyxolotl-backend.railway.app",
+        "https://pyxolotl-frontend-production.up.railway.app",
+        "https://pyxolotl-production.up.railway.app"
     ]
     
     # SendGrid (Email)
