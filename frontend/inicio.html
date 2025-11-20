@@ -16,7 +16,7 @@
       animation: fadeIn .4s ease both;
     }
     form { display: flex; flex-direction: column; }
-    input {
+    input, select {
       width: 100%;
       margin-top: 6px;
       margin-bottom: 14px;
@@ -69,14 +69,20 @@
 
     <!-- FORMULARIO DE REGISTRO -->
     <form id="registerForm" class="hidden">
-      <label for="newName">Nombre de usuario</label>
+      <label for="newName">Nombre completo</label>
       <input id="newName" type="text" required>
 
       <label for="newEmail">Correo electrónico</label>
       <input id="newEmail" type="email" required>
 
       <label for="newPassword">Contraseña</label>
-      <input id="newPassword" type="password" required>
+      <input id="newPassword" type="password" required minlength="8">
+
+      <label for="tipoCuenta">Tipo de cuenta</label>
+      <select id="tipoCuenta" required>
+        <option value="comprador">Comprador</option>
+        <option value="desarrollador">Desarrollador</option>
+      </select>
 
       <button type="submit" class="btn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;font-weight:600">Crear cuenta</button>
 
@@ -91,6 +97,7 @@
     </div>
   </div>
 
+  <script src="api.js"></script>
   <script>
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
@@ -110,67 +117,69 @@
       formTitle.textContent = 'Inicia sesión en tu cuenta';
     });
 
-    // Manejo del login
-    loginForm.addEventListener('submit', (e) => {
+    // Manejo del login con BACKEND
+    loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
-      // Verificar si el usuario existe
-      const users = JSON.parse(localStorage.getItem('pixolot_users') || '[]');
-      const user = users.find(u => u.email === email && u.password === password);
+      const btn = e.target.querySelector('button[type="submit"]');
+      const originalText = btn.textContent;
+      btn.textContent = 'Iniciando sesión...';
+      btn.disabled = true;
 
-      if (user) {
-        localStorage.setItem('pixolot_current_user', JSON.stringify(user));
-        alert('✅ ¡Bienvenido de vuelta!');
-        window.location.href = 'pixolot.html';
-      } else {
-        alert('❌ Correo o contraseña incorrectos');
+      try {
+        const data = await apiLogin(email, password);
+        
+        if (data.access_token) {
+          alert('✅ ¡Bienvenido de vuelta!');
+          window.location.href = '/index.html';
+        } else {
+          alert('❌ ' + (data.detail || 'Error al iniciar sesión'));
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('❌ Error al iniciar sesión');
+      } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
       }
     });
 
-    // Manejo del registro
-    registerForm.addEventListener('submit', (e) => {
+    // Manejo del registro con BACKEND
+    registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const name = document.getElementById('newName').value;
       const email = document.getElementById('newEmail').value;
       const password = document.getElementById('newPassword').value;
+      const tipoCuenta = document.getElementById('tipoCuenta').value;
 
-      // Verificar si el email ya existe
-      const users = JSON.parse(localStorage.getItem('pixolot_users') || '[]');
-      const exists = users.find(u => u.email === email);
+      const btn = e.target.querySelector('button[type="submit"]');
+      const originalText = btn.textContent;
+      btn.textContent = 'Creando cuenta...';
+      btn.disabled = true;
 
-      if (exists) {
-        alert('❌ Este correo ya está registrado');
-        return;
+      try {
+        const data = await apiRegistro(name, email, password, tipoCuenta);
+        
+        if (data.success) {
+          alert('✅ ' + data.message);
+          // Cambiar a formulario de login
+          registerForm.classList.add('hidden');
+          loginForm.classList.remove('hidden');
+          formTitle.textContent = 'Inicia sesión en tu cuenta';
+          // Limpiar formulario
+          registerForm.reset();
+        } else {
+          alert('❌ ' + (data.detail || data.message || 'Error al crear cuenta'));
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('❌ Error al crear cuenta. Por favor intenta de nuevo.');
+      } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
       }
-
-      // Crear nuevo usuario
-      const newUser = {
-        id: Date.now(),
-        name: name,
-        email: email,
-        password: password,
-        createdAt: new Date().toISOString()
-      };
-
-      users.push(newUser);
-      localStorage.setItem('pixolot_users', JSON.stringify(users));
-      localStorage.setItem('pixolot_current_user', JSON.stringify(newUser));
-      
-      // Guardar también en pixolot_user para el perfil
-      const [firstName, ...lastNameParts] = name.split(' ');
-      const lastName = lastNameParts.join(' ');
-      localStorage.setItem('pixolot_user', JSON.stringify({
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        username: email.split('@')[0],
-        bio: ''
-      }));
-
-      alert('✅ ¡Cuenta creada exitosamente. Porfavor verifica tu email');
-      window.location.href = '/index.html';
     });
   </script>
 </body>
