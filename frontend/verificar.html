@@ -57,6 +57,12 @@
             margin: 20px 0;
         }
 
+        .warning-icon {
+            font-size: 80px;
+            color: #ff9800;
+            margin: 20px 0;
+        }
+
         .message {
             font-size: 24px;
             font-weight: 600;
@@ -120,12 +126,34 @@
                 <a href="inicio.html" class="btn-primary">Iniciar Sesión</a>
             </div>
 
-            <!-- Estado: Error -->
+            <!-- Estado: Ya verificado anteriormente -->
+            <div id="already-verified-state" class="hidden">
+                <div class="success-icon">✓</div>
+                <p class="message">Cuenta ya verificada</p>
+                <p class="submessage">
+                    Tu cuenta ya fue verificada anteriormente.<br>
+                    Puedes iniciar sesión normalmente.
+                </p>
+                <a href="inicio.html" class="btn-primary">Iniciar Sesión</a>
+            </div>
+
+            <!-- Estado: Token expirado o usado -->
+            <div id="expired-state" class="hidden">
+                <div class="warning-icon">⚠</div>
+                <p class="message">Enlace expirado o ya usado</p>
+                <p class="submessage">
+                    Este enlace de verificación ya no es válido.<br>
+                    Si aún no has verificado tu cuenta, solicita un nuevo enlace.
+                </p>
+                <a href="inicio.html" class="btn-primary">Volver al inicio</a>
+            </div>
+
+            <!-- Estado: Error genérico -->
             <div id="error-state" class="hidden">
                 <div class="error-icon">✕</div>
                 <p class="message">Error al verificar</p>
                 <p class="submessage" id="error-message">
-                    El enlace de verificación no es válido o ha expirado.
+                    Ocurrió un error al verificar tu cuenta.
                 </p>
                 <a href="inicio.html" class="btn-primary">Volver al inicio</a>
             </div>
@@ -141,6 +169,8 @@
         // Estados de la UI
         const loadingState = document.getElementById('loading-state');
         const successState = document.getElementById('success-state');
+        const alreadyVerifiedState = document.getElementById('already-verified-state');
+        const expiredState = document.getElementById('expired-state');
         const errorState = document.getElementById('error-state');
         const errorMessage = document.getElementById('error-message');
 
@@ -148,10 +178,16 @@
         function showState(state) {
             loadingState.classList.add('hidden');
             successState.classList.add('hidden');
+            alreadyVerifiedState.classList.add('hidden');
+            expiredState.classList.add('hidden');
             errorState.classList.add('hidden');
 
             if (state === 'success') {
                 successState.classList.remove('hidden');
+            } else if (state === 'already-verified') {
+                alreadyVerifiedState.classList.remove('hidden');
+            } else if (state === 'expired') {
+                expiredState.classList.remove('hidden');
             } else if (state === 'error') {
                 errorState.classList.remove('hidden');
             } else {
@@ -182,9 +218,26 @@
                     // Verificación exitosa
                     showState('success');
                 } else {
-                    // Error en la verificación
-                    errorMessage.textContent = data.message || 'No se pudo verificar tu email. El enlace puede haber expirado.';
-                    showState('error');
+                    // Analizar el tipo de error según el mensaje
+                    const errorMsg = data.message || '';
+                    
+                    if (errorMsg.includes('ya ha sido verificado') || 
+                        errorMsg.includes('ya verificado') ||
+                        errorMsg.includes('already verified')) {
+                        // Usuario ya verificado
+                        showState('already-verified');
+                    } else if (errorMsg.includes('expirado') || 
+                               errorMsg.includes('expired') ||
+                               errorMsg.includes('usado') ||
+                               errorMsg.includes('usado anteriormente') ||
+                               errorMsg.includes('no válido')) {
+                        // Token expirado o usado
+                        showState('expired');
+                    } else {
+                        // Error genérico
+                        errorMessage.textContent = data.message || 'No se pudo verificar tu email. Por favor intenta más tarde.';
+                        showState('error');
+                    }
                 }
             } catch (error) {
                 console.error('Error al verificar email:', error);
