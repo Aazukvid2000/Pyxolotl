@@ -19,7 +19,7 @@ function setAuthToken(token) {
 
 // Obtener token JWT
 function getAuthToken() {
-  return localStorage.setItem('auth_token');
+  return localStorage.getItem('auth_token');
 }
 
 // Eliminar token

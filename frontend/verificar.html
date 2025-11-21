@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificar Email - Pyxolotl</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .verificacion-container {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .verificacion-card {
+            background: white;
+            border-radius: 20px;
+            padding: 60px 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .logo {
+            width: 120px;
+            margin-bottom: 30px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 30px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-icon {
+            font-size: 80px;
+            color: #4CAF50;
+            margin: 20px 0;
+        }
+
+        .error-icon {
+            font-size: 80px;
+            color: #f44336;
+            margin: 20px 0;
+        }
+
+        .message {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin: 20px 0;
+        }
+
+        .submessage {
+            font-size: 16px;
+            color: #666;
+            margin: 10px 0 30px 0;
+            line-height: 1.6;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="verificacion-container">
+        <div class="verificacion-card">
+            <!-- Logo -->
+            <img src="PIXOLOTEL.png" alt="Pyxolotl" class="logo">
+
+            <!-- Estado: Verificando -->
+            <div id="loading-state">
+                <div class="spinner"></div>
+                <p class="message">Verificando tu email...</p>
+                <p class="submessage">Por favor espera un momento</p>
+            </div>
+
+            <!-- Estado: Éxito -->
+            <div id="success-state" class="hidden">
+                <div class="success-icon">✓</div>
+                <p class="message">¡Email verificado!</p>
+                <p class="submessage">
+                    Tu cuenta ha sido activada exitosamente.<br>
+                    Ya puedes iniciar sesión y comenzar a explorar.
+                </p>
+                <a href="inicio.html" class="btn-primary">Iniciar Sesión</a>
+            </div>
+
+            <!-- Estado: Error -->
+            <div id="error-state" class="hidden">
+                <div class="error-icon">✕</div>
+                <p class="message">Error al verificar</p>
+                <p class="submessage" id="error-message">
+                    El enlace de verificación no es válido o ha expirado.
+                </p>
+                <a href="inicio.html" class="btn-primary">Volver al inicio</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script>
+        // Obtener token de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+
+        // Estados de la UI
+        const loadingState = document.getElementById('loading-state');
+        const successState = document.getElementById('success-state');
+        const errorState = document.getElementById('error-state');
+        const errorMessage = document.getElementById('error-message');
+
+        // Función para mostrar estado
+        function showState(state) {
+            loadingState.classList.add('hidden');
+            successState.classList.add('hidden');
+            errorState.classList.add('hidden');
+
+            if (state === 'success') {
+                successState.classList.remove('hidden');
+            } else if (state === 'error') {
+                errorState.classList.remove('hidden');
+            } else {
+                loadingState.classList.remove('hidden');
+            }
+        }
+
+        // Verificar email automáticamente al cargar la página
+        async function verificarEmail() {
+            if (!token) {
+                errorMessage.textContent = 'No se encontró el token de verificación en la URL.';
+                showState('error');
+                return;
+            }
+
+            try {
+                // Llamar al backend para verificar
+                const response = await fetch(`${API_URL}/api/auth/verificar?token=${token}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Verificación exitosa
+                    showState('success');
+                } else {
+                    // Error en la verificación
+                    errorMessage.textContent = data.message || 'No se pudo verificar tu email. El enlace puede haber expirado.';
+                    showState('error');
+                }
+            } catch (error) {
+                console.error('Error al verificar email:', error);
+                errorMessage.textContent = 'Ocurrió un error al conectar con el servidor. Por favor intenta más tarde.';
+                showState('error');
+            }
+        }
+
+        // Ejecutar verificación al cargar la página
+        verificarEmail();
+    </script>
+</body>
+</html>
