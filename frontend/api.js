@@ -192,6 +192,19 @@ async function apiGetJuegoGratis(juegoId) {
   return response.json();
 }
 
+// Cambiar contraseña
+async function apiCambiarPassword(currentPassword, newPassword) {
+  const response = await fetch(`${API_URL}/api/auth/cambiar-password`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify({
+      password_actual: currentPassword,
+      password_nueva: newPassword
+    })
+  });
+  return response.json();
+}
+
 // ============================================
 // ADMIN - Solo para administradores
 // ============================================

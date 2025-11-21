@@ -24,11 +24,17 @@
       <a href="#about">Acerca</a>
       <a class="cta" href="publicar-juego.html" id="publicarBtn">Presentar juego</a>
       <a class="btn btn-ghost" href="inicio.html" id="loginBtn">Iniciar sesión</a>
+      
       <!-- Perfil del usuario (oculto por defecto) -->
       <div id="userProfile" class="user-profile" style="display:none">
-        <span id="userName">Usuario</span>
+        <!-- Avatar circular con foto o iniciales -->
+        <div id="userAvatar" class="user-avatar" onclick="openProfileModal()">
+          <span id="userInitials">U</span>
+        </div>
+        <span id="userName" style="cursor:pointer" onclick="openProfileModal()">Usuario</span>
         <button id="logoutBtn" class="btn btn-ghost">Cerrar sesión</button>
       </div>
+      
       <button id="cartBtn" class="btn btn-ghost" style="position:relative">
         🛒 <span id="cartCount" class="cart-badge">0</span>
       </button>
@@ -118,7 +124,7 @@
       <div class="container center" style="flex-direction:column;gap:10px">
         <div style="width:100%;display:flex;justify-content:space-between;align-items:center;max-width:var(--max-width)">
           <div>© 2025 Pyxolotl · Hecho con ♥ para desarrolladores indie</div>
-          <div style="color:var(--muted)">Contacto: pyxolotl@example.com</div>
+          <div style="color:var(--muted)">Contacto: contacto@pyxolotl.mx</div>
         </div>
       </div>
     </footer>
@@ -157,25 +163,447 @@
     </div>
   </div>
 
+  <!-- MODAL DE PERFIL -->
+  <div id="profileModal" class="modal">
+    <div class="panel" style="max-width:700px">
+      <button class="close-profile" style="float:right;background:transparent;border:none;color:var(--muted);font-size:18px;cursor:pointer">✕</button>
+      <h2>👤 Mi Perfil</h2>
+      
+      <div style="margin-top:24px">
+        <!-- Avatar grande con opción de cambiar -->
+        <div style="text-align:center;margin-bottom:30px">
+          <div id="profileAvatarLarge" class="profile-avatar-large">
+            <span id="profileInitialsLarge">U</span>
+          </div>
+          <div style="margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+            <label for="avatarUpload" class="btn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;cursor:pointer">
+              📷 Cambiar foto
+            </label>
+            <button id="removeAvatarBtn" class="btn btn-ghost" style="display:none">
+              🗑️ Eliminar foto
+            </button>
+            <input type="file" id="avatarUpload" accept="image/*" style="display:none">
+          </div>
+          <div id="uploadProgress" style="display:none;margin-top:10px;color:var(--accent-1)">
+            Procesando imagen...
+          </div>
+        </div>
+
+        <!-- Información del perfil -->
+        <div style="display:grid;gap:20px">
+          <div>
+            <label style="display:block;margin-bottom:8px;color:var(--muted);font-size:14px">Nombre de usuario</label>
+            <input type="text" id="profileNameInput" class="profile-input" placeholder="Tu nombre">
+          </div>
+
+          <div>
+            <label style="display:block;margin-bottom:8px;color:var(--muted);font-size:14px">Correo electrónico</label>
+            <input type="email" id="profileEmailInput" class="profile-input" readonly style="opacity:0.6;cursor:not-allowed">
+          </div>
+
+          <div>
+            <label style="display:block;margin-bottom:8px;color:var(--muted);font-size:14px">Tipo de cuenta</label>
+            <input type="text" id="profileTypeInput" class="profile-input" readonly style="opacity:0.6;cursor:not-allowed">
+          </div>
+
+          <div>
+            <label style="display:block;margin-bottom:8px;color:var(--muted);font-size:14px">Biografía</label>
+            <textarea id="profileBioInput" class="profile-input" rows="4" placeholder="Cuéntanos sobre ti..." style="resize:vertical"></textarea>
+          </div>
+
+          <!-- Sección de cambio de contraseña -->
+          <div style="margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.1)">
+            <h3 style="margin-bottom:16px;font-size:18px">🔒 Cambiar Contraseña</h3>
+            <div id="passwordSection">
+              <button id="showPasswordChangeBtn" class="btn btn-ghost" style="width:100%">
+                Cambiar mi contraseña
+              </button>
+              
+              <div id="passwordChangeForm" style="display:none;margin-top:16px">
+                <div style="margin-bottom:12px">
+                  <label style="display:block;margin-bottom:8px;color:var(--muted);font-size:14px">Contraseña actual</label>
+                  <input type="password" id="currentPassword" class="profile-input" placeholder="Ingresa tu contraseña actual">
+                </div>
+                <div style="margin-bottom:12px">
+                  <label style="display:block;margin-bottom:8px;color:var(--muted);font-size:14px">Nueva contraseña</label>
+                  <input type="password" id="newPassword" class="profile-input" placeholder="Mínimo 8 caracteres" minlength="8">
+                </div>
+                <div style="margin-bottom:12px">
+                  <label style="display:block;margin-bottom:8px;color:var(--muted);font-size:14px">Confirmar nueva contraseña</label>
+                  <input type="password" id="confirmPassword" class="profile-input" placeholder="Repite la nueva contraseña">
+                </div>
+                <div style="display:flex;gap:8px">
+                  <button id="changePasswordBtn" class="btn" style="flex:1;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;font-weight:600">
+                    Cambiar contraseña
+                  </button>
+                  <button id="cancelPasswordBtn" class="btn btn-ghost" style="flex:1">
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones de acción -->
+        <div style="display:flex;gap:12px;margin-top:24px">
+          <button id="saveProfileBtn" class="btn" style="flex:1;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;font-weight:600">
+            💾 Guardar cambios
+          </button>
+          <button class="btn btn-ghost close-profile" style="flex:1">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <style>
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
+    
     .user-profile {
       display: flex;
       align-items: center;
       gap: 12px;
     }
+    
     #userName {
       font-weight: 600;
       color: var(--accent-1);
+    }
+    
+    /* Avatar del usuario */
+    .user-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #07102a;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: 3px solid rgba(255,255,255,0.1);
+      overflow: hidden;
+    }
+    
+    .user-avatar:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(123,97,255,0.3);
+    }
+    
+    .user-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    /* Avatar grande en el modal */
+    .profile-avatar-large {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #07102a;
+      font-size: 40px;
+      border: 4px solid rgba(255,255,255,0.1);
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(123,97,255,0.3);
+    }
+    
+    .profile-avatar-large img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    /* Inputs del perfil */
+    .profile-input {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: var(--glass);
+      color: #fff;
+      font-size: 15px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+    
+    .profile-input:focus {
+      outline: none;
+      border-color: var(--accent-1);
+    }
+    
+    .profile-input::placeholder {
+      color: var(--muted);
     }
   </style>
 
   <script src="api.js"></script>
   <script src="cart.js"></script>
   <script>
-    // Cargar juegos desde la base de datos
+    // ============================================
+    // SISTEMA DE PERFIL CON LOCALSTORAGE
+    // ============================================
+    
+    function getProfileData() {
+      const saved = localStorage.getItem('user_profile');
+      if (saved) {
+        return JSON.parse(saved);
+      }
+      return {
+        avatarBase64: null, // Imagen guardada como base64
+        displayName: null,
+        bio: null
+      };
+    }
+
+    function saveProfileData(data) {
+      localStorage.setItem('user_profile', JSON.stringify(data));
+      updateUserInterface();
+    }
+
+    function updateUserInterface() {
+      const user = getCurrentUser();
+      const profile = getProfileData();
+      
+      if (!user) return;
+
+      // Actualizar nombre (prioridad: displayName > nombre del usuario)
+      const displayName = profile.displayName || user.nombre;
+      document.getElementById('userName').textContent = displayName;
+      document.getElementById('profileNameInput').value = profile.displayName || user.nombre;
+
+      // Actualizar avatar pequeño
+      const userAvatar = document.getElementById('userAvatar');
+      const userInitials = document.getElementById('userInitials');
+      
+      if (profile.avatarBase64) {
+        userAvatar.innerHTML = `<img src="${profile.avatarBase64}" alt="Avatar">`;
+      } else {
+        const initials = displayName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+        userInitials.textContent = initials;
+      }
+
+      // Actualizar avatar grande en modal
+      const profileAvatarLarge = document.getElementById('profileAvatarLarge');
+      const profileInitialsLarge = document.getElementById('profileInitialsLarge');
+      const removeAvatarBtn = document.getElementById('removeAvatarBtn');
+      
+      if (profile.avatarBase64) {
+        profileAvatarLarge.innerHTML = `<img src="${profile.avatarBase64}" alt="Avatar">`;
+        removeAvatarBtn.style.display = 'inline-block'; // Mostrar botón de eliminar
+      } else {
+        const initials = displayName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+        profileInitialsLarge.textContent = initials;
+        removeAvatarBtn.style.display = 'none'; // Ocultar botón de eliminar
+      }
+
+      // Actualizar otros campos
+      document.getElementById('profileEmailInput').value = user.email;
+      document.getElementById('profileTypeInput').value = 
+        user.tipo_cuenta === 'desarrollador' ? 'Desarrollador' : 'Comprador';
+      document.getElementById('profileBioInput').value = profile.bio || '';
+    }
+
+    function openProfileModal() {
+      document.getElementById('profileModal').classList.add('show');
+      updateUserInterface();
+    }
+
+    function closeProfileModal() {
+      document.getElementById('profileModal').classList.remove('show');
+    }
+
+    // Event listeners para cerrar modales
+    document.querySelectorAll('.close-profile').forEach(btn => {
+      btn.addEventListener('click', closeProfileModal);
+    });
+
+    // Cerrar modal al hacer click fuera
+    document.getElementById('profileModal').addEventListener('click', (e) => {
+      if (e.target.id === 'profileModal') {
+        closeProfileModal();
+      }
+    });
+
+    // ============================================
+    // SUBIR IMAGEN LOCAL (BASE64)
+    // ============================================
+    
+    document.getElementById('avatarUpload').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      // Validar tipo de archivo
+      if (!file.type.startsWith('image/')) {
+        alert('❌ Por favor selecciona una imagen válida');
+        return;
+      }
+
+      // Validar tamaño (máx 2MB para localStorage)
+      if (file.size > 2 * 1024 * 1024) {
+        alert('❌ La imagen es demasiado grande. Máximo 2MB');
+        return;
+      }
+
+      const uploadProgress = document.getElementById('uploadProgress');
+      uploadProgress.style.display = 'block';
+      uploadProgress.textContent = 'Procesando imagen...';
+
+      // Leer archivo como base64
+      const reader = new FileReader();
+      
+      reader.onload = function(event) {
+        const base64Image = event.target.result;
+        
+        // Guardar en perfil
+        const profile = getProfileData();
+        profile.avatarBase64 = base64Image;
+        saveProfileData(profile);
+
+        uploadProgress.style.display = 'none';
+        alert('✅ Foto de perfil actualizada correctamente');
+      };
+
+      reader.onerror = function() {
+        uploadProgress.style.display = 'none';
+        alert('❌ Error al procesar la imagen. Por favor intenta de nuevo.');
+      };
+
+      reader.readAsDataURL(file);
+    });
+
+    // ============================================
+    // ELIMINAR FOTO DE PERFIL
+    // ============================================
+    
+    document.getElementById('removeAvatarBtn').addEventListener('click', () => {
+      if (confirm('¿Estás seguro de que quieres eliminar tu foto de perfil?')) {
+        const profile = getProfileData();
+        profile.avatarBase64 = null;
+        saveProfileData(profile);
+        alert('✅ Foto de perfil eliminada');
+      }
+    });
+
+    // ============================================
+    // CAMBIAR CONTRASEÑA
+    // ============================================
+    
+    // Mostrar/ocultar formulario de cambio de contraseña
+    document.getElementById('showPasswordChangeBtn').addEventListener('click', () => {
+      const form = document.getElementById('passwordChangeForm');
+      const btn = document.getElementById('showPasswordChangeBtn');
+      
+      if (form.style.display === 'none') {
+        form.style.display = 'block';
+        btn.style.display = 'none';
+      }
+    });
+
+    document.getElementById('cancelPasswordBtn').addEventListener('click', () => {
+      const form = document.getElementById('passwordChangeForm');
+      const btn = document.getElementById('showPasswordChangeBtn');
+      
+      form.style.display = 'none';
+      btn.style.display = 'block';
+      
+      // Limpiar campos
+      document.getElementById('currentPassword').value = '';
+      document.getElementById('newPassword').value = '';
+      document.getElementById('confirmPassword').value = '';
+    });
+
+    document.getElementById('changePasswordBtn').addEventListener('click', async () => {
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      // Validaciones
+      if (!currentPassword || !newPassword || !confirmPassword) {
+        alert('❌ Por favor completa todos los campos');
+        return;
+      }
+
+      if (newPassword.length < 8) {
+        alert('❌ La nueva contraseña debe tener al menos 8 caracteres');
+        return;
+      }
+
+      if (newPassword !== confirmPassword) {
+        alert('❌ Las contraseñas no coinciden');
+        return;
+      }
+
+      const btn = document.getElementById('changePasswordBtn');
+      const originalText = btn.textContent;
+      btn.textContent = 'Cambiando...';
+      btn.disabled = true;
+
+      try {
+        // Llamar a la API para cambiar la contraseña
+        const response = await apiCambiarPassword(currentPassword, newPassword);
+        
+        if (response.success) {
+          alert('✅ Contraseña cambiada correctamente');
+          
+          // Limpiar y ocultar formulario
+          document.getElementById('currentPassword').value = '';
+          document.getElementById('newPassword').value = '';
+          document.getElementById('confirmPassword').value = '';
+          document.getElementById('passwordChangeForm').style.display = 'none';
+          document.getElementById('showPasswordChangeBtn').style.display = 'block';
+        } else {
+          alert('❌ ' + (response.message || 'Error al cambiar la contraseña'));
+        }
+        
+      } catch (error) {
+        console.error('Error cambiando contraseña:', error);
+        alert('❌ Error al cambiar la contraseña. Por favor intenta de nuevo.');
+      } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
+    });
+
+    // ============================================
+    // GUARDAR CAMBIOS DEL PERFIL
+    // ============================================
+    
+    document.getElementById('saveProfileBtn').addEventListener('click', () => {
+      const profile = getProfileData();
+      const newName = document.getElementById('profileNameInput').value.trim();
+      const newBio = document.getElementById('profileBioInput').value.trim();
+
+      if (!newName) {
+        alert('❌ El nombre no puede estar vacío');
+        return;
+      }
+
+      profile.displayName = newName;
+      profile.bio = newBio;
+      
+      saveProfileData(profile);
+      closeProfileModal();
+      
+      alert('✅ Perfil actualizado correctamente');
+    });
+
+    // ============================================
+    // CARGAR JUEGOS DESDE LA BASE DE DATOS
+    // ============================================
+    
     async function loadGames() {
       const loader = document.getElementById('gamesLoader');
       const noGamesMsg = document.getElementById('noGamesMessage');
@@ -185,7 +613,6 @@
       const paidGrid = document.getElementById('paidGamesGrid');
 
       try {
-        // Llamar a la API para obtener juegos aprobados
         const response = await apiGetJuegos({ estado: 'aprobado' });
         
         loader.style.display = 'none';
@@ -197,11 +624,9 @@
 
         noGamesMsg.style.display = 'none';
 
-        // Separar juegos gratis y de pago
         const freeGames = response.filter(game => parseFloat(game.precio) === 0);
         const paidGames = response.filter(game => parseFloat(game.precio) > 0);
 
-        // Mostrar juegos gratis
         if (freeGames.length > 0) {
           freeSection.style.display = 'block';
           freeGames.forEach(game => {
@@ -210,7 +635,6 @@
           });
         }
 
-        // Mostrar juegos de pago
         if (paidGames.length > 0) {
           paidSection.style.display = 'block';
           paidGames.forEach(game => {
@@ -231,7 +655,6 @@
       }
     }
 
-    // Crear tarjeta de juego
     function createGameCard(game, isFree) {
       const article = document.createElement('article');
       article.className = 'card';
@@ -292,7 +715,6 @@
         article.appendChild(priceRow);
       }
 
-      // Click en la tarjeta para ver detalles
       article.onclick = () => {
         window.location.href = `producto-detalle.html?id=${game.id}`;
       };
@@ -300,7 +722,6 @@
       return article;
     }
 
-    // Manejar juego gratis
     async function handleFreeGame(gameId) {
       if (!isAuthenticated()) {
         alert('Debes iniciar sesión para obtener juegos gratis');
@@ -322,7 +743,6 @@
       }
     }
 
-    // Manejar agregar al carrito
     function handleAddToCart(game) {
       if (!isAuthenticated()) {
         alert('Debes iniciar sesión para agregar juegos al carrito');
@@ -330,39 +750,37 @@
         return;
       }
 
-      // Usar la función del cart.js
       if (typeof window.addToCart === 'function') {
         window.addToCart(game.id, game.titulo, game.precio, game.imagen_portada);
       }
     }
 
-    // ✅ FUNCIÓN CORREGIDA - Verificar autenticación y ocultar botón para compradores
+    // ============================================
+    // VERIFICAR AUTENTICACIÓN
+    // ============================================
+    
     function checkAuth() {
       const user = getCurrentUser();
       const loginBtn = document.getElementById('loginBtn');
       const userProfile = document.getElementById('userProfile');
-      const userName = document.getElementById('userName');
       const publicarBtn = document.getElementById('publicarBtn');
       const publicarBtnHero = document.getElementById('publicarBtnHero');
 
       if (user && isAuthenticated()) {
         loginBtn.style.display = 'none';
         userProfile.style.display = 'flex';
-        userName.textContent = user.nombre;
+        updateUserInterface();
 
-        // Ocultar botones "Presentar juego" si es COMPRADOR
         if (user.tipo_cuenta === 'comprador') {
           if (publicarBtn) publicarBtn.style.display = 'none';
           if (publicarBtnHero) publicarBtnHero.style.display = 'none';
         } else {
-          // Mostrar botones para DESARROLLADOR o ADMINISTRADOR
           if (publicarBtn) publicarBtn.style.display = 'inline-block';
           if (publicarBtnHero) publicarBtnHero.style.display = 'inline-block';
         }
       } else {
         loginBtn.style.display = 'block';
         userProfile.style.display = 'none';
-        // Mostrar botones para usuarios no autenticados
         if (publicarBtn) publicarBtn.style.display = 'inline-block';
         if (publicarBtnHero) publicarBtnHero.style.display = 'inline-block';
       }
@@ -370,13 +788,16 @@
 
     // Cerrar sesión
     document.getElementById('logoutBtn').addEventListener('click', () => {
-      if (confirm('¿Seguro que quieres cerrar sesión?')) {
+      if (confirm('¿Seguro que deseas cerrar sesión?')) {
         logout();
       }
     });
 
-    // Inicializar
-    document.addEventListener('DOMContentLoaded', () => {
+    // ============================================
+    // INICIALIZAR
+    // ============================================
+    
+    window.addEventListener('DOMContentLoaded', () => {
       checkAuth();
       loadGames();
     });
