@@ -99,11 +99,11 @@
       </div>
 
       <!-- MENSAJE SI NO HAY JUEGOS -->
-      <div id="noGamesMessage" style="text-align:center;padding:60px 20px;color:var(--muted)">
+      <div id="noGamesMessage" style="text-align:center;padding:60px 20px;color:var(--muted);display:none">
         <div style="font-size:48px;margin-bottom:16px">🎮</div>
-        <h3>Aún no hay juegos publicados</h3>
-        <p>¡Sé el primero en publicar un juego indie en Pyxolotl!</p>
-        <a href="publicar-juego.html" class="btn" style="margin-top:20px;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a">
+        <h3 id="noGamesTitle">Aún no hay juegos publicados</h3>
+        <p id="noGamesText">¡Sé el primero en publicar un juego indie en Pyxolotl!</p>
+        <a href="publicar-juego.html" id="noGamesBtn" class="btn" style="margin-top:20px;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a">
           Publicar mi juego
         </a>
       </div>
@@ -619,6 +619,25 @@
 
         if (!response || response.length === 0) {
           noGamesMsg.style.display = 'block';
+          
+          // Personalizar mensaje según tipo de usuario
+          const user = getCurrentUser();
+          const noGamesTitle = document.getElementById('noGamesTitle');
+          const noGamesText = document.getElementById('noGamesText');
+          const noGamesBtn = document.getElementById('noGamesBtn');
+          
+          if (user && user.tipo_cuenta === 'comprador') {
+            // Mensaje para COMPRADORES
+            noGamesTitle.textContent = 'Aún no hay juegos publicados';
+            noGamesText.textContent = 'No hay juegos en el catálogo por el momento. ¡Espera a que los desarrolladores publiquen sus juegos para poder comprarlos!';
+            noGamesBtn.style.display = 'none'; // Ocultar botón
+          } else {
+            // Mensaje para DESARROLLADORES/ADMIN o no autenticados
+            noGamesTitle.textContent = 'Aún no hay juegos publicados';
+            noGamesText.textContent = '¡Sé el primero en publicar un juego indie en Pyxolotl!';
+            noGamesBtn.style.display = 'inline-block'; // Mostrar botón
+          }
+          
           return;
         }
 
