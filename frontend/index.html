@@ -3,18 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Pixolot – Indie Games Showcase</title>
+  <title>Pyxolotl – Indie Games Marketplace</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="container header">
     <div class="brand">
-      <img id="brandImg" src="PIXOLOTEL.png" alt="Logo Pixolot" class="brand-logo" data-initials="PX" onerror="this.style.display='none'">
+      <img id="brandImg" src="PIXOLOTEL.png" alt="Logo Pyxolotl" class="brand-logo" data-initials="PX" onerror="this.style.display='none'">
       <span id="brandFallback" class="logo" aria-hidden="true" style="display:none">PX</span>
 
       <div>
         <div class="site-title">Pyxolotl</div>
-        <div style="font-size:12px;color:var(--muted)">Indie developers showcase</div>
+        <div style="font-size:12px;color:var(--muted)">Marketplace de juegos indie mexicanos</div>
       </div>
     </div>
 
@@ -22,8 +22,13 @@
       <a href="#features">Características</a>
       <a href="#gallery">Juegos</a>
       <a href="#about">Acerca</a>
-      <a class="cta" href="publicar-juego.html">Presentar juego</a>
-      <a class="btn btn-ghost" href="inicio.html">Iniciar sesión</a>
+      <a class="cta" href="publicar-juego.html" id="publicarBtn">Presentar juego</a>
+      <a class="btn btn-ghost" href="inicio.html" id="loginBtn">Iniciar sesión</a>
+      <!-- Perfil del usuario (oculto por defecto) -->
+      <div id="userProfile" class="user-profile" style="display:none">
+        <span id="userName">Usuario</span>
+        <button id="logoutBtn" class="btn btn-ghost">Cerrar sesión</button>
+      </div>
       <button id="cartBtn" class="btn btn-ghost" style="position:relative">
         🛒 <span id="cartCount" class="cart-badge">0</span>
       </button>
@@ -35,9 +40,9 @@
   <main class="container">
     <section class="hero fade-in">
       <div class="hero-left">
-        <span class="kicker">Beta · Pixolot</span>
-        <h1>Más visibilidad para desarrolladores indie</h1>
-        <p>Pixolot es una vitrina pensada para creadores de videojuegos independientes. Subí tu proyecto, consigue feedback y llega a jugadores.</p>
+        <span class="kicker">Beta · Pyxolotl</span>
+        <h1>Más visibilidad para desarrolladores indie mexicanos</h1>
+        <p>Pyxolotl es una vitrina pensada para creadores de videojuegos independientes. Subí tu proyecto, consigue feedback y llega a jugadores.</p>
 
         <div class="hero-cta">
           <a class="btn" href="#gallery" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a">Explorar juegos</a>
@@ -48,7 +53,7 @@
       <div style="flex:1">
         <div style="background:linear-gradient(135deg,var(--accent-1),var(--accent-2));padding:18px;border-radius:16px">
           <div style="color:#07102a;font-weight:700">Destacado</div>
-          <div style="height:220px;margin-top:12px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.07), rgba(255,255,255,0.02));display:flex;align-items:center;justify-content:center">Imagen del juego o demo</div>
+          <div style="height:220px;margin-top:12px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.07), rgba(255,255,255,0.02));display:flex;align-items:center;justify-content:center">🎮 Juegos indie mexicanos</div>
         </div>
       </div>
     </section>
@@ -69,158 +74,55 @@
     </section>
 
     <section id="gallery">
-      <h2 style="margin-top:0">Juegos recientes</h2>
+      <h2 style="margin-top:0">Catálogo de Juegos</h2>
       
-      <!-- SECCIÓN DE JUEGOS GRATIS -->
-      <div style="margin-bottom:30px">
+      <!-- SECCIÓN DE JUEGOS GRATIS (Dinámico desde BD) -->
+      <div id="freeGamesSection" style="margin-bottom:30px;display:none">
         <h3 style="color:var(--accent-1);display:flex;align-items:center;gap:8px">
           🎮 Juegos Gratis - ¡Juega ahora!
         </h3>
-        <div class="grid">
-          <!-- SNAKE GAME -->
-          <article class="card free-game" style="cursor:pointer">
-            <div class="thumb" style="background:linear-gradient(135deg,#4CAF50,#45a049);font-size:48px">🐍</div>
-            <h3>Snake Game</h3>
-            <p>Arcade · Clásico · 3 Niveles</p>
-            <div style="margin-top:8px;padding:8px;background:rgba(76,175,80,0.1);border-radius:6px">
-              <small style="color:#4CAF50;font-weight:600">✨ GRATIS - Juega ahora</small>
-            </div>
-            <div style="margin-top:12px">
-              <button class="btn play-snake-btn" style="width:100%;background:linear-gradient(90deg,#4CAF50,#45a049);color:#fff;font-weight:600">
-                ▶️ Jugar ahora
-              </button>
-            </div>
-          </article>
-        </div>
+        <div class="grid" id="freeGamesGrid"></div>
       </div>
 
-      <!-- SECCIÓN DE JUEGOS DE PAGO -->
-      <div>
+      <!-- SECCIÓN DE JUEGOS DE PAGO (Dinámico desde BD) -->
+      <div id="paidGamesSection" style="display:none">
         <h3 style="color:var(--accent-2);display:flex;align-items:center;gap:8px">
           💎 Juegos Premium
         </h3>
-        <div class="grid">
-          <article class="card" data-id="1" data-title="Nebula Runner" data-desc="Un endless runner espacial con estética retro y música synthwave." data-price="15.99">
-            <div class="thumb">NR</div>
-            <h3>Nebula Runner</h3>
-            <p>Endless runner · 2025 · Pixel art</p>
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-              <span style="font-size:18px;font-weight:700;color:var(--accent-1)">$15.99</span>
-              <button class="btn add-to-cart" data-id="1" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;padding:8px 16px">Agregar</button>
-            </div>
-          </article>
+        <div class="grid" id="paidGamesGrid"></div>
+      </div>
 
-          <article class="card" data-id="2" data-title="Echoes" data-desc="Aventura narrativa con puzles sonoros y ambientes inmersivos." data-price="19.99">
-            <div class="thumb">E</div>
-            <h3>Echoes</h3>
-            <p>Aventura · 2024 · Puzzle/Audio</p>
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-              <span style="font-size:18px;font-weight:700;color:var(--accent-1)">$19.99</span>
-              <button class="btn add-to-cart" data-id="2" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;padding:8px 16px">Agregar</button>
-            </div>
-          </article>
+      <!-- MENSAJE SI NO HAY JUEGOS -->
+      <div id="noGamesMessage" style="text-align:center;padding:60px 20px;color:var(--muted)">
+        <div style="font-size:48px;margin-bottom:16px">🎮</div>
+        <h3>Aún no hay juegos publicados</h3>
+        <p>¡Sé el primero en publicar un juego indie en Pyxolotl!</p>
+        <a href="publicar-juego.html" class="btn" style="margin-top:20px;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a">
+          Publicar mi juego
+        </a>
+      </div>
 
-          <article class="card" data-id="3" data-title="Moss & Code" data-desc="Plataformas y rompecabezas donde la biología y la programación se combinan." data-price="12.99">
-            <div class="thumb">M</div>
-            <h3>Moss & Code</h3>
-            <p>Plataformas · 2025 · Indie</p>
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-              <span style="font-size:18px;font-weight:700;color:var(--accent-1)">$12.99</span>
-              <button class="btn add-to-cart" data-id="3" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;padding:8px 16px">Agregar</button>
-            </div>
-          </article>
-
-          <article class="card" data-id="4" data-title="Starbound Chef" data-desc="Juego de cocina en estaciones espaciales con física divertida." data-price="9.99">
-            <div class="thumb">SC</div>
-            <h3>Starbound Chef</h3>
-            <p>Sim · 2023 · Multijugador</p>
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-              <span style="font-size:18px;font-weight:700;color:var(--accent-1)">$9.99</span>
-              <button class="btn add-to-cart" data-id="4" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;padding:8px 16px">Agregar</button>
-            </div>
-          </article>
-        </div>
+      <!-- LOADER -->
+      <div id="gamesLoader" style="text-align:center;padding:40px">
+        <div style="display:inline-block;width:40px;height:40px;border:4px solid rgba(255,255,255,0.1);border-top-color:var(--accent-1);border-radius:50%;animation:spin 1s linear infinite"></div>
+        <p style="margin-top:16px;color:var(--muted)">Cargando juegos...</p>
       </div>
     </section>
 
     <section id="about" style="margin-top:28px">
-      <h2>Acerca de Pixolot</h2>
-      <p style="color:var(--muted)">Pixolot es una iniciativa estudiantil para ayudar a desarrolladores indie a obtener exposición. Este prototipo es sólo la parte frontal – la idea es integrar un panel para subir builds, moderación y herramientas de analítica.</p>
+      <h2>Acerca de Pyxolotl</h2>
+      <p style="color:var(--muted)">Pyxolotl es una plataforma para ayudar a desarrolladores indie mexicanos a obtener exposición. Publica tu juego, recibe feedback y conecta con jugadores.</p>
     </section>
 
     <footer class="footer">
       <div class="container center" style="flex-direction:column;gap:10px">
         <div style="width:100%;display:flex;justify-content:space-between;align-items:center;max-width:var(--max-width)">
-          <div>© 2025 Pixolot · Hecho con ♥ para desarrolladores indie</div>
-          <div style="color:var(--muted)">Contacto: pixolot@example.com</div>
+          <div>© 2025 Pyxolotl · Hecho con ♥ para desarrolladores indie</div>
+          <div style="color:var(--muted)">Contacto: pyxolotl@example.com</div>
         </div>
       </div>
     </footer>
   </main>
-
-  <!-- MODAL SNAKE GAME -->
-  <div id="snakeModal" class="modal" style="display:none">
-    <div class="panel" style="max-width:700px;background:#1a1a2e;padding:20px;position:relative">
-      <button class="close-snake" style="position:absolute;top:20px;right:20px;background:rgba(255,255,255,0.1);border:none;color:#fff;font-size:18px;width:32px;height:32px;border-radius:50%;cursor:pointer;z-index:100">✕</button>
-      
-      <div style="text-align:center;margin-bottom:15px">
-        <h2 style="margin:0;color:#4CAF50">🐍 Snake Game</h2>
-        <p style="color:var(--muted);margin:8px 0 0;font-size:14px">3 Niveles de Dificultad</p>
-      </div>
-
-      <div style="display:flex;justify-content:center;gap:15px;padding:12px;background:rgba(0,0,0,0.3);border-radius:8px;margin-bottom:15px">
-        <div style="text-align:center">
-          <div style="font-size:11px;color:var(--muted)">Nivel</div>
-          <div style="font-size:18px;font-weight:700;color:#4CAF50" id="level">1</div>
-        </div>
-        <div style="text-align:center">
-          <div style="font-size:11px;color:var(--muted)">🍎 Manzanas</div>
-          <div style="font-size:18px;font-weight:700;color:#4CAF50" id="apples">0/10</div>
-        </div>
-        <div style="text-align:center">
-          <div style="font-size:11px;color:var(--muted)">🏆 Puntaje</div>
-          <div style="font-size:18px;font-weight:700;color:#4CAF50" id="score">0</div>
-        </div>
-        <div style="text-align:center">
-          <div style="font-size:11px;color:var(--muted)">⭐ Récord</div>
-          <div style="font-size:18px;font-weight:700;color:#4CAF50" id="highscore">0</div>
-        </div>
-      </div>
-
-      <div style="display:flex;justify-content:center;margin-bottom:15px">
-        <canvas width="400" height="400" id="game" style="border:3px solid #4CAF50;border-radius:10px;background:linear-gradient(135deg, #667eea 0%, #764ba2 100%)"></canvas>
-      </div>
-
-      <div id="levelInfo" style="padding:10px;background:rgba(76,175,80,0.15);border-radius:8px;border-left:3px solid #4CAF50;margin-bottom:10px;font-size:13px">
-        <strong>Nivel 1 - Modo Clásico:</strong> Come 10 manzanas para avanzar (Velocidad: Lenta)
-      </div>
-
-      <div style="text-align:center;color:var(--muted);font-size:12px">
-        Usa las flechas ⬆️ ⬇️ ⬅️ ➡️ o WASD para moverte
-      </div>
-
-      <div class="start-screen active" id="startScreen" style="position:absolute;inset:0;background:rgba(0,0,0,0.95);display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:12px;z-index:10">
-        <h2 style="font-size:2em;margin-bottom:15px;color:#4CAF50">🐍 Snake Game</h2>
-        <p style="margin:5px 0">🎮 <strong>Objetivo:</strong> Come manzanas y crece sin chocarte</p>
-        <p style="margin:5px 0">📊 <strong>3 Niveles de dificultad:</strong></p>
-        <p style="margin:3px 0">• Nivel 1: Velocidad Lenta (10 manzanas)</p>
-        <p style="margin:3px 0">• Nivel 2: Velocidad Media + Obstáculos (15 manzanas)</p>
-        <p style="margin:3px 0">• Nivel 3: Velocidad Rápida + Portales (20 manzanas)</p>
-        <p class="pulse" style="margin-top:20px;font-size:1.2em;color:#4CAF50">
-          ⌨️ Presiona cualquier tecla para comenzar
-        </p>
-      </div>
-
-      <div class="game-over" id="gameOver" style="position:absolute;inset:0;background:rgba(0,0,0,0.95);display:none;flex-direction:column;align-items:center;justify-content:center;border-radius:12px;z-index:10">
-        <h2 style="font-size:2.5em;margin-bottom:15px">💀 Game Over</h2>
-        <p style="font-size:1.3em;margin-bottom:8px">Puntaje Final: <span id="finalScore">0</span></p>
-        <p style="font-size:1.1em;margin-bottom:15px">Nivel Alcanzado: <span id="finalLevel">1</span></p>
-        <p class="pulse" style="margin-top:20px;font-size:1.2em;color:#4CAF50">
-          ⌨️ Presiona cualquier tecla de dirección para jugar de nuevo
-        </p>
-      </div>
-    </div>
-  </div>
 
   <!-- MODAL CARRITO -->
   <div id="cartModal" class="modal">
@@ -230,11 +132,11 @@
       
       <div id="cartItems" style="margin-top:20px;max-height:300px;overflow-y:auto"></div>
 
-      <div id="cartEmpty" style="text-align:center;padding:40px;color:var(--muted);display:none">
+      <div id="cartEmpty" style="text-align:center;padding:40px;color:var(--muted)">
         El carrito está vacío
       </div>
 
-      <div id="cartSummary" style="margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.1)">
+      <div id="cartSummary" style="margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.1);display:none">
         <div style="display:flex;justify-content:space-between;margin-bottom:12px">
           <span>Subtotal:</span>
           <span id="subtotal">$0.00</span>
@@ -249,13 +151,220 @@
         </div>
       </div>
 
-      <button id="checkoutBtn" class="btn" style="width:100%;margin-top:20px;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;font-weight:700">
+      <button id="checkoutBtn" class="btn" style="width:100%;margin-top:20px;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;font-weight:700;display:none">
         Proceder al pago
       </button>
     </div>
   </div>
 
+  <style>
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    #userName {
+      font-weight: 600;
+      color: var(--accent-1);
+    }
+  </style>
+
+  <script src="api.js"></script>
   <script src="cart.js"></script>
-  <script src="main.js"></script>
+  <script>
+    // Cargar juegos desde la base de datos
+    async function loadGames() {
+      const loader = document.getElementById('gamesLoader');
+      const noGamesMsg = document.getElementById('noGamesMessage');
+      const freeSection = document.getElementById('freeGamesSection');
+      const paidSection = document.getElementById('paidGamesSection');
+      const freeGrid = document.getElementById('freeGamesGrid');
+      const paidGrid = document.getElementById('paidGamesGrid');
+
+      try {
+        // Llamar a la API para obtener juegos aprobados
+        const response = await apiGetJuegos({ estado: 'aprobado' });
+        
+        loader.style.display = 'none';
+
+        if (!response || response.length === 0) {
+          noGamesMsg.style.display = 'block';
+          return;
+        }
+
+        noGamesMsg.style.display = 'none';
+
+        // Separar juegos gratis y de pago
+        const freeGames = response.filter(game => parseFloat(game.precio) === 0);
+        const paidGames = response.filter(game => parseFloat(game.precio) > 0);
+
+        // Mostrar juegos gratis
+        if (freeGames.length > 0) {
+          freeSection.style.display = 'block';
+          freeGames.forEach(game => {
+            const card = createGameCard(game, true);
+            freeGrid.appendChild(card);
+          });
+        }
+
+        // Mostrar juegos de pago
+        if (paidGames.length > 0) {
+          paidSection.style.display = 'block';
+          paidGames.forEach(game => {
+            const card = createGameCard(game, false);
+            paidGrid.appendChild(card);
+          });
+        }
+
+      } catch (error) {
+        console.error('Error al cargar juegos:', error);
+        loader.style.display = 'none';
+        noGamesMsg.style.display = 'block';
+        noGamesMsg.innerHTML = `
+          <div style="font-size:48px;margin-bottom:16px">⚠️</div>
+          <h3>Error al cargar juegos</h3>
+          <p>No se pudo conectar con el servidor. Por favor intenta más tarde.</p>
+        `;
+      }
+    }
+
+    // Crear tarjeta de juego
+    function createGameCard(game, isFree) {
+      const article = document.createElement('article');
+      article.className = 'card';
+      article.style.cursor = 'pointer';
+
+      const thumbnailDiv = document.createElement('div');
+      thumbnailDiv.className = 'thumb';
+      
+      if (game.imagen_portada) {
+        thumbnailDiv.style.backgroundImage = `url(${game.imagen_portada})`;
+        thumbnailDiv.style.backgroundSize = 'cover';
+        thumbnailDiv.style.backgroundPosition = 'center';
+      } else {
+        thumbnailDiv.textContent = game.titulo.substring(0, 2).toUpperCase();
+      }
+
+      const title = document.createElement('h3');
+      title.textContent = game.titulo;
+
+      const description = document.createElement('p');
+      description.textContent = `${game.genero} · ${game.desarrollador_nombre || 'Indie'}`;
+
+      article.appendChild(thumbnailDiv);
+      article.appendChild(title);
+      article.appendChild(description);
+
+      if (isFree) {
+        const freeTag = document.createElement('div');
+        freeTag.style.cssText = 'margin-top:8px;padding:8px;background:rgba(76,175,80,0.1);border-radius:6px';
+        freeTag.innerHTML = '<small style="color:#4CAF50;font-weight:600">✨ GRATIS</small>';
+        article.appendChild(freeTag);
+
+        const downloadBtn = document.createElement('button');
+        downloadBtn.className = 'btn';
+        downloadBtn.style.cssText = 'width:100%;margin-top:12px;background:linear-gradient(90deg,#4CAF50,#45a049);color:#fff;font-weight:600';
+        downloadBtn.textContent = '⬇️ Obtener gratis';
+        downloadBtn.onclick = () => handleFreeGame(game.id);
+        article.appendChild(downloadBtn);
+      } else {
+        const priceRow = document.createElement('div');
+        priceRow.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-top:12px';
+        
+        const priceSpan = document.createElement('span');
+        priceSpan.style.cssText = 'font-size:18px;font-weight:700;color:var(--accent-1)';
+        priceSpan.textContent = `$${parseFloat(game.precio).toFixed(2)}`;
+        
+        const addBtn = document.createElement('button');
+        addBtn.className = 'btn';
+        addBtn.style.cssText = 'background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;padding:8px 16px';
+        addBtn.textContent = 'Agregar';
+        addBtn.onclick = (e) => {
+          e.stopPropagation();
+          handleAddToCart(game);
+        };
+        
+        priceRow.appendChild(priceSpan);
+        priceRow.appendChild(addBtn);
+        article.appendChild(priceRow);
+      }
+
+      // Click en la tarjeta para ver detalles
+      article.onclick = () => {
+        window.location.href = `producto-detalle.html?id=${game.id}`;
+      };
+
+      return article;
+    }
+
+    // Manejar juego gratis
+    async function handleFreeGame(gameId) {
+      if (!isAuthenticated()) {
+        alert('Debes iniciar sesión para obtener juegos gratis');
+        window.location.href = 'inicio.html';
+        return;
+      }
+
+      try {
+        const response = await apiGetJuegoGratis(gameId);
+        if (response.success) {
+          alert('✅ ¡Juego agregado a tu biblioteca! Ya puedes descargarlo.');
+          window.location.href = 'biblioteca.html';
+        } else {
+          alert('❌ ' + (response.message || 'Error al obtener el juego'));
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('❌ Error al procesar la solicitud');
+      }
+    }
+
+    // Manejar agregar al carrito
+    function handleAddToCart(game) {
+      if (!isAuthenticated()) {
+        alert('Debes iniciar sesión para agregar juegos al carrito');
+        window.location.href = 'inicio.html';
+        return;
+      }
+
+      // Usar la función del cart.js
+      if (typeof window.addToCart === 'function') {
+        window.addToCart(game.id, game.titulo, game.precio, game.imagen_portada);
+      }
+    }
+
+    // Verificar autenticación y mostrar perfil
+    function checkAuth() {
+      const user = getCurrentUser();
+      const loginBtn = document.getElementById('loginBtn');
+      const userProfile = document.getElementById('userProfile');
+      const userName = document.getElementById('userName');
+
+      if (user && isAuthenticated()) {
+        loginBtn.style.display = 'none';
+        userProfile.style.display = 'flex';
+        userName.textContent = user.nombre;
+      } else {
+        loginBtn.style.display = 'block';
+        userProfile.style.display = 'none';
+      }
+    }
+
+    // Cerrar sesión
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      if (confirm('¿Seguro que quieres cerrar sesión?')) {
+        logout();
+      }
+    });
+
+    // Inicializar
+    document.addEventListener('DOMContentLoaded', () => {
+      checkAuth();
+      loadGames();
+    });
+  </script>
 </body>
 </html>
