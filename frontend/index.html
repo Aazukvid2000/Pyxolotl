@@ -46,7 +46,7 @@
 
         <div class="hero-cta">
           <a class="btn" href="#gallery" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a">Explorar juegos</a>
-          <a class="btn btn-ghost" href="publicar-juego.html">Presentar tu juego</a>
+          <a class="btn btn-ghost" href="publicar-juego.html" id="publicarBtnHero">Presentar tu juego</a>
         </div>
       </div>
 
@@ -336,20 +336,35 @@
       }
     }
 
-    // Verificar autenticación y mostrar perfil
+    // ✅ FUNCIÓN CORREGIDA - Verificar autenticación y ocultar botón para compradores
     function checkAuth() {
       const user = getCurrentUser();
       const loginBtn = document.getElementById('loginBtn');
       const userProfile = document.getElementById('userProfile');
       const userName = document.getElementById('userName');
+      const publicarBtn = document.getElementById('publicarBtn');
+      const publicarBtnHero = document.getElementById('publicarBtnHero');
 
       if (user && isAuthenticated()) {
         loginBtn.style.display = 'none';
         userProfile.style.display = 'flex';
         userName.textContent = user.nombre;
+
+        // Ocultar botones "Presentar juego" si es COMPRADOR
+        if (user.tipo_cuenta === 'comprador') {
+          if (publicarBtn) publicarBtn.style.display = 'none';
+          if (publicarBtnHero) publicarBtnHero.style.display = 'none';
+        } else {
+          // Mostrar botones para DESARROLLADOR o ADMINISTRADOR
+          if (publicarBtn) publicarBtn.style.display = 'inline-block';
+          if (publicarBtnHero) publicarBtnHero.style.display = 'inline-block';
+        }
       } else {
         loginBtn.style.display = 'block';
         userProfile.style.display = 'none';
+        // Mostrar botones para usuarios no autenticados
+        if (publicarBtn) publicarBtn.style.display = 'inline-block';
+        if (publicarBtnHero) publicarBtnHero.style.display = 'inline-block';
       }
     }
 
