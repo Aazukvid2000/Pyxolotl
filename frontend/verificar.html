@@ -204,8 +204,8 @@
             }
 
             try {
-                // Llamar al backend para verificar
-                const response = await fetch(`${API_URL}/api/auth/verificar?token=${token}`, {
+                // Llamar al backend para verificar (usando el endpoint JSON)
+                const response = await fetch(`${API_URL}/api/auth/verificar/${token}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
