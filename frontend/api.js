@@ -78,11 +78,46 @@ async function apiLogin(email, password) {
   return data;
 }
 
-// Obtener catálogo de juegos
+// ✅ CORREGIDO: Obtener catálogo de juegos
 async function apiGetJuegos(filtros = {}) {
-  const params = new URLSearchParams(filtros);
-  const response = await fetch(`${API_URL}/api/juegos/catalogo?${params}`);
-  return response.json();
+  try {
+    // Construir URL con parámetros si existen
+    let url = `${API_URL}/api/juegos/catalogo`;
+    
+    // Remover el parámetro 'estado' si existe (el backend ya filtra por APROBADO)
+    const { estado, ...otrosFiltros } = filtros;
+    
+    const params = new URLSearchParams(otrosFiltros);
+    if (params.toString()) {
+      url += `?${params.toString()}`;
+    }
+    
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    if (!response.ok) {
+      console.error('Error al obtener juegos:', response.status, response.statusText);
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    
+    // Verificar que data sea un array
+    if (!Array.isArray(data)) {
+      console.error('La respuesta no es un array:', data);
+      return [];
+    }
+    
+    return data;
+    
+  } catch (error) {
+    console.error('Error en apiGetJuegos:', error);
+    return [];
+  }
 }
 
 // Obtener detalle de un juego
