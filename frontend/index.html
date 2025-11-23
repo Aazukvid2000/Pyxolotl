@@ -808,7 +808,29 @@
       }
     }
 
+
+    // ============================================
+    // VALIDAR PUBLICAR JUEGO
+    // ============================================
+    
+    function validarPublicarJuego(event) {
+      event.preventDefault();
+      const user = getCurrentUser();
+      
+      if (!user || !isAuthenticated()) {
+        // No está registrado - redirigir a inicio sesión
+        window.location.href = 'inicio.html';
+      } else if (user.tipo_cuenta === 'comprador') {
+        // Es comprador - redirigir a inicio sesión con mensaje
+        window.location.href = 'inicio.html';
+      } else {
+        // Es desarrollador - puede publicar
+        window.location.href = 'publicar-juego.html';
+      }
+    }
+
     // Cerrar sesión
+
     document.getElementById('logoutBtn').addEventListener('click', () => {
       if (confirm('¿Seguro que deseas cerrar sesión?')) {
         logout();
