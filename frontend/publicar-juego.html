@@ -275,6 +275,22 @@
         font-size: 32px;
       }
     }
+
+    @media (max-width: 768px) {
+      .header {
+        flex-wrap: wrap;
+        padding: 12px 20px !important;
+      }
+      .nav {
+        width: 100%;
+        justify-content: center;
+        margin-top: 10px;
+      }
+      .nav a {
+        font-size: 14px;
+        padding: 8px 12px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -290,7 +306,7 @@
     <nav class="nav">
       <a href="/index.html">🏠 Inicio</a>
       <a href="/index.html#gallery">Juegos</a>
-      <a href="perfil.html">👤 Perfil</a>
+      
     </nav>
   </header>
 
