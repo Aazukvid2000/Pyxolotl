@@ -279,7 +279,7 @@
 </head>
 <body>
   <header class="container header" style="background:rgba(52,73,94,0.85);backdrop-filter:blur(10px);position:sticky;top:0;z-index:999;box-shadow:0 2px 20px rgba(0,0,0,0.3)">
-    <div class="brand">
+    <div class="brand" onclick="window.location.href='index.html'" style="cursor:pointer">
       <img id="brandImg" src="PIXOLOTEL.png" alt="Logo Pixolot" class="brand-logo" data-initials="PX" onerror="this.style.display='none'">
       <span id="brandFallback" class="logo" aria-hidden="true" style="display:none">PX</span>
       <div>
@@ -328,7 +328,9 @@
               <label for="genre">Género <span class="required">*</span></label>
               <select id="genre" required>
                 <option value="">Selecciona un género</option>
-                <option value="accion">Acción (incluye Peleas)</option>
+                <option value="accion">Acción</option>
+                <option value="peleas">Peleas</option>
+                <option value="peleas">Peleas</option>
                 <option value="aventura">Aventura</option>
                 <option value="rpg">RPG</option>
                 <option value="estrategia">Estrategia</option>
