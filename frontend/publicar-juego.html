@@ -59,6 +59,8 @@
     }
     .form-group label .required {
       color: #ff4757;
+      font-size: 16px;
+      font-weight: 700;
     }
     .form-group input,
     .form-group textarea,
@@ -306,18 +308,18 @@
           
           <div class="form-group">
             <label for="gameTitle">Título del juego <span class="required">*</span></label>
-            <input type="text" id="gameTitle" placeholder="Ej: Pixel Adventures" required>
+            <input type="text" id="gameTitle" placeholder="Ej: Ej: Pixel Adventures" required>
           </div>
 
           <div class="form-group">
             <label for="shortDesc">Descripción corta <span class="required">*</span></label>
-            <input type="text" id="shortDesc" placeholder="Una línea que describa tu juego" maxlength="100" required>
+            <input type="text" id="shortDesc" placeholder="Ej: Una línea que describa tu juego" maxlength="100" required>
             <div class="help-text">Máximo 100 caracteres - Aparecerá en las tarjetas de vista previa</div>
           </div>
 
           <div class="form-group">
             <label for="fullDesc">Descripción completa <span class="required">*</span></label>
-            <textarea id="fullDesc" placeholder="Describe tu juego en detalle: historia, mecánicas, características especiales..." required></textarea>
+            <textarea id="fullDesc" placeholder="Ej: Describe tu juego en detalle: historia, mecánicas, características especiales..." required></textarea>
             <div class="help-text">Incluye toda la información relevante que los jugadores necesiten saber</div>
           </div>
 
@@ -326,7 +328,7 @@
               <label for="genre">Género <span class="required">*</span></label>
               <select id="genre" required>
                 <option value="">Selecciona un género</option>
-                <option value="accion">Acción</option>
+                <option value="accion">Acción (incluye Peleas)</option>
                 <option value="aventura">Aventura</option>
                 <option value="rpg">RPG</option>
                 <option value="estrategia">Estrategia</option>
@@ -348,7 +350,7 @@
           <div class="form-group">
             <label>Etiquetas</label>
             <div class="tag-input-container" id="tagContainer">
-              <input type="text" class="tag-input" id="tagInput" placeholder="Escribe y presiona Enter...">
+              <input type="text" class="tag-input" id="tagInput" placeholder="Ej: Escribe y presiona Enter...">
             </div>
             <div class="help-text">Agrega etiquetas relevantes (pixel art, multijugador, retro, etc.)</div>
           </div>
@@ -384,7 +386,7 @@
 
           <div class="form-group">
             <label for="videoUrl">Video de gameplay (YouTube o Vimeo)</label>
-            <input type="url" id="videoUrl" placeholder="https://youtube.com/watch?v=...">
+            <input type="url" id="videoUrl" placeholder="Ej: https://youtube.com/watch?v=...">
             <div class="help-text">Opcional pero muy recomendado</div>
           </div>
         </div>
@@ -436,52 +438,52 @@
           <div class="form-row">
             <div class="form-group">
               <label for="minOS">Sistema operativo</label>
-              <input type="text" id="minOS" placeholder="Windows 7/8/10">
+              <input type="text" id="minOS" placeholder="Ej: Windows 7/8/10">
             </div>
             <div class="form-group">
               <label for="minCPU">Procesador</label>
-              <input type="text" id="minCPU" placeholder="Intel Core i3">
+              <input type="text" id="minCPU" placeholder="Ej: Intel Core i3">
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
               <label for="minRAM">Memoria RAM</label>
-              <input type="text" id="minRAM" placeholder="4 GB">
+              <input type="text" id="minRAM" placeholder="Ej: 4 GB">
             </div>
             <div class="form-group">
               <label for="minGPU">Tarjeta gráfica</label>
-              <input type="text" id="minGPU" placeholder="Intel HD 4000">
+              <input type="text" id="minGPU" placeholder="Ej: Intel HD 4000">
             </div>
           </div>
           <div class="form-group">
             <label for="minStorage">Almacenamiento</label>
-            <input type="text" id="minStorage" placeholder="500 MB">
+            <input type="text" id="minStorage" placeholder="Ej: 500 MB">
           </div>
 
           <h4 style="color:var(--accent-2);margin:24px 0 16px">Recomendados</h4>
           <div class="form-row">
             <div class="form-group">
               <label for="recOS">Sistema operativo</label>
-              <input type="text" id="recOS" placeholder="Windows 10/11">
+              <input type="text" id="recOS" placeholder="Ej: Windows 10/11">
             </div>
             <div class="form-group">
               <label for="recCPU">Procesador</label>
-              <input type="text" id="recCPU" placeholder="Intel Core i5">
+              <input type="text" id="recCPU" placeholder="Ej: Intel Core i5">
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
               <label for="recRAM">Memoria RAM</label>
-              <input type="text" id="recRAM" placeholder="8 GB">
+              <input type="text" id="recRAM" placeholder="Ej: 8 GB">
             </div>
             <div class="form-group">
               <label for="recGPU">Tarjeta gráfica</label>
-              <input type="text" id="recGPU" placeholder="NVIDIA GTX 1050">
+              <input type="text" id="recGPU" placeholder="Ej: NVIDIA GTX 1050">
             </div>
           </div>
           <div class="form-group">
             <label for="recStorage">Almacenamiento</label>
-            <input type="text" id="recStorage" placeholder="1 GB">
+            <input type="text" id="recStorage" placeholder="Ej: 1 GB">
           </div>
         </div>
       </div>
@@ -512,19 +514,19 @@
           <div class="form-group" id="priceGroup" style="display:none">
             <label for="price">Precio (USD) <span class="required">*</span></label>
             <div class="price-input">
-              <input type="number" id="price" placeholder="9.99" step="0.01" min="0">
+              <input type="number" id="price" placeholder="Ej: 9.99" step="0.01" min="0">
             </div>
             <div class="help-text">Pixolot cobra una comisión del 10%</div>
           </div>
 
           <div class="form-group">
             <label for="devName">Nombre del desarrollador/estudio <span class="required">*</span></label>
-            <input type="text" id="devName" placeholder="Tu nombre o el de tu estudio" required>
+            <input type="text" id="devName" placeholder="Ej: Tu nombre o el de tu estudio" required>
           </div>
 
           <div class="form-group">
             <label for="website">Sitio web / Portfolio</label>
-            <input type="url" id="website" placeholder="https://tu-sitio.com">
+            <input type="url" id="website" placeholder="Ej: https://tu-sitio.com">
           </div>
         </div>
       </div>
@@ -578,8 +580,8 @@
         <button type="submit" class="btn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;font-weight:700;padding:16px 48px;font-size:16px">
           🚀 Publicar juego
         </button>
-        <button type="button" class="btn btn-ghost" onclick="window.history.back()">
-          ❌ Cancelar
+        <button type="button" class="btn btn-ghost" onclick="window.location.href='index.html'">
+          🏠 Regresar al inicio
         </button>
       </div>
     </form>

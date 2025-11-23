@@ -116,6 +116,15 @@ async def registrar_usuario(
         logger.warning(f"📧 Resultado del envío de email: {result}")
     except Exception as e:
         logger.error(f"❌ ERROR al enviar email: {str(e)}")
+        # No mostrar error técnico al usuario, validar email
+        if "does not contain a valid email" in str(e) or "invalid" in str(e).lower():
+            # Eliminar usuario si el email no es válido
+            db.delete(new_user)
+            db.commit()
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="El correo electrónico no es válido"
+            )
     
     logger.info(f"Usuario registrado: {new_user.email}")
     
