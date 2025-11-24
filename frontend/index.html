@@ -19,7 +19,8 @@
     </div>
 
     <nav class="nav">
-      <a href="#gallery">Explorar juegos</a>
+      <a href="#features">Características</a>
+      <a href="#gallery">Juegos</a>
       <a href="#about">Acerca</a>
       <a class="cta" href="#" onclick="validarPublicarJuego(event)" id="publicarBtn">Presentar juego</a>
       <a class="btn btn-ghost" href="inicio.html" id="loginBtn">Iniciar sesión</a>
@@ -27,7 +28,11 @@
       
       <!-- Perfil del usuario (oculto por defecto) -->
       <div id="userProfile" class="user-profile" style="display:none">
-        <a href="perfil.html" class="btn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a">👤 Perfil</a>
+        <!-- Avatar circular con foto o iniciales -->
+        <div id="userAvatar" class="user-avatar" onclick="openProfileModal()">
+          <span id="userInitials">U</span>
+        </div>
+        <span id="userName" style="cursor:pointer" onclick="openProfileModal()">Usuario</span>
         <button id="logoutBtn" class="btn btn-ghost">Cerrar sesión</button>
       </div>
       
@@ -60,6 +65,21 @@
       </div>
     </section>
 
+    <section id="features" class="features">
+      <div class="feature">
+        <h4>Visibilidad</h4>
+        <p>Conecta con jugadores y otros desarrolladores. Promociona tus builds y demos.</p>
+      </div>
+      <div class="feature">
+        <h4>Feedback</h4>
+        <p>Recibe comentarios constructivos y métricas para mejorar tu juego.</p>
+      </div>
+      <div class="feature">
+        <h4>Colaboraciones</h4>
+        <p>Encuentra artistas, músicos y programadores interesados en colaborar.</p>
+      </div>
+    </section>
+
     <section id="gallery">
       <h2 style="margin-top:0">Catálogo de Juegos</h2>
       
@@ -80,11 +100,11 @@
       </div>
 
       <!-- MENSAJE SI NO HAY JUEGOS -->
-      <div id="noGamesMessage" style="text-align:center;padding:60px 20px;color:var(--muted);display:none">
+      <div id="noGamesMessage" style="text-align:center;padding:60px 20px;color:var(--muted)">
         <div style="font-size:48px;margin-bottom:16px">🎮</div>
-        <h3 id="noGamesTitle">Aún no hay juegos publicados</h3>
-        <p id="noGamesText">¡Sé el primero en publicar un juego indie en Pyxolotl!</p>
-        <a href="publicar-juego.html" id="noGamesBtn" class="btn" style="margin-top:20px;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a">
+        <h3>Aún no hay juegos publicados</h3>
+        <p>¡Sé el primero en publicar un juego indie en Pyxolotl!</p>
+        <a href="publicar-juego.html" class="btn" style="margin-top:20px;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a">
           Publicar mi juego
         </a>
       </div>
@@ -99,28 +119,13 @@
     <section id="about" style="margin-top:28px">
       <h2>Acerca de Pyxolotl</h2>
       <p style="color:var(--muted)">Pyxolotl es una plataforma para ayudar a desarrolladores indie mexicanos a obtener exposición. Publica tu juego, recibe feedback y conecta con jugadores.</p>
-      
-      <div class="features" style="margin-top:32px">
-        <div class="feature">
-          <h4>Visibilidad</h4>
-          <p>Conecta con jugadores y otros desarrolladores. Promociona tus builds y demos.</p>
-        </div>
-        <div class="feature">
-          <h4>Feedback</h4>
-          <p>Recibe comentarios constructivos y métricas para mejorar tu juego.</p>
-        </div>
-        <div class="feature">
-          <h4>Colaboraciones</h4>
-          <p>Encuentra artistas, músicos y programadores interesados en colaborar.</p>
-        </div>
-      </div>
     </section>
 
     <footer class="footer">
       <div class="container center" style="flex-direction:column;gap:10px">
         <div style="width:100%;display:flex;justify-content:space-between;align-items:center;max-width:var(--max-width)">
           <div>© 2025 Pyxolotl · Hecho con ♥ para desarrolladores indie</div>
-          <div style="color:var(--muted)">Contacto: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="25464a4b514446514a65555c5d4a494a51490b485d">[email&#160;protected]</a></div>
+          <div style="color:var(--muted)">Contacto: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5a3935342e3b392e351a2a23223536352e36743722">[email&#160;protected]</a></div>
         </div>
       </div>
     </footer>
@@ -345,14 +350,9 @@
     }
   </style>
 
-  <script src="api.js"></script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="api.js"></script>
   <script src="cart.js"></script>
   <script>
-
-    // Ejecutar al cargar la página
-    checkAuth();
-    loadGames();
-
     // ============================================
     // SISTEMA DE PERFIL CON LOCALSTORAGE
     // ============================================
@@ -620,25 +620,6 @@
 
         if (!response || response.length === 0) {
           noGamesMsg.style.display = 'block';
-          
-          // Personalizar mensaje según tipo de usuario
-          const user = getCurrentUser();
-          const noGamesTitle = document.getElementById('noGamesTitle');
-          const noGamesText = document.getElementById('noGamesText');
-          const noGamesBtn = document.getElementById('noGamesBtn');
-          
-          if (user && user.tipo_cuenta === 'comprador') {
-            // Mensaje para COMPRADORES
-            noGamesTitle.textContent = 'Aún no hay juegos publicados';
-            noGamesText.textContent = 'No hay juegos en el catálogo por el momento. ¡Espera a que los desarrolladores publiquen sus juegos para poder comprarlos!';
-            noGamesBtn.style.display = 'none'; // Ocultar botón
-          } else {
-            // Mensaje para DESARROLLADORES/ADMIN o no autenticados
-            noGamesTitle.textContent = 'Aún no hay juegos publicados';
-            noGamesText.textContent = '¡Sé el primero en publicar un juego indie en Pyxolotl!';
-            noGamesBtn.style.display = 'inline-block'; // Mostrar botón
-          }
-          
           return;
         }
 
@@ -789,7 +770,7 @@
 
       if (user && isAuthenticated()) {
         loginBtn.style.display = 'none';
-        registerBtn.style.display = 'none';
+        if (registerBtn) registerBtn.style.display = 'none';
         userProfile.style.display = 'flex';
         updateUserInterface();
 
@@ -802,7 +783,7 @@
         }
       } else {
         loginBtn.style.display = 'block';
-        registerBtn.style.display = 'inline-block';
+        if (registerBtn) registerBtn.style.display = 'inline-block';
         userProfile.style.display = 'none';
         if (publicarBtn) publicarBtn.style.display = 'inline-block';
         if (publicarBtnHero) publicarBtnHero.style.display = 'inline-block';
@@ -815,5 +796,27 @@
         logout();
       }
     });
+
+    // ============================================
+    // VALIDAR PUBLICAR JUEGO (Requiere login)
+    // ============================================
+    function validarPublicarJuego(event) {
+      event.preventDefault();
+      const user = getCurrentUser();
+      
+      if (!user || !isAuthenticated()) {
+        alert('⚠️ Debes iniciar sesión para publicar un juego');
+        window.location.href = 'inicio.html';
+        return;
+      }
+      
+      if (user.tipo_cuenta === 'comprador') {
+        alert('⚠️ Solo las cuentas de desarrollador pueden publicar juegos');
+        return;
+      }
+      
+      // Si todo está bien, redirigir a la página de publicar
+      window.location.href = 'publicar-juego.html';
+    }
 
     // ====================

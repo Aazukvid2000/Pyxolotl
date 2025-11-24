@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Acceso – Pyxolotl</title>
+  <title>Acceso – Pixolot</title>
   <link rel="stylesheet" href="styles.css">
   <style>
     .form-container {
@@ -40,91 +40,14 @@
     .switch-link:hover {
       text-decoration: underline;
     }
-
-    /* MODAL SISTEMA */
-    .modal-sistema {
-      position: fixed;
-      inset: 0;
-      background: rgba(3,6,12,0.95);
-      backdrop-filter: blur(10px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      animation: fadeIn 0.3s;
-    }
-    
-    .modal-sistema.show {
-      display: flex;
-    }
-    
-    .modal-panel {
-      background: var(--card);
-      padding: 40px;
-      border-radius: 20px;
-      max-width: 450px;
-      width: 90%;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-      text-align: center;
-      animation: slideUp 0.4s ease both;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-    
-    .modal-icon {
-      font-size: 72px;
-      margin-bottom: 20px;
-      line-height: 1;
-    }
-    
-    .modal-title {
-      font-size: 24px;
-      font-weight: 700;
-      margin: 0 0 12px;
-      color: #fff;
-    }
-    
-    .modal-text {
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.6;
-      margin: 0 0 28px;
-    }
-    
-    .modal-btn {
-      width: 100%;
-      padding: 14px;
-      border-radius: 10px;
-      border: none;
-      background: linear-gradient(90deg, var(--accent-2), var(--accent-1));
-      color: #07102a;
-      font-weight: 600;
-      font-size: 16px;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    
-    .modal-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(123,97,255,0.4);
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    
-    @keyframes slideUp {
-      from { transform: translateY(30px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
   </style>
 </head>
 <body style="display:flex;align-items:center;justify-content:center;min-height:100vh">
 
   <div class="form-container">
     <div style="text-align:center;margin-bottom:20px">
-      <img src="PIXOLOTEL.png" alt="Logo Pyxolotl" class="brand-logo" style="margin-bottom:8px">
-      <h2 style="margin:0" id="mainTitle">Bienvenido a Pyxolotl</h2>
+      <img src="PIXOLOTEL.png" alt="Logo Pixolot" class="brand-logo" style="margin-bottom:8px">
+      <h2 style="margin:0">Bienvenido a Pixolot</h2>
       <p style="color:var(--muted);font-size:14px" id="formTitle">Inicia sesión en tu cuenta</p>
     </div>
 
@@ -170,17 +93,7 @@
     </form>
 
     <div style="text-align:center;margin-top:20px">
-      <a href="index.html" class="btn btn-ghost" style="width:100%">← Volver al inicio</a>
-    </div>
-  </div>
-
-  <!-- MODAL DEL SISTEMA -->
-  <div id="modalSistema" class="modal-sistema">
-    <div class="modal-panel">
-      <div class="modal-icon" id="modalIcon">✅</div>
-      <h2 class="modal-title" id="modalTitulo">Título</h2>
-      <p class="modal-text" id="modalTexto">Mensaje del sistema</p>
-      <button class="modal-btn" id="modalBtn" onclick="cerrarModal()">Entendido</button>
+      <a href="/index.html" class="btn btn-ghost" style="width:100%">← Volver al inicio</a>
     </div>
   </div>
 
@@ -189,70 +102,22 @@
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
     const formTitle = document.getElementById('formTitle');
-    const mainTitle = document.getElementById('mainTitle');
     const showRegister = document.getElementById('showRegister');
     const showLogin = document.getElementById('showLogin');
 
-    // ============================================
-    // SISTEMA DE MODALES BONITOS
-    // ============================================
-    
-    let modalCallback = null;
-
-    function mostrarModal(icono, titulo, texto, callback = null) {
-      document.getElementById('modalIcon').textContent = icono;
-      document.getElementById('modalTitulo').textContent = titulo;
-      document.getElementById('modalTexto').textContent = texto;
-      document.getElementById('modalSistema').classList.add('show');
-      modalCallback = callback;
-    }
-
-    function cerrarModal() {
-      document.getElementById('modalSistema').classList.remove('show');
-      if (modalCallback) {
-        modalCallback();
-        modalCallback = null;
-      }
-    }
-
-    // Cerrar con ESC
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') cerrarModal();
-    });
-
-    // ============================================
-    // DETECTAR HASH #registro
-    // ============================================
-    
-    if (window.location.hash === '#registro') {
+    showRegister.addEventListener('click', ()=>{
       loginForm.classList.add('hidden');
       registerForm.classList.remove('hidden');
-      mainTitle.textContent = 'Crea tu cuenta en Pyxolotl';
-      formTitle.textContent = 'Únete a la comunidad';
-    }
-
-    // ============================================
-    // ALTERNAR ENTRE LOGIN Y REGISTRO
-    // ============================================
-    
-    showRegister.addEventListener('click', () => {
-      loginForm.classList.add('hidden');
-      registerForm.classList.remove('hidden');
-      mainTitle.textContent = 'Crea tu cuenta en Pyxolotl';
-      formTitle.textContent = 'Únete a la comunidad';
+      formTitle.textContent = 'Crea tu cuenta en Pixolot';
     });
 
-    showLogin.addEventListener('click', () => {
+    showLogin.addEventListener('click', ()=>{
       registerForm.classList.add('hidden');
       loginForm.classList.remove('hidden');
-      mainTitle.textContent = 'Bienvenido a Pyxolotl';
       formTitle.textContent = 'Inicia sesión en tu cuenta';
     });
 
-    // ============================================
-    // MANEJO DEL LOGIN
-    // ============================================
-    
+    // Manejo del login con BACKEND
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('email').value;
@@ -267,36 +132,21 @@
         const data = await apiLogin(email, password);
         
         if (data.access_token) {
-          mostrarModal(
-            '✅', 
-            '¡Bienvenido de vuelta!', 
-            'Has iniciado sesión exitosamente', 
-            () => { window.location.replace('index.html'); }
-          );
+          alert('✅ ¡Bienvenido de vuelta!');
+          window.location.href = '/index.html';
         } else {
-          mostrarModal(
-            '❌', 
-            'Error al iniciar sesión', 
-            data.detail || 'Credenciales incorrectas. Por favor verifica tu email y contraseña.'
-          );
+          alert('❌ ' + (data.detail || 'Error al iniciar sesión'));
         }
       } catch (error) {
         console.error('Error:', error);
-        mostrarModal(
-          '❌', 
-          'Error de conexión', 
-          'No se pudo conectar con el servidor. Por favor intenta de nuevo más tarde.'
-        );
+        alert('❌ Error al iniciar sesión');
       } finally {
         btn.textContent = originalText;
         btn.disabled = false;
       }
     });
 
-    // ============================================
-    // MANEJO DEL REGISTRO
-    // ============================================
-    
+    // Manejo del registro con BACKEND
     registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const name = document.getElementById('newName').value;
@@ -313,37 +163,34 @@
         const data = await apiRegistro(name, email, password, tipoCuenta);
         
         if (data.success) {
-          mostrarModal(
-            '✅', 
-            '¡Cuenta creada!', 
-            data.message || 'Tu cuenta ha sido creada exitosamente. Por favor verifica tu email.',
-            () => {
-              // Cambiar a formulario de login
-              registerForm.classList.add('hidden');
-              loginForm.classList.remove('hidden');
-              mainTitle.textContent = 'Bienvenido a Pyxolotl';
-              formTitle.textContent = 'Inicia sesión en tu cuenta';
-              registerForm.reset();
-            }
-          );
+          alert('✅ ' + data.message);
+          // Cambiar a formulario de login
+          registerForm.classList.add('hidden');
+          loginForm.classList.remove('hidden');
+          formTitle.textContent = 'Inicia sesión en tu cuenta';
+          // Limpiar formulario
+          registerForm.reset();
         } else {
-          const errorMsg = data.detail || data.message || 'No se pudo crear la cuenta';
-          mostrarModal(
-            '❌', 
-            'Error al crear cuenta', 
-            errorMsg
-          );
+          alert('❌ ' + (data.detail || data.message || 'Error al crear cuenta'));
         }
       } catch (error) {
         console.error('Error:', error);
-        mostrarModal(
-          '❌', 
-          'Error al crear cuenta', 
-          'No se pudo completar el registro. Por favor intenta de nuevo.'
-        );
+        alert('❌ Error al crear cuenta. Por favor intenta de nuevo.');
       } finally {
         btn.textContent = originalText;
         btn.disabled = false;
+      }
+    });
+
+    // ============================================
+    // SOPORTE PARA #registro EN LA URL
+    // ============================================
+    window.addEventListener('DOMContentLoaded', () => {
+      // Si la URL contiene #registro, mostrar el formulario de registro
+      if (window.location.hash === '#registro') {
+        loginForm.classList.add('hidden');
+        registerForm.classList.remove('hidden');
+        formTitle.textContent = 'Crea tu cuenta en Pixolot';
       }
     });
   </script>
