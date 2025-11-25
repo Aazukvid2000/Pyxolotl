@@ -40,6 +40,77 @@
     .switch-link:hover {
       text-decoration: underline;
     }
+    
+    /* Estilos para el modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      animation: fadeIn .3s ease both;
+    }
+    
+    .modal-content {
+      background: var(--card);
+      padding: 40px;
+      border-radius: 20px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      animation: slideUp .4s ease both;
+    }
+    
+    .modal-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+    }
+    
+    .modal-message {
+      font-size: 20px;
+      color: #fff;
+      margin-bottom: 24px;
+      font-weight: 600;
+    }
+    
+    .modal-btn {
+      background: linear-gradient(90deg,var(--accent-2),var(--accent-1));
+      color: #07102a;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .modal-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes slideUp {
+      from { 
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
   </style>
 </head>
 <body style="display:flex;align-items:center;justify-content:center;min-height:100vh">
@@ -105,6 +176,34 @@
     const showRegister = document.getElementById('showRegister');
     const showLogin = document.getElementById('showLogin');
 
+    // ============================================
+    // FUNCIONES DE MODAL
+    // ============================================
+    function showModal(type, message, buttonText, redirectUrl) {
+      const modalHtml = `
+        <div id="successModal" class="modal-overlay">
+          <div class="modal-content">
+            <div class="modal-icon">
+              ${type === 'success' ? '✅' : type === 'welcome' ? '🎮' : '❌'}
+            </div>
+            <div class="modal-message">${message}</div>
+            <button class="modal-btn" onclick="closeModal('${redirectUrl}')">${buttonText}</button>
+          </div>
+        </div>
+      `;
+      document.body.insertAdjacentHTML('beforeend', modalHtml);
+    }
+    
+    function closeModal(redirectUrl) {
+      const modal = document.getElementById('successModal');
+      if (modal) {
+        modal.remove();
+        if (redirectUrl && redirectUrl !== 'null') {
+          window.location.href = redirectUrl;
+        }
+      }
+    }
+
     showRegister.addEventListener('click', ()=>{
       loginForm.classList.add('hidden');
       registerForm.classList.remove('hidden');
@@ -132,14 +231,14 @@
         const data = await apiLogin(email, password);
         
         if (data.access_token) {
-          alert('✅ ¡Bienvenido de vuelta!');
-          window.location.href = '/index.html';
+          // Mostrar modal de bienvenida
+          showModal('welcome', '¡Bienvenido a Pyxolotl!', 'Entendido!', '/index.html');
         } else {
-          alert('❌ ' + (data.detail || 'Error al iniciar sesión'));
+          showModal('error', data.detail || 'Error al iniciar sesión', 'Cerrar');
         }
       } catch (error) {
         console.error('Error:', error);
-        alert('❌ Error al iniciar sesión');
+        showModal('error', 'Error al iniciar sesión', 'Cerrar');
       } finally {
         btn.textContent = originalText;
         btn.disabled = false;
@@ -163,19 +262,24 @@
         const data = await apiRegistro(name, email, password, tipoCuenta);
         
         if (data.success) {
-          alert('✅ ' + data.message);
-          // Cambiar a formulario de login
-          registerForm.classList.add('hidden');
-          loginForm.classList.remove('hidden');
-          formTitle.textContent = 'Inicia sesión en tu cuenta';
+          // Mostrar modal de éxito y luego cambiar al formulario de login
+          showModal('success', 'Tu cuenta ha sido creada con éxito', 'Ir a la página de iniciar sesión', null);
+          // Cambiar al formulario de login después de cerrar el modal
+          setTimeout(() => {
+            registerForm.classList.add('hidden');
+            loginForm.classList.remove('hidden');
+            formTitle.textContent = 'Inicia sesión en tu cuenta';
+            // Limpiar la URL
+            history.pushState(null, '', '/inicio.html');
+          }, 100);
           // Limpiar formulario
           registerForm.reset();
         } else {
-          alert('❌ ' + (data.detail || data.message || 'Error al crear cuenta'));
+          showModal('error', data.detail || data.message || 'Error al crear cuenta', 'Cerrar');
         }
       } catch (error) {
         console.error('Error:', error);
-        alert('❌ Error al crear cuenta. Por favor intenta de nuevo.');
+        showModal('error', 'Error al crear cuenta. Por favor intenta de nuevo.', 'Cerrar');
       } finally {
         btn.textContent = originalText;
         btn.disabled = false;

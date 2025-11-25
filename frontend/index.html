@@ -5,6 +5,212 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Pyxolotl – Indie Games Marketplace</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Estilos para el perfil de usuario */
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+    }
+    
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .user-avatar:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    
+    .user-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .user-avatar span {
+      color: #07102a;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    
+    #userName {
+      color: var(--accent-1);
+      font-weight: 600;
+      cursor: pointer;
+    }
+    
+    #userName:hover {
+      text-decoration: underline;
+    }
+    
+    /* Modal de perfil */
+    .profile-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .profile-modal.active {
+      display: flex;
+    }
+    
+    .profile-modal-content {
+      background: var(--card);
+      padding: 30px;
+      border-radius: 20px;
+      max-width: 500px;
+      width: 90%;
+      animation: slideUp 0.4s ease;
+    }
+    
+    .profile-header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    
+    .profile-avatar-large {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+    }
+    
+    .profile-avatar-large:hover .avatar-overlay {
+      opacity: 1;
+    }
+    
+    .avatar-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .avatar-overlay span {
+      color: white;
+      font-size: 14px;
+    }
+    
+    .profile-avatar-large img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .profile-avatar-large span {
+      color: #07102a;
+      font-weight: bold;
+      font-size: 48px;
+    }
+    
+    .profile-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .profile-form label {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    
+    .profile-form input[type="text"],
+    .profile-form textarea {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      background: var(--glass);
+      color: #fff;
+      font-family: inherit;
+    }
+    
+    .profile-form textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    
+    .profile-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .profile-actions button {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-save {
+      background: linear-gradient(90deg, var(--accent-2), var(--accent-1));
+      color: #07102a;
+    }
+    
+    .btn-cancel {
+      background: var(--glass);
+      color: #fff;
+    }
+    
+    .btn-save:hover,
+    .btn-cancel:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    
+    #avatarInput {
+      display: none;
+    }
+    
+    @keyframes slideUp {
+      from { 
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
 </head>
 <body>
   <header class="container header">
@@ -43,6 +249,42 @@
 
     <button id="menuBtn" class="btn btn-ghost" aria-label="menu">☰</button>
   </header>
+
+  <!-- Modal de Perfil de Usuario -->
+  <div id="profileModal" class="profile-modal">
+    <div class="profile-modal-content">
+      <div class="profile-header">
+        <h2>Mi Perfil</h2>
+        <div class="profile-avatar-large" onclick="document.getElementById('avatarInput').click()">
+          <img id="profileAvatarImg" src="" alt="" style="display:none">
+          <span id="profileInitials">U</span>
+          <div class="avatar-overlay">
+            <span>Cambiar foto</span>
+          </div>
+        </div>
+        <input type="file" id="avatarInput" accept="image/*" onchange="handleAvatarChange(event)">
+        <h3 id="profileName">Usuario</h3>
+        <p style="color:var(--muted);font-size:14px" id="profileEmail">email@ejemplo.com</p>
+      </div>
+      
+      <form class="profile-form" id="profileForm">
+        <label>
+          Sobrenombre (máximo 16 caracteres)
+          <input type="text" id="nickname" maxlength="16" placeholder="Tu sobrenombre">
+        </label>
+        
+        <label>
+          Descripción personal
+          <textarea id="description" placeholder="Cuéntanos algo sobre ti..."></textarea>
+        </label>
+        
+        <div class="profile-actions">
+          <button type="button" class="btn-cancel" onclick="closeProfileModal()">Cancelar</button>
+          <button type="submit" class="btn-save">Guardar cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <main class="container">
     <section class="hero fade-in">
@@ -798,6 +1040,227 @@
     });
 
     // ============================================
+    // GESTIÓN DE SESIÓN Y PERFIL DE USUARIO
+    // ============================================
+    
+    // Verificar si hay una sesión activa al cargar la página
+    function checkUserSession() {
+      const user = getCurrentUser();
+      const token = getAuthToken();
+      
+      if (user && token) {
+        // Ocultar botones de login/registro
+        document.getElementById('loginBtn').style.display = 'none';
+        document.getElementById('registerBtn').style.display = 'none';
+        
+        // Mostrar perfil de usuario
+        const userProfile = document.getElementById('userProfile');
+        userProfile.style.display = 'flex';
+        
+        // Establecer nombre de usuario
+        document.getElementById('userName').textContent = user.nombre || 'Usuario';
+        
+        // Cargar datos del perfil desde localStorage
+        loadProfileData(user);
+        
+        // Configurar botón de cerrar sesión
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+          logout();
+        });
+        
+        // Ajustar visibilidad del botón publicar según tipo de cuenta
+        if (user.tipo_cuenta === 'comprador') {
+          const publicarBtns = document.querySelectorAll('#publicarBtn, #publicarBtnHero');
+          publicarBtns.forEach(btn => {
+            btn.style.display = 'none';
+          });
+        }
+      } else {
+        // Mostrar botones de login/registro
+        document.getElementById('loginBtn').style.display = 'block';
+        document.getElementById('registerBtn').style.display = 'block';
+        document.getElementById('userProfile').style.display = 'none';
+      }
+    }
+    
+    // Cargar datos del perfil desde localStorage
+    function loadProfileData(user) {
+      const profileData = JSON.parse(localStorage.getItem('userProfile') || '{}');
+      
+      // Cargar avatar o iniciales
+      const userAvatar = document.getElementById('userAvatar');
+      const userInitials = document.getElementById('userInitials');
+      const profileAvatarImg = document.getElementById('profileAvatarImg');
+      const profileInitials = document.getElementById('profileInitials');
+      
+      if (profileData.avatar) {
+        // Si hay avatar guardado
+        userAvatar.innerHTML = `<img src="${profileData.avatar}" alt="Avatar">`;
+        profileAvatarImg.src = profileData.avatar;
+        profileAvatarImg.style.display = 'block';
+        profileInitials.style.display = 'none';
+      } else {
+        // Mostrar iniciales
+        const initials = getInitials(user.nombre);
+        userInitials.textContent = initials;
+        profileInitials.textContent = initials;
+        profileAvatarImg.style.display = 'none';
+        profileInitials.style.display = 'block';
+      }
+      
+      // Cargar sobrenombre y descripción
+      if (profileData.nickname) {
+        document.getElementById('nickname').value = profileData.nickname;
+      }
+      if (profileData.description) {
+        document.getElementById('description').value = profileData.description;
+      }
+      
+      // Establecer nombre y email en el modal
+      document.getElementById('profileName').textContent = user.nombre;
+      document.getElementById('profileEmail').textContent = user.email;
+    }
+    
+    // Obtener iniciales del nombre
+    function getInitials(name) {
+      if (!name) return 'U';
+      const parts = name.split(' ');
+      if (parts.length >= 2) {
+        return (parts[0][0] + parts[1][0]).toUpperCase();
+      }
+      return name.substring(0, 2).toUpperCase();
+    }
+    
+    // Abrir modal de perfil
+    function openProfileModal() {
+      const modal = document.getElementById('profileModal');
+      modal.classList.add('active');
+    }
+    
+    // Cerrar modal de perfil
+    function closeProfileModal() {
+      const modal = document.getElementById('profileModal');
+      modal.classList.remove('active');
+    }
+    
+    // Manejar cambio de avatar
+    function handleAvatarChange(event) {
+      const file = event.target.files[0];
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const base64Image = e.target.result;
+          
+          // Actualizar avatar en el modal
+          const profileAvatarImg = document.getElementById('profileAvatarImg');
+          profileAvatarImg.src = base64Image;
+          profileAvatarImg.style.display = 'block';
+          document.getElementById('profileInitials').style.display = 'none';
+          
+          // Guardar temporalmente para cuando se guarde el formulario
+          profileAvatarImg.dataset.tempAvatar = base64Image;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+    
+    // Guardar cambios del perfil
+    document.getElementById('profileForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const profileData = JSON.parse(localStorage.getItem('userProfile') || '{}');
+      
+      // Guardar sobrenombre y descripción
+      profileData.nickname = document.getElementById('nickname').value;
+      profileData.description = document.getElementById('description').value;
+      
+      // Guardar avatar si hay uno nuevo
+      const profileAvatarImg = document.getElementById('profileAvatarImg');
+      if (profileAvatarImg.dataset.tempAvatar) {
+        profileData.avatar = profileAvatarImg.dataset.tempAvatar;
+        delete profileAvatarImg.dataset.tempAvatar;
+      } else if (profileAvatarImg.src && profileAvatarImg.style.display !== 'none') {
+        profileData.avatar = profileAvatarImg.src;
+      }
+      
+      // Guardar en localStorage
+      localStorage.setItem('userProfile', JSON.stringify(profileData));
+      
+      // Actualizar el avatar en el header
+      const userAvatar = document.getElementById('userAvatar');
+      if (profileData.avatar) {
+        userAvatar.innerHTML = `<img src="${profileData.avatar}" alt="Avatar">`;
+      }
+      
+      // Cerrar modal
+      closeProfileModal();
+      
+      // Mostrar confirmación
+      showNotification('✅ Perfil actualizado correctamente');
+    });
+    
+    // Función para mostrar notificaciones
+    function showNotification(message) {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--card);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+      `;
+      notification.textContent = message;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+    
+    // Cerrar modal al hacer clic fuera
+    document.getElementById('profileModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeProfileModal();
+      }
+    });
+    
+    // Añadir estilos de animación
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = `
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(100px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      
+      @keyframes slideOut {
+        from {
+          opacity: 1;
+          transform: translateX(0);
+        }
+        to {
+          opacity: 0;
+          transform: translateX(100px);
+        }
+      }
+    `;
+    document.head.appendChild(styleSheet);
+    
+    // Ejecutar verificación de sesión al cargar
+    checkUserSession();
+    
+    // ============================================
     // VALIDAR PUBLICAR JUEGO (Requiere login)
     // ============================================
     function validarPublicarJuego(event) {
@@ -805,13 +1268,15 @@
       const user = getCurrentUser();
       
       if (!user || !isAuthenticated()) {
-        alert('⚠️ Debes iniciar sesión para publicar un juego');
-        window.location.href = 'inicio.html';
+        showNotification('⚠️ Debes iniciar sesión para publicar un juego');
+        setTimeout(() => {
+          window.location.href = 'inicio.html';
+        }, 1500);
         return;
       }
       
       if (user.tipo_cuenta === 'comprador') {
-        alert('⚠️ Solo las cuentas de desarrollador pueden publicar juegos');
+        showNotification('⚠️ Solo las cuentas de desarrollador pueden publicar juegos');
         return;
       }
       
