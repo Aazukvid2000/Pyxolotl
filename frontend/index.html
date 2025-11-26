@@ -1284,4 +1284,39 @@
       window.location.href = 'publicar-juego.html';
     }
 
-    // ====================
+    // ============================================
+    // INICIALIZACIÓN CRÍTICA - DETECTAR SESIÓN
+    // ============================================
+    
+    // Función principal de inicialización
+    async function initializeApp() {
+      console.log('Inicializando aplicación...');
+      
+      // 1. Verificar sesión activa PRIMERO
+      checkUserSession();
+      
+      // 2. Cargar juegos desde el backend
+      await loadGames();
+      
+      // 3. Actualizar contador del carrito
+      actualizarContadorCarrito();
+      
+      console.log('Aplicación inicializada correctamente');
+    }
+    
+    // Ejecutar cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeApp);
+    } else {
+      // DOM ya está listo, ejecutar inmediatamente
+      initializeApp();
+    }
+    
+    // También verificar sesión cuando la página obtiene el foco
+    window.addEventListener('focus', function() {
+      checkUserSession();
+    });
+
+  </script>
+</body>
+</html>

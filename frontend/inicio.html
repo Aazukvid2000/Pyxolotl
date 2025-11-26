@@ -187,7 +187,7 @@
               ${type === 'success' ? '✅' : type === 'welcome' ? '🎮' : '❌'}
             </div>
             <div class="modal-message">${message}</div>
-            <button class="modal-btn" onclick="closeModal('${redirectUrl}')">${buttonText}</button>
+            <button class="modal-btn" onclick="closeModal('${redirectUrl || ''}')">${buttonText}</button>
           </div>
         </div>
       `;
@@ -198,7 +198,7 @@
       const modal = document.getElementById('successModal');
       if (modal) {
         modal.remove();
-        if (redirectUrl && redirectUrl !== 'null') {
+        if (redirectUrl && redirectUrl !== 'null' && redirectUrl !== 'undefined' && redirectUrl !== '') {
           window.location.href = redirectUrl;
         }
       }
@@ -231,14 +231,16 @@
         const data = await apiLogin(email, password);
         
         if (data.access_token) {
-          // Mostrar modal de bienvenida
+          // Login exitoso - mostrar modal y redirigir
           showModal('welcome', '¡Bienvenido a Pyxolotl!', 'Entendido!', '/index.html');
         } else {
-          showModal('error', data.detail || 'Error al iniciar sesión', 'Cerrar');
+          // Error - NO REDIRIGIR, quedarse en la misma página
+          showModal('error', data.detail || 'Correo o contraseña incorrectos', 'Cerrar', null);
         }
       } catch (error) {
         console.error('Error:', error);
-        showModal('error', 'Error al iniciar sesión', 'Cerrar');
+        // Error - NO REDIRIGIR, quedarse en la misma página
+        showModal('error', 'Error al iniciar sesión. Verifica tus credenciales.', 'Cerrar', null);
       } finally {
         btn.textContent = originalText;
         btn.disabled = false;
@@ -262,24 +264,23 @@
         const data = await apiRegistro(name, email, password, tipoCuenta);
         
         if (data.success) {
-          // Mostrar modal de éxito y luego cambiar al formulario de login
-          showModal('success', 'Tu cuenta ha sido creada con éxito', 'Ir a la página de iniciar sesión', null);
-          // Cambiar al formulario de login después de cerrar el modal
+          // Registro exitoso - mostrar modal y cambiar a login
+          showModal('success', 'Tu cuenta ha sido creada con éxito', 'Ir a iniciar sesión', null);
+          // Cambiar al formulario de login después de un momento
           setTimeout(() => {
             registerForm.classList.add('hidden');
             loginForm.classList.remove('hidden');
             formTitle.textContent = 'Inicia sesión en tu cuenta';
-            // Limpiar la URL
-            history.pushState(null, '', '/inicio.html');
+            registerForm.reset();
           }, 100);
-          // Limpiar formulario
-          registerForm.reset();
         } else {
-          showModal('error', data.detail || data.message || 'Error al crear cuenta', 'Cerrar');
+          // Error - NO REDIRIGIR, quedarse en la misma página
+          showModal('error', data.detail || data.message || 'El correo ya está registrado', 'Cerrar', null);
         }
       } catch (error) {
         console.error('Error:', error);
-        showModal('error', 'Error al crear cuenta. Por favor intenta de nuevo.', 'Cerrar');
+        // Error - NO REDIRIGIR, quedarse en la misma página
+        showModal('error', 'Error al crear cuenta. Intenta con otro correo.', 'Cerrar', null);
       } finally {
         btn.textContent = originalText;
         btn.disabled = false;
