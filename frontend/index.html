@@ -264,7 +264,7 @@
         </div>
         <input type="file" id="avatarInput" accept="image/*" onchange="handleAvatarChange(event)">
         <h3 id="profileName">Usuario</h3>
-        <p style="color:var(--muted);font-size:14px" id="profileEmail">email@ejemplo.com</p>
+        <p style="color:var(--muted);font-size:14px" id="profileEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0e6b636f67624e6b646b637e6261206d6163">[email&#160;protected]</a></p>
       </div>
       
       <form class="profile-form" id="profileForm">
@@ -307,6 +307,28 @@
       </div>
     </section>
 
+    <!-- Mensaje promocional para no-desarrolladores -->
+    <div id="developerPromo" class="developer-promo" style="display:none; background: linear-gradient(135deg, var(--accent-1), var(--accent-2)); padding: 30px; border-radius: 16px; margin: 40px 0; text-align: center;">
+      <h3 style="color: #07102a; margin-bottom: 15px;">🎮 ¿Te interesa publicar un videojuego?</h3>
+      <p style="color: #07102a; font-size: 18px; font-weight: 500; margin-bottom: 20px;">
+        ¡Regístrate como Desarrollador y contribuye al crecimiento de esta comunidad!
+      </p>
+      <div style="background: rgba(7, 16, 42, 0.2); padding: 15px; border-radius: 8px; margin-bottom: 20px; max-width: 600px; margin-left: auto; margin-right: auto;">
+        <p style="color: #07102a; font-weight: 600; margin: 0;">
+          📌 Para registrarte como Desarrollador:
+        </p>
+        <ol style="color: #07102a; text-align: left; max-width: 500px; margin: 10px auto 0;">
+          <li>Haz clic en el botón "Registrarse" a continuación</li>
+          <li>En el menú desplegable de <strong>"Tipo de Cuenta"</strong></li>
+          <li>Selecciona <strong>"Desarrollador"</strong></li>
+          <li>Completa tu registro y empieza a publicar tus juegos</li>
+        </ol>
+      </div>
+      <a href="inicio.html#registro" class="btn" style="background: #07102a; color: white; padding: 15px 30px; font-size: 18px; font-weight: 600; display: inline-block;">
+        Registrarse como Desarrollador
+      </a>
+    </div>
+
     <section id="features" class="features">
       <div class="feature">
         <h4>Visibilidad</h4>
@@ -346,7 +368,7 @@
         <div style="font-size:48px;margin-bottom:16px">🎮</div>
         <h3>Aún no hay juegos publicados</h3>
         <p>¡Sé el primero en publicar un juego indie en Pyxolotl!</p>
-        <a href="publicar-juego.html" class="btn" style="margin-top:20px;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a">
+        <a href="publicar-juego.html" id="noGamesPublishBtn" class="btn" style="margin-top:20px;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a">
           Publicar mi juego
         </a>
       </div>
@@ -592,7 +614,7 @@
     }
   </style>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="api.js"></script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="api.js"></script>
   <script src="cart.js"></script>
   <script>
     // ============================================
@@ -1048,19 +1070,24 @@
       const user = getCurrentUser();
       const token = getAuthToken();
       
+      // Referencias a elementos
+      const loginBtn = document.getElementById('loginBtn');
+      const registerBtn = document.getElementById('registerBtn');
+      const userProfile = document.getElementById('userProfile');
+      const developerPromo = document.getElementById('developerPromo');
+      const publicarBtns = document.querySelectorAll('#publicarBtn, #publicarBtnHero');
+      const noGamesPublishBtn = document.getElementById('noGamesPublishBtn');
+      
       if (user && token) {
-        // Ocultar botones de login/registro
-        document.getElementById('loginBtn').style.display = 'none';
-        document.getElementById('registerBtn').style.display = 'none';
-        
-        // Mostrar perfil de usuario
-        const userProfile = document.getElementById('userProfile');
+        // Usuario logueado
+        loginBtn.style.display = 'none';
+        registerBtn.style.display = 'none';
         userProfile.style.display = 'flex';
         
         // Establecer nombre de usuario
         document.getElementById('userName').textContent = user.nombre || 'Usuario';
         
-        // Cargar datos del perfil desde localStorage
+        // Cargar datos del perfil
         loadProfileData(user);
         
         // Configurar botón de cerrar sesión
@@ -1068,18 +1095,42 @@
           logout();
         });
         
-        // Ajustar visibilidad del botón publicar según tipo de cuenta
-        if (user.tipo_cuenta === 'comprador') {
-          const publicarBtns = document.querySelectorAll('#publicarBtn, #publicarBtnHero');
+        // Verificar tipo de cuenta
+        if (user.tipo_cuenta === 'desarrollador') {
+          // ES DESARROLLADOR - Mostrar botones de publicar, ocultar promo
+          if (developerPromo) developerPromo.style.display = 'none';
+          publicarBtns.forEach(btn => {
+            btn.style.display = 'inline-block';
+          });
+          if (noGamesPublishBtn) {
+            noGamesPublishBtn.style.display = 'inline-block';
+          }
+        } else {
+          // ES COMPRADOR - Ocultar botones, mostrar promo
+          if (developerPromo) developerPromo.style.display = 'block';
           publicarBtns.forEach(btn => {
             btn.style.display = 'none';
           });
+          if (noGamesPublishBtn) {
+            noGamesPublishBtn.style.display = 'none';
+          }
         }
       } else {
-        // Mostrar botones de login/registro
-        document.getElementById('loginBtn').style.display = 'block';
-        document.getElementById('registerBtn').style.display = 'block';
-        document.getElementById('userProfile').style.display = 'none';
+        // VISITANTE sin sesión
+        loginBtn.style.display = 'block';
+        registerBtn.style.display = 'block';
+        userProfile.style.display = 'none';
+        
+        // Mostrar mensaje promocional
+        if (developerPromo) developerPromo.style.display = 'block';
+        
+        // Ocultar TODOS los botones de publicar
+        publicarBtns.forEach(btn => {
+          btn.style.display = 'none';
+        });
+        if (noGamesPublishBtn) {
+          noGamesPublishBtn.style.display = 'none';
+        }
       }
     }
     
@@ -1315,6 +1366,13 @@
     // También verificar sesión cuando la página obtiene el foco
     window.addEventListener('focus', function() {
       checkUserSession();
+    });
+    
+    // Verificar sesión cuando se vuelve de otra pestaña
+    document.addEventListener('visibilitychange', function() {
+      if (!document.hidden) {
+        checkUserSession();
+      }
     });
 
   </script>
