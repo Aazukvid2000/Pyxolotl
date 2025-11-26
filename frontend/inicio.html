@@ -265,7 +265,7 @@
         
         if (data.success) {
           // Registro exitoso - mostrar modal y cambiar a login
-          showModal('success', 'Tu cuenta ha sido creada con éxito', 'Ir a iniciar sesión', null);
+          showModal('success', 'Tu cuenta ha sido creada con éxito. Por favor verifica tu correo electronico para activar tu cuenta', 'Ir a iniciar sesión', null);
           // Cambiar al formulario de login después de un momento
           setTimeout(() => {
             registerForm.classList.add('hidden');
