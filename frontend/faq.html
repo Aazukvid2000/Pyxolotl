@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preguntas Frecuentes - Pyxolotl</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ========================================
+       ESTILOS PÁGINA FAQ
+       ======================================== */
+    
+    .faq-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    /* Header de FAQ */
+    .faq-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .faq-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 40px;
+      box-shadow: 0 8px 32px rgba(123, 97, 255, 0.3);
+    }
+
+    .faq-title {
+      font-size: 42px;
+      font-weight: 700;
+      margin: 0 0 16px;
+      background: linear-gradient(90deg, #fff, var(--accent-1));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .faq-subtitle {
+      color: var(--muted);
+      font-size: 18px;
+      max-width: 500px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Acordeón */
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .faq-item {
+      background: var(--card);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .faq-item:hover {
+      border-color: rgba(123, 97, 255, 0.2);
+    }
+
+    .faq-item.active {
+      border-color: var(--accent-1);
+      box-shadow: 0 4px 20px rgba(123, 97, 255, 0.15);
+    }
+
+    .faq-question {
+      width: 100%;
+      padding: 20px 24px;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+
+    .faq-question:hover {
+      color: var(--accent-1);
+    }
+
+    .faq-question-text {
+      flex: 1;
+    }
+
+    .faq-chevron {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .faq-chevron svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--muted);
+      transition: stroke 0.2s ease;
+    }
+
+    .faq-item.active .faq-chevron {
+      transform: rotate(180deg);
+    }
+
+    .faq-item.active .faq-chevron svg {
+      stroke: var(--accent-1);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s ease;
+    }
+
+    .faq-item.active .faq-answer {
+      max-height: 1000px;
+    }
+
+    .faq-answer-content {
+      padding: 0 24px 24px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .faq-answer-content p {
+      margin: 0 0 12px;
+    }
+
+    .faq-answer-content p:last-child {
+      margin-bottom: 0;
+    }
+
+    .faq-answer-content ul,
+    .faq-answer-content ol {
+      margin: 12px 0;
+      padding-left: 24px;
+    }
+
+    .faq-answer-content li {
+      margin-bottom: 8px;
+    }
+
+    .faq-answer-content strong {
+      color: #fff;
+    }
+
+    .faq-answer-content a {
+      color: var(--accent-1);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .faq-answer-content a:hover {
+      color: var(--accent-2);
+      text-decoration: underline;
+    }
+
+    /* Sección de contacto */
+    .faq-contact {
+      margin-top: 60px;
+      background: linear-gradient(135deg, rgba(123, 97, 255, 0.1), rgba(78, 163, 255, 0.1));
+      border: 1px solid rgba(123, 97, 255, 0.2);
+      border-radius: 16px;
+      padding: 40px;
+      text-align: center;
+    }
+
+    .faq-contact-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0 0 12px;
+      color: #fff;
+    }
+
+    .faq-contact-text {
+      color: var(--muted);
+      font-size: 16px;
+      margin: 0 0 24px;
+    }
+
+    .faq-contact-email {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--accent-1);
+      font-size: 18px;
+      font-weight: 600;
+      text-decoration: none;
+      padding: 12px 24px;
+      background: rgba(123, 97, 255, 0.1);
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .faq-contact-email:hover {
+      background: var(--accent-1);
+      color: #07102a;
+      transform: translateY(-2px);
+    }
+
+    .faq-contact-hours {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .faq-contact-hours p {
+      color: var(--muted);
+      font-size: 14px;
+      margin: 4px 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .faq-title {
+        font-size: 32px;
+      }
+
+      .faq-subtitle {
+        font-size: 16px;
+      }
+
+      .faq-question {
+        padding: 16px 20px;
+        font-size: 15px;
+      }
+
+      .faq-answer-content {
+        padding: 0 20px 20px;
+        font-size: 14px;
+      }
+
+      .faq-contact {
+        padding: 30px 20px;
+      }
+
+      .faq-contact-title {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="container header">
+    <div class="brand" onclick="window.location.href='index.html'" style="cursor:pointer">
+      <img src="PIXOLOTEL.png" alt="Logo Pyxolotl" class="brand-logo" onerror="this.style.display='none'; document.getElementById('brandFallbackFaq').style.display='flex'">
+      <span id="brandFallbackFaq" class="logo" style="display:none">PX</span>
+      <div>
+        <div class="site-title">Pyxolotl</div>
+        <div style="font-size:12px;color:var(--muted)">Marketplace de juegos indie mexicanos</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="index.html">Inicio</a>
+      <a href="index.html#gallery">Juegos</a>
+      <a href="index.html#about">Acerca</a>
+      <a class="btn btn-ghost" href="inicio.html">Iniciar sesión</a>
+    </nav>
+    <button id="menuBtn" class="btn btn-ghost" aria-label="menu">☰</button>
+  </header>
+
+  <main class="faq-container">
+    <!-- Header de FAQ -->
+    <div class="faq-header">
+      <div class="faq-icon">❓</div>
+      <h1 class="faq-title">Preguntas Frecuentes</h1>
+      <p class="faq-subtitle">Encuentra respuestas a las preguntas más comunes sobre Pyxolotl</p>
+    </div>
+
+    <!-- Lista de preguntas -->
+    <div class="faq-list">
+      <!-- Pregunta 1 -->
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-question-text">¿Cómo puedo comprar un juego en Pyxolotl?</span>
+          <span class="faq-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            <p>Es muy sencillo:</p>
+            <ol>
+              <li>Navega por nuestra tienda y encuentra el juego que te interesa</li>
+              <li>Haz clic en <strong>"Agregar al carrito"</strong> o <strong>"Comprar ahora"</strong></li>
+              <li>Si no tienes cuenta, crea una (solo toma 1 minuto)</li>
+              <li>Ingresa tu método de pago</li>
+              <li>Confirma tu compra</li>
+              <li>¡Podrás descargar el juego inmediatamente!</li>
+            </ol>
+            <p>Una vez comprado, puedes descargar e instalar el juego cuantas veces quieras en tus dispositivos.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pregunta 2 -->
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-question-text">¿Qué métodos de pago aceptan?</span>
+          <span class="faq-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            <p>Aceptamos las siguientes formas de pago:</p>
+            <ul>
+              <li><strong>Tarjetas de crédito y débito:</strong> Visa, Mastercard, American Express</li>
+            </ul>
+            <p>Todos los pagos son procesados de forma segura con encriptación SSL.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pregunta 3 -->
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-question-text">¿Cómo puedo publicar mi juego en Pyxolotl?</span>
+          <span class="faq-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            <p>Si eres desarrollador indie, puedes publicar tu juego en nuestra plataforma:</p>
+            <p><strong>Requisitos:</strong></p>
+            <ul>
+              <li>Crear una cuenta de desarrollador (gratuita)</li>
+              <li>Subir tu juego con toda la información necesaria</li>
+              <li>Cumplir con nuestras políticas de contenido</li>
+              <li>Proporcionar datos fiscales para recibir pagos</li>
+            </ul>
+            <p><strong>Proceso:</strong></p>
+            <ol>
+              <li>Regístrate como desarrollador en <a href="publicar-juego.html">pyxolotl.com/publicar</a></li>
+              <li>Completa el perfil de tu estudio</li>
+              <li>Sube tu juego (archivos, capturas, descripción, trailer)</li>
+              <li>Establece tu precio</li>
+              <li>Envía tu juego a revisión</li>
+              <li>Una vez aprobado, ¡tu juego estará en vivo!</li>
+            </ol>
+            <p><strong>Comisión:</strong> Cobramos solo el 15% del precio de venta, uno de los porcentajes más bajos de la industria.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pregunta 4 -->
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-question-text">¿Qué pasa si tengo problemas técnicos con un juego?</span>
+          <span class="faq-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            <p>Si experimentas problemas con un juego:</p>
+            <p><strong>Primero intenta:</strong></p>
+            <ul>
+              <li>Verificar que tu sistema cumple los requisitos mínimos</li>
+              <li>Actualizar tus drivers de gráficos</li>
+              <li>Verificar la integridad de los archivos del juego</li>
+              <li>Reinstalar el juego</li>
+            </ul>
+            <p><strong>Si el problema persiste:</strong></p>
+            <ul>
+              <li>Contacta directamente al desarrollador desde la página del juego</li>
+              <li>Revisa la sección de "Problemas conocidos" en la comunidad</li>
+              <li>Si es un problema de la plataforma Pyxolotl, escríbenos a <a href="mailto:soporte@pyxolotl.com">soporte@pyxolotl.com</a></li>
+            </ul>
+            <p>Nuestro equipo y los desarrolladores están comprometidos a resolver cualquier problema técnico.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pregunta 5 -->
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-question-text">¿Los juegos son seguros? ¿Tienen virus?</span>
+          <span class="faq-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            <p><strong>¡Sí, son completamente seguros!</strong></p>
+            <p><strong>Nuestras medidas de seguridad:</strong></p>
+            <ul>
+              <li>Todos los juegos pasan por un proceso de revisión</li>
+              <li>Escaneamos los archivos en busca de malware</li>
+              <li>Verificamos la identidad de los desarrolladores</li>
+              <li>Monitoreamos constantemente la seguridad de la plataforma</li>
+            </ul>
+            <p><strong>Si detectas algo sospechoso:</strong> Repórtalo inmediatamente a <a href="mailto:seguridad@pyxolotl.com">seguridad@pyxolotl.com</a>. Tomamos la seguridad muy en serio.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pregunta 6 -->
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-question-text">¿Qué garantías ofrecen sobre el estado de los juegos?</span>
+          <span class="faq-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            <p><strong>Para jugadores:</strong></p>
+            <ul>
+              <li>Garantizamos que recibirás el juego que compraste</li>
+              <li>Los juegos funcionarán según las especificaciones del desarrollador</li>
+              <li>Acceso a las actualizaciones proporcionadas por el desarrollador</li>
+            </ul>
+            <p><strong>Para desarrolladores:</strong></p>
+            <ul>
+              <li>Protección contra fraude y chargebacks</li>
+              <li>Pagos puntuales y transparentes</li>
+              <li>Estadísticas detalladas de ventas</li>
+              <li>Soporte técnico para la publicación</li>
+            </ul>
+            <p><strong>No garantizamos:</strong></p>
+            <ul>
+              <li>Que el juego se actualizará indefinidamente (depende del desarrollador)</li>
+              <li>Compatibilidad con hardware obsoleto</li>
+              <li>Que el juego cumplirá tus expectativas personales (por eso tenemos reseñas)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pregunta 7 -->
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-question-text">¿Necesito estar siempre conectado a internet para jugar?</span>
+          <span class="faq-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            <p><strong>¡No necesariamente!</strong></p>
+            <p><strong>Modo Online:</strong></p>
+            <ul>
+              <li>Necesario para descargar juegos</li>
+              <li>Algunas funciones comunitarias requieren conexión</li>
+            </ul>
+            <p><strong>Modo Offline:</strong></p>
+            <ul>
+              <li>Una vez descargado, la mayoría de juegos funcionan sin internet</li>
+              <li>Puedes jugar durante semanas sin conectarte</li>
+              <li>Solo necesitas conectarte ocasionalmente para verificar tu licencia</li>
+            </ul>
+            <p><strong>Juegos multijugador:</strong> Obviamente requieren conexión para jugar online.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pregunta 8 -->
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-question-text">¿Puedo vender o transferir mis juegos a otra persona?</span>
+          <span class="faq-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            <p><strong>No</strong>, las licencias de Pyxolotl son intransferibles. Esto significa:</p>
+            <ul>
+              <li>No puedes vender tu cuenta</li>
+              <li>No puedes transferir juegos a otra cuenta</li>
+              <li>No puedes revender juegos que compraste</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección de contacto -->
+    <div class="faq-contact">
+      <h2 class="faq-contact-title">¿No encontraste lo que buscabas?</h2>
+      <p class="faq-contact-text">Nuestro equipo de soporte está listo para ayudarte con cualquier pregunta adicional.</p>
+      <a href="mailto:contacto@pyxolotl.com" class="faq-contact-email">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+          <polyline points="22,6 12,13 2,6"></polyline>
+        </svg>
+        contacto@pyxolotl.com
+      </a>
+      <div class="faq-contact-hours">
+        <p><strong>Tiempo de respuesta promedio:</strong> 24-48 horas</p>
+        <p><strong>Horario de atención:</strong></p>
+        <p>Lunes a Viernes: 9:00 AM - 6:00 PM (GMT-6)</p>
+        <p>Fines de semana: Respuestas limitadas</p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // ========================================
+    // FUNCIONALIDAD DEL ACORDEÓN
+    // ========================================
+    document.addEventListener('DOMContentLoaded', function() {
+      const faqItems = document.querySelectorAll('.faq-item');
+
+      faqItems.forEach(item => {
+        const question = item.querySelector('.faq-question');
+        
+        question.addEventListener('click', function() {
+          const isActive = item.classList.contains('active');
+          
+          // Cerrar todos los demás (opcional - solo una abierta a la vez)
+          faqItems.forEach(otherItem => {
+            if (otherItem !== item) {
+              otherItem.classList.remove('active');
+              otherItem.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+            }
+          });
+          
+          // Toggle del item actual
+          item.classList.toggle('active');
+          question.setAttribute('aria-expanded', !isActive);
+        });
+      });
+
+      // Menú móvil
+      const menuBtn = document.getElementById('menuBtn');
+      const nav = document.querySelector('.nav');
+      
+      if (menuBtn && nav) {
+        menuBtn.addEventListener('click', function() {
+          nav.classList.toggle('open');
+        });
+      }
+    });
+  </script>
+</body>
+</html>

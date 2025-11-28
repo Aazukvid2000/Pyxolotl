@@ -225,7 +225,6 @@
     </div>
 
     <nav class="nav">
-      <a href="#features">Características</a>
       <a href="#gallery">Juegos</a>
       <a href="#about">Acerca</a>
       <a class="cta" href="#" onclick="validarPublicarJuego(event)" id="publicarBtn">Presentar juego</a>
@@ -329,20 +328,7 @@
       </a>
     </div>
 
-    <section id="features" class="features">
-      <div class="feature">
-        <h4>Visibilidad</h4>
-        <p>Conecta con jugadores y otros desarrolladores. Promociona tus builds y demos.</p>
-      </div>
-      <div class="feature">
-        <h4>Feedback</h4>
-        <p>Recibe comentarios constructivos y métricas para mejorar tu juego.</p>
-      </div>
-      <div class="feature">
-        <h4>Colaboraciones</h4>
-        <p>Encuentra artistas, músicos y programadores interesados en colaborar.</p>
-      </div>
-    </section>
+
 
     <section id="gallery">
       <h2 style="margin-top:0">Catálogo de Juegos</h2>
@@ -380,21 +366,279 @@
       </div>
     </section>
 
-    <section id="about" style="margin-top:28px">
-      <h2>Acerca de Pyxolotl</h2>
-      <p style="color:var(--muted)">Pyxolotl es una plataforma para ayudar a desarrolladores indie mexicanos a obtener exposición. Publica tu juego, recibe feedback y conecta con jugadores.</p>
-    </section>
-
-    <footer class="footer">
-      <div class="container center" style="flex-direction:column;gap:10px">
-        <div style="width:100%;display:flex;justify-content:space-between;align-items:center;max-width:var(--max-width)">
-          <div>© 2025 Pyxolotl · Hecho con ♥ para desarrolladores indie</div>
-          <div style="color:var(--muted)">Contacto: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5a3935342e3b392e351a2a23223536352e36743722">[email&#160;protected]</a></div>
-        </div>
-      </div>
-    </footer>
   </main>
 
+  <!-- ============================================ -->
+  <!-- FOOTER PROFESIONAL - PYXOLOTL -->
+  <!-- ============================================ -->
+
+  <footer id="about" class="pyxolotl-footer">
+    <div class="footer-container">
+      <!-- Columna 1: Información de Pyxolotl -->
+      <div class="footer-column">
+        <h3 class="footer-title">PYXOLOTL</h3>
+        <p class="footer-description">
+          Plataforma mexicana de videojuegos indie. 
+          Conectando desarrolladores con jugadores apasionados.
+        </p>
+        <!-- Redes sociales -->
+        <div class="footer-social">
+          <a href="https://www.instagram.com/pyxo.lotl?igsh=OHRybW00NHA4Nnc4" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="social-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+              <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" fill="none" stroke="#07102a" stroke-width="2"/>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="#07102a" stroke-width="2"/>
+            </svg>
+          </a>
+          <a href="https://www.facebook.com/profile.php?id=61584296583769" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="social-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Columna 2: Para Desarrolladores -->
+      <div class="footer-column">
+        <h4 class="footer-heading">DESARROLLADORES</h4>
+        <ul class="footer-links">
+          <li><a href="publicar-juego.html" id="footerPublishLink">Publicar juego</a></li>
+          <li><a href="#about">Acerca de Pyxolotl</a></li>
+        </ul>
+      </div>
+
+      <!-- Columna 3: Ayuda -->
+      <div class="footer-column">
+        <h4 class="footer-heading">AYUDA</h4>
+        <ul class="footer-links">
+          <li><a href="faq.html">Preguntas frecuentes</a></li>
+          <li><a href="mailto:soporte@pyxolotl.com">Soporte</a></li>
+          <li><a href="#" onclick="openTermsModal(event)">Términos y condiciones</a></li>
+          <li><a href="#" onclick="openPrivacyModal(event)">Privacidad</a></li>
+          <li><a href="mailto:contacto@pyxolotl.com">Contacto</a></li>
+        </ul>
+      </div>
+
+      <!-- Columna 4: Pyxolotl -->
+      <div class="footer-column">
+        <h4 class="footer-heading">PYXOLOTL</h4>
+        <ul class="footer-links">
+          <li><a href="#about">Quiénes somos</a></li>
+          <li><a href="#about">Equipo</a></li>
+          <li><a href="inicio.html#registro">Registrarse</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Copyright y legal -->
+    <div class="footer-bottom">
+      <div class="footer-container">
+        <p class="footer-copyright">
+          © 2025 Pyxolotl. Todos los derechos reservados.
+        </p>
+        <div class="footer-legal">
+          <a href="#" onclick="openPrivacyModal(event)">Privacidad</a>
+          <span class="separator">·</span>
+          <a href="#" onclick="openTermsModal(event)">Términos</a>
+          <span class="separator">·</span>
+          <a href="faq.html">FAQ</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <style>
+    .pyxolotl-footer {
+      background: linear-gradient(180deg, #0a0e1a 0%, #07102a 100%);
+      border-top: 1px solid rgba(123, 97, 255, 0.1);
+      padding: 60px 0 0 0;
+      margin-top: 100px;
+      color: #e0e0e0;
+    }
+
+    .footer-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: grid;
+      grid-template-columns: 1.5fr repeat(3, 1fr);
+      gap: 50px;
+    }
+
+    .footer-column {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .footer-title {
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+
+    .footer-description {
+      color: #b0b0b0;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .social-link {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(123, 97, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-1);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(123, 97, 255, 0.2);
+    }
+
+    .social-link:hover {
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      color: #07102a;
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(123, 97, 255, 0.4);
+    }
+
+    .footer-heading {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: #808080;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .footer-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .footer-links li a {
+      color: #b0b0b0;
+      font-size: 14px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      display: inline-block;
+    }
+
+    .footer-links li a:hover {
+      color: var(--accent-1);
+      transform: translateX(4px);
+    }
+
+    .footer-bottom {
+      background: #060a16;
+      border-top: 1px solid rgba(123, 97, 255, 0.1);
+      padding: 24px 0;
+      margin-top: 50px;
+    }
+
+    .footer-bottom .footer-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      grid-template-columns: 1fr;
+    }
+
+    .footer-copyright {
+      color: #808080;
+      font-size: 13px;
+      margin: 0;
+    }
+
+    .footer-legal {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .footer-legal a {
+      color: #808080;
+      font-size: 13px;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .footer-legal a:hover {
+      color: var(--accent-1);
+    }
+
+    .footer-legal .separator {
+      color: #404040;
+    }
+
+    @media (max-width: 1024px) {
+      .footer-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 40px;
+      }
+
+      .footer-column:first-child {
+        grid-column: 1 / -1;
+        text-align: center;
+      }
+
+      .footer-social {
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .pyxolotl-footer {
+        padding: 40px 0 0 0;
+        margin-top: 60px;
+      }
+
+      .footer-container {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        padding: 0 20px;
+      }
+
+      .footer-column:first-child {
+        text-align: center;
+      }
+
+      .footer-title {
+        font-size: 20px;
+      }
+
+      .footer-description {
+        font-size: 13px;
+      }
+
+      .footer-bottom .footer-container {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+      }
+
+      .footer-legal {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+  </style>
   <!-- MODAL CARRITO -->
   <div id="cartModal" class="modal">
     <div class="panel" style="max-width:600px">
@@ -616,7 +860,540 @@
 
   <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="api.js"></script>
   <script src="cart.js"></script>
+  <!-- ============================================ -->
+  <!-- MODAL DE PRIVACIDAD -->
+  <!-- ============================================ -->
+  <div id="privacyModal" class="legal-modal">
+    <div class="legal-modal-overlay" onclick="closePrivacyModal()"></div>
+    <div class="legal-modal-content">
+      <button class="legal-modal-close" onclick="closePrivacyModal()" aria-label="Cerrar">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <div class="legal-modal-header">
+        <h2 class="legal-modal-title">Aviso de Privacidad – Pyxolotl</h2>
+        <p class="legal-modal-subtitle">Última actualización: Noviembre 2025</p>
+      </div>
+      <div class="legal-modal-body">
+        <p>En Pyxolotl, respetamos tu privacidad y nos comprometemos a proteger tus datos personales. Esta Política de Privacidad explica cómo recopilamos, usamos y protegemos tu información.</p>
+        
+        <h3>1. Información que Recopilamos</h3>
+        <p><strong>Información de cuenta:</strong></p>
+        <ul>
+          <li>Nombre de usuario y correo electrónico</li>
+          <li>Contraseña (encriptada)</li>
+          <li>Fecha de registro</li>
+          <li>País/región</li>
+        </ul>
+        
+        <p><strong>Información de compra:</strong></p>
+        <ul>
+          <li>Historial de transacciones</li>
+          <li>Métodos de pago (procesados de forma segura)</li>
+          <li>Juegos adquiridos</li>
+        </ul>
+        
+        <p><strong>Información de desarrollador:</strong></p>
+        <ul>
+          <li>Datos fiscales (para desarrolladores que publican juegos)</li>
+          <li>Información bancaria para pagos</li>
+          <li>Estadísticas de ventas</li>
+        </ul>
+        
+        <p><strong>Datos técnicos:</strong></p>
+        <ul>
+          <li>Dirección IP</li>
+          <li>Tipo de navegador y dispositivo</li>
+          <li>Cookies y datos de uso de la plataforma</li>
+        </ul>
+        
+        <h3>2. Cómo Usamos tu Información</h3>
+        <ul>
+          <li>Gestionar tu cuenta y acceso a juegos</li>
+          <li>Procesar compras y pagos</li>
+          <li>Enviar confirmaciones de compra</li>
+          <li>Mejorar la experiencia de usuario en la plataforma</li>
+          <li>Prevenir fraudes y garantizar la seguridad</li>
+          <li>Proporcionar soporte técnico</li>
+        </ul>
+        
+        <h3>3. Compartir Información</h3>
+        <p>No vendemos tus datos personales a terceros. Compartimos información únicamente con:</p>
+        <ul>
+          <li><strong>Procesadores de pago:</strong> Para gestionar transacciones de forma segura</li>
+          <li><strong>Desarrolladores:</strong> Estadísticas anónimas de ventas y jugadores</li>
+          <li><strong>Servicios técnicos:</strong> Hosting y servicios esenciales para el funcionamiento de la plataforma</li>
+          <li><strong>Autoridades legales:</strong> Cuando sea requerido por ley</li>
+        </ul>
+        
+        <h3>4. Cookies y Tecnologías Similares</h3>
+        <p>Utilizamos cookies para:</p>
+        <ul>
+          <li>Mantener tu sesión iniciada</li>
+          <li>Recordar preferencias</li>
+          <li>Analizar el uso de la plataforma</li>
+          <li>Mejorar la seguridad</li>
+        </ul>
+        <p>Puedes gestionar las cookies desde la configuración de tu navegador.</p>
+        
+        <h3>5. Seguridad de los Datos</h3>
+        <p>Implementamos medidas de seguridad técnicas y organizativas para proteger tus datos:</p>
+        <ul>
+          <li>Encriptación SSL/TLS</li>
+          <li>Contraseñas hasheadas</li>
+          <li>Autenticación segura</li>
+          <li>Servidores protegidos</li>
+        </ul>
+        
+        <h3>6. Tus Derechos</h3>
+        <p>Tienes derecho a:</p>
+        <ul>
+          <li>Acceder a tus datos personales</li>
+          <li>Corregir información incorrecta</li>
+          <li>Solicitar la eliminación de tu cuenta</li>
+          <li>Exportar tus datos</li>
+          <li>Revocar consentimientos</li>
+          <li>Oponerte al procesamiento de datos</li>
+        </ul>
+        <p>Para ejercer estos derechos, contáctanos en: <a href="mailto:privacidad@pyxolotl.com">privacidad@pyxolotl.com</a></p>
+        
+        <h3>7. Retención de Datos</h3>
+        <p>Conservamos tus datos mientras tu cuenta esté activa. Si eliminas tu cuenta, conservaremos datos esenciales solo por el tiempo necesario para cumplir obligaciones legales (historial de compras, datos fiscales).</p>
+        
+        <h3>8. Menores de Edad</h3>
+        <p>Pyxolotl está destinado a mayores de 13 años. Si eres menor de 18 años, necesitas el consentimiento de tus padres o tutores para usar la plataforma.</p>
+        
+        <h3>9. Cambios en esta Política</h3>
+        <p>Podemos actualizar esta política ocasionalmente. Te notificaremos de cambios importantes por correo electrónico o mediante un aviso en la plataforma.</p>
+        
+        <h3>10. Contacto</h3>
+        <p>Para preguntas sobre privacidad, escríbenos a:</p>
+        <ul>
+          <li>Email: <a href="mailto:privacidad@pyxolotl.com">privacidad@pyxolotl.com</a></li>
+          <li>Correo general: <a href="mailto:contacto@pyxolotl.com">contacto@pyxolotl.com</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- MODAL DE TÉRMINOS Y CONDICIONES -->
+  <!-- ============================================ -->
+  <div id="termsModal" class="legal-modal">
+    <div class="legal-modal-overlay" onclick="closeTermsModal()"></div>
+    <div class="legal-modal-content">
+      <button class="legal-modal-close" onclick="closeTermsModal()" aria-label="Cerrar">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <div class="legal-modal-header">
+        <h2 class="legal-modal-title">Términos y Condiciones de Uso – Pyxolotl</h2>
+        <p class="legal-modal-subtitle">Última actualización: Noviembre 2025</p>
+      </div>
+      <div class="legal-modal-body">
+        <p>Bienvenido a Pyxolotl. Al usar nuestra plataforma, aceptas estos Términos y Condiciones. Por favor, léelos cuidadosamente.</p>
+        
+        <h3>1. Aceptación de los Términos</h3>
+        <p>Al crear una cuenta, comprar o descargar juegos, o usar cualquier servicio de Pyxolotl, aceptas estar legalmente vinculado a estos términos.</p>
+        
+        <h3>2. Descripción del Servicio</h3>
+        <p>Pyxolotl es una plataforma digital que conecta desarrolladores indie de videojuegos con jugadores. Ofrecemos:</p>
+        <ul>
+          <li>Venta y distribución de videojuegos indie</li>
+          <li>Herramientas para desarrolladores</li>
+          <li>Sistema de pagos seguro</li>
+          <li>Comunidad de desarrolladores y jugadores</li>
+        </ul>
+        
+        <h3>3. Cuentas de Usuario</h3>
+        <p><strong>Registro:</strong></p>
+        <ul>
+          <li>Debes proporcionar información veraz y actualizada</li>
+          <li>Eres responsable de mantener la seguridad de tu cuenta</li>
+          <li>No puedes compartir tu cuenta con terceros</li>
+          <li>Debes tener al menos 13 años para registrarte</li>
+        </ul>
+        <p><strong>Responsabilidades:</strong></p>
+        <ul>
+          <li>Mantener la confidencialidad de tu contraseña</li>
+          <li>Notificarnos inmediatamente de cualquier uso no autorizado</li>
+          <li>No usar la cuenta para actividades ilegales o fraudulentas</li>
+        </ul>
+        
+        <h3>4. Compra de Juegos</h3>
+        <p><strong>Licencias:</strong></p>
+        <ul>
+          <li>Al comprar un juego, adquieres una licencia de uso personal, no comercial</li>
+          <li>La licencia es intransferible (no puedes revender)</li>
+          <li>Puedes descargar e instalar el juego en tus dispositivos personales</li>
+        </ul>
+        <p><strong>Precios y Pagos:</strong></p>
+        <ul>
+          <li>Los precios están en pesos mexicanos (MXN) y pueden incluir impuestos</li>
+          <li>Los pagos se procesan de forma segura a través de servicios de terceros</li>
+          <li>Los desarrolladores establecen los precios de sus juegos</li>
+          <li>Todas las ventas son finales</li>
+        </ul>
+        
+        <h3>5. Para Desarrolladores</h3>
+        <p><strong>Publicación de Juegos:</strong></p>
+        <ul>
+          <li>Debes tener los derechos completos sobre el contenido que publicas</li>
+          <li>Garantizas que tu juego no infringe derechos de terceros</li>
+          <li>Debes cumplir con las leyes aplicables y las políticas de contenido</li>
+        </ul>
+        <p><strong>Comisiones:</strong></p>
+        <ul>
+          <li>Pyxolotl retiene un 15% del precio de venta de cada juego</li>
+          <li>Eres responsable de tus obligaciones fiscales</li>
+        </ul>
+        <p><strong>Contenido Prohibido:</strong></p>
+        <ul>
+          <li>Contenido ilegal, difamatorio o que incite al odio</li>
+          <li>Malware, virus o software malicioso</li>
+          <li>Contenido que viole derechos de propiedad intelectual</li>
+          <li>Material sexual explícito sin advertencias adecuadas</li>
+        </ul>
+        
+        <h3>6. Propiedad Intelectual</h3>
+        <p><strong>Plataforma:</strong></p>
+        <ul>
+          <li>Pyxolotl y todos sus elementos (logo, diseño, código) son propiedad de Pyxolotl</li>
+          <li>No puedes reproducir, modificar o distribuir la plataforma</li>
+        </ul>
+        <p><strong>Juegos:</strong></p>
+        <ul>
+          <li>Los desarrolladores mantienen todos los derechos sobre sus juegos</li>
+          <li>Los jugadores obtienen licencias limitadas de uso</li>
+        </ul>
+        
+        <h3>7. Conducta del Usuario</h3>
+        <p>Está prohibido:</p>
+        <ul>
+          <li>Hackear, explotar vulnerabilidades o manipular la plataforma</li>
+          <li>Usar bots o automatización no autorizada</li>
+          <li>Acosar, amenazar o abusar de otros usuarios</li>
+          <li>Hacer spam o publicidad no autorizada</li>
+          <li>Realizar transacciones fraudulentas</li>
+          <li>Compartir contenido inapropiado en comentarios o reseñas</li>
+        </ul>
+        
+        <h3>8. Modificación y Cancelación del Servicio</h3>
+        <p><strong>Modificaciones:</strong></p>
+        <ul>
+          <li>Podemos actualizar, modificar o discontinuar características de la plataforma</li>
+          <li>Te notificaremos de cambios importantes con antelación</li>
+        </ul>
+        <p><strong>Suspensión de Cuenta:</strong> Podemos suspender o cancelar tu cuenta si:</p>
+        <ul>
+          <li>Violas estos términos</li>
+          <li>Realizas actividades fraudulentas</li>
+          <li>Infringes derechos de terceros</li>
+        </ul>
+        
+        <h3>9. Limitación de Responsabilidad</h3>
+        <p>Pyxolotl no se hace responsable por:</p>
+        <ul>
+          <li>Problemas técnicos de los juegos (responsabilidad del desarrollador)</li>
+          <li>Pérdida de datos por causas ajenas a nosotros</li>
+          <li>Interrupciones del servicio por mantenimiento o causas de fuerza mayor</li>
+          <li>Contenido generado por usuarios</li>
+        </ul>
+        
+        <h3>10. Resolución de Disputas</h3>
+        <ul>
+          <li>En caso de controversias, intentaremos resolverlas de forma amistosa</li>
+          <li>Si no es posible, se someterán a la jurisdicción de los tribunales de México</li>
+          <li>Estos términos se rigen por las leyes mexicanas</li>
+        </ul>
+        
+        <h3>11. Divisibilidad</h3>
+        <p>Si alguna cláusula es considerada inválida, el resto de los términos permanece en vigor.</p>
+        
+        <h3>12. Contacto</h3>
+        <p>Para preguntas sobre estos términos:</p>
+        <ul>
+          <li>Email: <a href="mailto:legal@pyxolotl.com">legal@pyxolotl.com</a></li>
+          <li>Correo general: <a href="mailto:contacto@pyxolotl.com">contacto@pyxolotl.com</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- ESTILOS DE LOS MODALES LEGALES -->
+  <!-- ============================================ -->
+  <style>
+    /* Modal Legal Base */
+    .legal-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .legal-modal.active {
+      display: flex;
+    }
+
+    /* Overlay */
+    .legal-modal-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(4px);
+      animation: fadeIn 0.3s ease;
+    }
+
+    /* Contenido del Modal */
+    .legal-modal-content {
+      position: relative;
+      background: #0f1218;
+      border-radius: 16px;
+      max-width: 700px;
+      width: 100%;
+      max-height: 85vh;
+      overflow: hidden;
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(123, 97, 255, 0.15);
+      animation: slideUp 0.4s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Botón de Cerrar */
+    .legal-modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+
+    .legal-modal-close svg {
+      stroke: var(--muted);
+      transition: stroke 0.2s ease;
+    }
+
+    .legal-modal-close:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--accent-1);
+    }
+
+    .legal-modal-close:hover svg {
+      stroke: var(--accent-1);
+    }
+
+    /* Header del Modal */
+    .legal-modal-header {
+      padding: 30px 30px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      flex-shrink: 0;
+    }
+
+    .legal-modal-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0 0 8px;
+      color: #fff;
+      padding-right: 40px;
+    }
+
+    .legal-modal-subtitle {
+      font-size: 14px;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    /* Cuerpo del Modal */
+    .legal-modal-body {
+      padding: 24px 30px 30px;
+      overflow-y: auto;
+      flex: 1;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .legal-modal-body h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      margin: 24px 0 12px;
+    }
+
+    .legal-modal-body h3:first-child {
+      margin-top: 0;
+    }
+
+    .legal-modal-body p {
+      margin: 0 0 12px;
+    }
+
+    .legal-modal-body ul,
+    .legal-modal-body ol {
+      margin: 8px 0 16px;
+      padding-left: 24px;
+    }
+
+    .legal-modal-body li {
+      margin-bottom: 6px;
+    }
+
+    .legal-modal-body strong {
+      color: #e0e0e0;
+    }
+
+    .legal-modal-body a {
+      color: var(--accent-1);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .legal-modal-body a:hover {
+      color: var(--accent-2);
+      text-decoration: underline;
+    }
+
+    /* Scrollbar personalizado */
+    .legal-modal-body::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .legal-modal-body::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 4px;
+    }
+
+    .legal-modal-body::-webkit-scrollbar-thumb {
+      background: rgba(123, 97, 255, 0.3);
+      border-radius: 4px;
+    }
+
+    .legal-modal-body::-webkit-scrollbar-thumb:hover {
+      background: rgba(123, 97, 255, 0.5);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .legal-modal {
+        padding: 10px;
+      }
+
+      .legal-modal-content {
+        max-height: 90vh;
+        border-radius: 12px;
+      }
+
+      .legal-modal-header {
+        padding: 24px 20px 16px;
+      }
+
+      .legal-modal-title {
+        font-size: 18px;
+      }
+
+      .legal-modal-body {
+        padding: 20px;
+        font-size: 13px;
+      }
+
+      .legal-modal-body h3 {
+        font-size: 15px;
+      }
+
+      .legal-modal-close {
+        top: 12px;
+        right: 12px;
+        width: 36px;
+        height: 36px;
+      }
+    }
+
+    /* Animaciones */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Prevenir scroll del body cuando modal está abierto */
+    body.modal-open {
+      overflow: hidden;
+    }
+  </style>
+
   <script>
+    // ============================================
+    // FUNCIONES PARA MODALES LEGALES (Privacidad y Términos)
+    // ============================================
+    
+    function openPrivacyModal(event) {
+      if (event) event.preventDefault();
+      const modal = document.getElementById('privacyModal');
+      modal.classList.add('active');
+      document.body.classList.add('modal-open');
+    }
+    
+    function closePrivacyModal() {
+      const modal = document.getElementById('privacyModal');
+      modal.classList.remove('active');
+      document.body.classList.remove('modal-open');
+    }
+    
+    function openTermsModal(event) {
+      if (event) event.preventDefault();
+      const modal = document.getElementById('termsModal');
+      modal.classList.add('active');
+      document.body.classList.add('modal-open');
+    }
+    
+    function closeTermsModal() {
+      const modal = document.getElementById('termsModal');
+      modal.classList.remove('active');
+      document.body.classList.remove('modal-open');
+    }
+    
+    // Cerrar modales con tecla Escape
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closePrivacyModal();
+        closeTermsModal();
+      }
+    });
+
     // ============================================
     // SISTEMA DE PERFIL CON LOCALSTORAGE
     // ============================================
@@ -1077,6 +1854,7 @@
       const developerPromo = document.getElementById('developerPromo');
       const publicarBtns = document.querySelectorAll('#publicarBtn, #publicarBtnHero');
       const noGamesPublishBtn = document.getElementById('noGamesPublishBtn');
+      const footerPublishLink = document.getElementById('footerPublishLink');
       
       if (user && token) {
         // Usuario logueado
@@ -1096,14 +1874,17 @@
         });
         
         // Verificar tipo de cuenta
-        if (user.tipo_cuenta === 'desarrollador') {
-          // ES DESARROLLADOR - Mostrar botones de publicar, ocultar promo
+        if (user.tipo_cuenta === 'desarrollador' || user.tipo_cuenta === 'administrador') {
+          // ES DESARROLLADOR/ADMIN - Mostrar botones de publicar
           if (developerPromo) developerPromo.style.display = 'none';
           publicarBtns.forEach(btn => {
             btn.style.display = 'inline-block';
           });
           if (noGamesPublishBtn) {
             noGamesPublishBtn.style.display = 'inline-block';
+          }
+          if (footerPublishLink) {
+            footerPublishLink.parentElement.style.display = 'block';
           }
         } else {
           // ES COMPRADOR - Ocultar botones, mostrar promo
@@ -1113,6 +1894,9 @@
           });
           if (noGamesPublishBtn) {
             noGamesPublishBtn.style.display = 'none';
+          }
+          if (footerPublishLink) {
+            footerPublishLink.parentElement.style.display = 'none';
           }
         }
       } else {
@@ -1124,12 +1908,15 @@
         // Mostrar mensaje promocional
         if (developerPromo) developerPromo.style.display = 'block';
         
-        // Ocultar TODOS los botones de publicar
+        // Ocultar TODOS los botones de publicar (incluido footer)
         publicarBtns.forEach(btn => {
           btn.style.display = 'none';
         });
         if (noGamesPublishBtn) {
           noGamesPublishBtn.style.display = 'none';
+        }
+        if (footerPublishLink) {
+          footerPublishLink.parentElement.style.display = 'none';
         }
       }
     }
@@ -1167,9 +1954,33 @@
         document.getElementById('description').value = profileData.description;
       }
       
-      // Establecer nombre y email en el modal
+      // ✅ NUEVO: Mostrar sobrenombre en lugar del nombre si existe
+      const displayName = profileData.nickname || user.nombre;
+      document.getElementById('userName').textContent = displayName;
+      
+      // Establecer nombre completo en el modal
       document.getElementById('profileName').textContent = user.nombre;
-      document.getElementById('profileEmail').textContent = user.email;
+      
+      // ✅ NUEVO: Ocultar parcialmente el email (ej: wrgal***@gmail.com)
+      const maskedEmail = maskEmail(user.email);
+      document.getElementById('profileEmail').textContent = maskedEmail;
+    }
+    
+    // ✅ NUEVA FUNCIÓN: Ocultar parcialmente el email
+    function maskEmail(email) {
+      if (!email || !email.includes('@')) return email;
+      
+      const [localPart, domain] = email.split('@');
+      
+      // Mostrar primeros 5 caracteres y ocultar el resto con ***
+      let maskedLocal;
+      if (localPart.length <= 5) {
+        maskedLocal = localPart.substring(0, 2) + '***';
+      } else {
+        maskedLocal = localPart.substring(0, 5) + '***';
+      }
+      
+      return `${maskedLocal}@${domain}`;
     }
     
     // Obtener iniciales del nombre
@@ -1194,7 +2005,7 @@
       modal.classList.remove('active');
     }
     
-    // Manejar cambio de avatar
+    // Manejar cambio de avatar - Preview en tiempo real
     function handleAvatarChange(event) {
       const file = event.target.files[0];
       if (file && file.type.startsWith('image/')) {
@@ -1202,11 +2013,15 @@
         reader.onload = function(e) {
           const base64Image = e.target.result;
           
-          // Actualizar avatar en el modal
+          // Actualizar avatar en el modal (preview grande)
           const profileAvatarImg = document.getElementById('profileAvatarImg');
           profileAvatarImg.src = base64Image;
           profileAvatarImg.style.display = 'block';
           document.getElementById('profileInitials').style.display = 'none';
+          
+          // ✅ NUEVO: Actualizar avatar en el header EN TIEMPO REAL
+          const userAvatar = document.getElementById('userAvatar');
+          userAvatar.innerHTML = `<img src="${base64Image}" alt="Avatar">`;
           
           // Guardar temporalmente para cuando se guarde el formulario
           profileAvatarImg.dataset.tempAvatar = base64Image;
@@ -1220,6 +2035,7 @@
       e.preventDefault();
       
       const profileData = JSON.parse(localStorage.getItem('userProfile') || '{}');
+      const user = getCurrentUser();
       
       // Guardar sobrenombre y descripción
       profileData.nickname = document.getElementById('nickname').value;
@@ -1243,11 +2059,23 @@
         userAvatar.innerHTML = `<img src="${profileData.avatar}" alt="Avatar">`;
       }
       
+      // ✅ NUEVO: Actualizar nombre en el header (sobrenombre o nombre real)
+      const displayName = profileData.nickname || (user ? user.nombre : 'Usuario');
+      document.getElementById('userName').textContent = displayName;
+      
       // Cerrar modal
       closeProfileModal();
       
       // Mostrar confirmación
       showNotification('✅ Perfil actualizado correctamente');
+    });
+    
+    // ✅ NUEVO: Actualizar nombre en tiempo real cuando se escribe el sobrenombre
+    document.getElementById('nickname').addEventListener('input', function(e) {
+      const user = getCurrentUser();
+      const nickname = e.target.value.trim();
+      const displayName = nickname || (user ? user.nombre : 'Usuario');
+      document.getElementById('userName').textContent = displayName;
     });
     
     // Función para mostrar notificaciones

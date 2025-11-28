@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Publicar Juego – Pixolot</title>
+  <title>Publicar Juego – Pyxolotl</title>
   <link rel="stylesheet" href="styles.css">
   <style>
     .publish-container {
@@ -131,6 +131,14 @@
       font-size: 18px;
       padding: 4px 8px;
     }
+    /* Preview de imagen */
+    .file-item-preview {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: var(--glass);
+    }
     .tag-input-container {
       display: flex;
       flex-wrap: wrap;
@@ -211,6 +219,12 @@
       color: var(--muted);
       margin-top: 6px;
     }
+    .section-label {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
     .preview-box {
       background: var(--glass);
       padding: 20px;
@@ -234,6 +248,12 @@
       color: #07102a;
       font-size: 32px;
       margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .preview-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
     .success-modal {
       position: fixed;
@@ -260,24 +280,35 @@
       font-size: 80px;
       margin-bottom: 24px;
     }
+
+    /* Link de términos en checkbox */
+    .terms-link {
+      color: var(--accent-1);
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .terms-link:hover {
+      color: var(--accent-2);
+      text-decoration: underline;
+    }
+
+    /* Error en screenshots */
+    .screenshots-error {
+      color: #ff4757;
+      font-size: 13px;
+      margin-top: 8px;
+      display: none;
+    }
+    .screenshots-error.show {
+      display: block;
+    }
+
     @keyframes slideUp {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
     @media (max-width: 768px) {
-      .header {
-        flex-wrap: wrap;
-        padding: 12px 20px !important;
-      }
-      .nav {
-        width: 100%;
-        justify-content: center;
-        margin-top: 10px;
-      }
-      .nav a {
-        font-size: 14px;
-        padding: 8px 12px;
-      }
       .form-row {
         grid-template-columns: 1fr;
       }
@@ -288,22 +319,74 @@
         font-size: 32px;
       }
     }
+
+    /* Estilos para el perfil de usuario en el header */
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+    }
+    
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .user-avatar:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    
+    .user-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .user-avatar span {
+      color: #07102a;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    
+    #userName {
+      color: var(--accent-1);
+      font-weight: 600;
+      cursor: pointer;
+    }
+    
+    #userName:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
-  <header class="container header" style="background:rgba(52,73,94,0.85);backdrop-filter:blur(10px);position:sticky;top:0;z-index:999;box-shadow:0 2px 20px rgba(0,0,0,0.3)">
+  <!-- HEADER SIMPLIFICADO -->
+  <header class="container header">
     <div class="brand" onclick="window.location.href='index.html'" style="cursor:pointer">
-      <img id="brandImg" src="PIXOLOTEL.png" alt="Logo Pixolot" class="brand-logo" data-initials="PX" onerror="this.style.display='none'">
+      <img id="brandImg" src="PIXOLOTEL.png" alt="Logo Pyxolotl" class="brand-logo" data-initials="PX" onerror="this.style.display='none'">
       <span id="brandFallback" class="logo" aria-hidden="true" style="display:none">PX</span>
+
       <div>
         <div class="site-title">Pyxolotl</div>
-        <div style="font-size:12px;color:var(--muted)">Indie developers showcase</div>
+        <div style="font-size:12px;color:var(--muted)">Marketplace de juegos indie mexicanos</div>
       </div>
     </div>
+
     <nav class="nav">
-      <a href="/index.html">🏠 Inicio</a>
-      <a href="/index.html#gallery">Juegos</a>
+      <a href="index.html">Inicio</a>
     </nav>
+
+    <button id="menuBtn" class="btn btn-ghost" aria-label="menu">☰</button>
   </header>
 
   <div class="publish-container container">
@@ -320,13 +403,13 @@
           
           <div class="form-group">
             <label for="gameTitle">Título del juego <span class="required">*</span></label>
-            <input type="text" id="gameTitle" placeholder="Ej: Pixel Adventures" required>
+            <input type="text" id="gameTitle" placeholder="Ej: Pixel Adventures" required maxlength="200">
           </div>
 
           <div class="form-group">
             <label for="shortDesc">Descripción corta <span class="required">*</span></label>
-            <input type="text" id="shortDesc" placeholder="Ej: Una línea que describa tu juego" maxlength="100" required>
-            <div class="help-text">Máximo 100 caracteres - Aparecerá en las tarjetas de vista previa</div>
+            <input type="text" id="shortDesc" placeholder="Ej: Una línea que describa tu juego" maxlength="150" required>
+            <div class="help-text">Máximo 150 caracteres - Aparecerá en las tarjetas de vista previa</div>
           </div>
 
           <div class="form-group">
@@ -351,6 +434,8 @@
                 <option value="deportes">Deportes</option>
                 <option value="carreras">Carreras</option>
                 <option value="terror">Terror</option>
+                <option value="indie">Indie</option>
+                <option value="casual">Casual</option>
               </select>
             </div>
 
@@ -376,7 +461,7 @@
           <h3>🖼️ Multimedia</h3>
           
           <div class="form-group">
-            <label>Imagen principal <span class="required">*</span></label>
+            <label>Imagen principal (portada) <span class="required">*</span></label>
             <div class="file-upload" onclick="document.getElementById('mainImage').click()">
               <div class="file-upload-icon">🎨</div>
               <div><strong>Haz clic para subir</strong> o arrastra aquí</div>
@@ -387,20 +472,21 @@
           </div>
 
           <div class="form-group">
-            <label>Capturas de pantalla</label>
+            <label>Capturas de pantalla <span class="required">*</span></label>
             <div class="file-upload" onclick="document.getElementById('screenshots').click()">
               <div class="file-upload-icon">📸</div>
               <div><strong>Haz clic para subir</strong> o arrastra aquí</div>
-              <div class="help-text">Mínimo 3 imágenes, máximo 10</div>
+              <div class="help-text">Debes subir exactamente 3 imágenes (obligatorio)</div>
               <input type="file" id="screenshots" accept="image/*" multiple>
             </div>
             <div class="file-list" id="screenshotsList"></div>
+            <div class="screenshots-error" id="screenshotsError">⚠️ Debes subir exactamente 3 capturas de pantalla</div>
           </div>
 
           <div class="form-group">
-            <label for="videoUrl">Video de gameplay (YouTube o Vimeo)</label>
+            <label for="videoUrl">Video de gameplay / Trailer (YouTube o Vimeo)</label>
             <input type="url" id="videoUrl" placeholder="Ej: https://youtube.com/watch?v=...">
-            <div class="help-text">Opcional pero muy recomendado</div>
+            <div class="help-text">Opcional pero muy recomendado para mostrar tu juego en acción</div>
           </div>
         </div>
       </div>
@@ -416,11 +502,18 @@
               <div class="file-upload-icon">🎮</div>
               <div><strong>Haz clic para subir</strong> tu juego</div>
               <div class="help-text">ZIP, RAR o EXE - Máximo 500MB</div>
-              <input type="file" id="gameFile" accept=".zip,.rar,.exe" required>
+              <input type="file" id="gameFile" accept=".zip,.rar,.exe,.7z" required>
             </div>
             <div class="file-list" id="gameFileList"></div>
           </div>
 
+          <div class="form-group">
+            <label for="gameSize">Tamaño del archivo (MB)</label>
+            <input type="number" id="gameSize" placeholder="Ej: 150" step="0.1" min="0">
+            <div class="help-text">Se calculará automáticamente al subir el archivo</div>
+          </div>
+
+          <div class="section-label">Selecciona la compatibilidad de tu juego <span class="required">*</span></div>
           <div class="checkbox-group">
             <label class="checkbox-label">
               <input type="checkbox" id="windows">
@@ -525,11 +618,11 @@
           </div>
 
           <div class="form-group" id="priceGroup" style="display:none">
-            <label for="price">Precio (USD) <span class="required">*</span></label>
+            <label for="price">Precio (MXN) <span class="required">*</span></label>
             <div class="price-input">
-              <input type="number" id="price" placeholder="Ej: 9.99" step="0.01" min="0">
+              <input type="number" id="price" placeholder="Ej: 99.00" step="0.01" min="0">
             </div>
-            <div class="help-text">Pixolot cobra una comisión del 10%</div>
+            <div class="help-text">Pyxolotl cobra una comisión del 15%</div>
           </div>
 
           <div class="form-group">
@@ -560,11 +653,11 @@
             </label>
             <label class="checkbox-label">
               <input type="checkbox" id="termsGuidelines" required>
-              <span>He leído y acepto las <a href="#" style="color:var(--accent-1)">guías de publicación</a> de Pixolot</span>
+              <span>He leído y acepto los <a href="#" class="terms-link" onclick="openDevTermsModal(event)">términos y condiciones para desarrolladores</a> de Pyxolotl</span>
             </label>
             <label class="checkbox-label">
               <input type="checkbox" id="termsPrivacy" required>
-              <span>Acepto la <a href="#" style="color:var(--accent-1)">política de privacidad</a></span>
+              <span>Acepto la <a href="#" class="terms-link" onclick="openDevPrivacyModal(event)">política de privacidad</a></span>
             </label>
           </div>
         </div>
@@ -578,7 +671,7 @@
           
           <div class="preview-game-card">
             <div class="preview-thumb" id="previewThumb">?</div>
-            <h3 id="previewTitle">Título del juego</h3>
+            <h3 id="previewTitle" style="color:var(--accent-1)">Título del juego</h3>
             <p style="color:var(--muted);margin:6px 0" id="previewDesc">Descripción corta</p>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
               <span style="font-size:18px;font-weight:700;color:var(--accent-1)" id="previewPrice">GRATIS</span>
@@ -593,8 +686,8 @@
         <button type="submit" class="btn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;font-weight:700;padding:16px 48px;font-size:16px">
           🚀 Publicar juego
         </button>
-        <button type="button" class="btn btn-ghost" onclick="window.history.back()">
-          ❌ Cancelar
+        <button type="button" class="btn btn-ghost" onclick="window.location.href='index.html'">
+          ❌ Regresar al Inicio
         </button>
       </div>
     </form>
@@ -614,8 +707,225 @@
     </div>
   </div>
 
+  <!-- ============================================ -->
+  <!-- MODAL DE TÉRMINOS PARA DESARROLLADORES -->
+  <!-- ============================================ -->
+  <div id="devTermsModal" class="legal-modal">
+    <div class="legal-modal-overlay" onclick="closeDevTermsModal()"></div>
+    <div class="legal-modal-content">
+      <button class="legal-modal-close" onclick="closeDevTermsModal()" aria-label="Cerrar">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <div class="legal-modal-header">
+        <h2 class="legal-modal-title">Términos y Condiciones para Desarrolladores – Pyxolotl</h2>
+        <p class="legal-modal-subtitle">Última actualización: Noviembre 2025</p>
+      </div>
+      <div class="legal-modal-body">
+        <p>Al publicar tu juego en Pyxolotl, aceptas estos Términos y Condiciones específicos para desarrolladores.</p>
+        
+        <h3>1. Publicación de Juegos</h3>
+        <ul>
+          <li>Debes tener los derechos completos sobre el contenido que publicas</li>
+          <li>Garantizas que tu juego no infringe derechos de terceros</li>
+          <li>Debes cumplir con las leyes aplicables y las políticas de contenido</li>
+          <li>Eres responsable de proporcionar información veraz sobre tu juego</li>
+        </ul>
+        
+        <h3>2. Comisiones y Pagos</h3>
+        <ul>
+          <li>Pyxolotl retiene un <strong>15% del precio de venta</strong> de cada juego</li>
+          <li>Los pagos se realizan mensualmente una vez alcanzado el mínimo de $500 MXN</li>
+          <li>Eres responsable de tus obligaciones fiscales</li>
+          <li>Debes proporcionar datos fiscales válidos para recibir pagos</li>
+        </ul>
+        
+        <h3>3. Contenido Prohibido</h3>
+        <p>No se permite publicar juegos que contengan:</p>
+        <ul>
+          <li>Contenido ilegal, difamatorio o que incite al odio</li>
+          <li>Malware, virus o software malicioso</li>
+          <li>Contenido que viole derechos de propiedad intelectual</li>
+          <li>Material sexual explícito sin advertencias adecuadas</li>
+          <li>Contenido que promueva actividades ilegales</li>
+        </ul>
+        
+        <h3>4. Responsabilidades del Desarrollador</h3>
+        <ul>
+          <li>Proporcionar soporte técnico básico a los usuarios de tu juego</li>
+          <li>Mantener actualizada la información del juego</li>
+          <li>Responder a reportes de bugs o problemas en tiempo razonable</li>
+          <li>No manipular reseñas, calificaciones o estadísticas</li>
+        </ul>
+        
+        <h3>5. Propiedad Intelectual</h3>
+        <ul>
+          <li>Mantienes todos los derechos sobre tu juego</li>
+          <li>Otorgas a Pyxolotl una licencia para distribuir y promocionar tu juego</li>
+          <li>Pyxolotl puede usar capturas de pantalla y videos con fines promocionales</li>
+        </ul>
+        
+        <h3>6. Suspensión y Terminación</h3>
+        <p>Pyxolotl puede suspender o remover tu juego si:</p>
+        <ul>
+          <li>Violas estos términos o las políticas de contenido</li>
+          <li>Recibes múltiples quejas de usuarios</li>
+          <li>Se detecta actividad fraudulenta</li>
+          <li>Infringes derechos de terceros</li>
+        </ul>
+        
+        <h3>7. Garantías</h3>
+        <ul>
+          <li>Protección contra fraude y chargebacks</li>
+          <li>Pagos puntuales y transparentes</li>
+          <li>Estadísticas detalladas de ventas</li>
+          <li>Soporte técnico para la publicación</li>
+        </ul>
+        
+        <h3>8. Contacto</h3>
+        <p>Para preguntas sobre estos términos para desarrolladores:</p>
+        <ul>
+          <li>Email: <a href="mailto:desarrolladores@pyxolotl.com">desarrolladores@pyxolotl.com</a></li>
+          <li>Correo general: <a href="mailto:contacto@pyxolotl.com">contacto@pyxolotl.com</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- MODAL DE PRIVACIDAD PARA DESARROLLADORES -->
+  <!-- ============================================ -->
+  <div id="devPrivacyModal" class="legal-modal">
+    <div class="legal-modal-overlay" onclick="closeDevPrivacyModal()"></div>
+    <div class="legal-modal-content">
+      <button class="legal-modal-close" onclick="closeDevPrivacyModal()" aria-label="Cerrar">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <div class="legal-modal-header">
+        <h2 class="legal-modal-title">Política de Privacidad – Pyxolotl</h2>
+        <p class="legal-modal-subtitle">Última actualización: Noviembre 2025</p>
+      </div>
+      <div class="legal-modal-body">
+        <p>En Pyxolotl, respetamos tu privacidad y nos comprometemos a proteger tus datos personales. Esta Política de Privacidad explica cómo recopilamos, usamos y protegemos tu información.</p>
+        
+        <h3>1. Información que Recopilamos</h3>
+        <p><strong>Información de cuenta:</strong></p>
+        <ul>
+          <li>Nombre de usuario y correo electrónico</li>
+          <li>Contraseña (encriptada)</li>
+          <li>Fecha de registro</li>
+          <li>País/región</li>
+        </ul>
+        
+        <p><strong>Información de desarrollador:</strong></p>
+        <ul>
+          <li>Datos fiscales (para desarrolladores que publican juegos)</li>
+          <li>Información bancaria para pagos</li>
+          <li>Estadísticas de ventas</li>
+          <li>Información del estudio o desarrollador</li>
+        </ul>
+        
+        <p><strong>Datos técnicos:</strong></p>
+        <ul>
+          <li>Dirección IP</li>
+          <li>Tipo de navegador y dispositivo</li>
+          <li>Cookies y datos de uso de la plataforma</li>
+        </ul>
+        
+        <h3>2. Cómo Usamos tu Información</h3>
+        <ul>
+          <li>Gestionar tu cuenta y acceso a la plataforma</li>
+          <li>Procesar pagos por ventas de juegos</li>
+          <li>Enviar notificaciones sobre tus juegos y ventas</li>
+          <li>Mejorar la experiencia de usuario en la plataforma</li>
+          <li>Prevenir fraudes y garantizar la seguridad</li>
+          <li>Proporcionar soporte técnico</li>
+        </ul>
+        
+        <h3>3. Compartir Información</h3>
+        <p>No vendemos tus datos personales a terceros. Compartimos información únicamente con:</p>
+        <ul>
+          <li><strong>Procesadores de pago:</strong> Para gestionar tus pagos de forma segura</li>
+          <li><strong>Servicios técnicos:</strong> Hosting y servicios esenciales para el funcionamiento</li>
+          <li><strong>Autoridades legales:</strong> Cuando sea requerido por ley</li>
+        </ul>
+        
+        <h3>4. Seguridad de los Datos</h3>
+        <p>Implementamos medidas de seguridad para proteger tus datos:</p>
+        <ul>
+          <li>Encriptación SSL/TLS</li>
+          <li>Contraseñas hasheadas</li>
+          <li>Autenticación segura</li>
+          <li>Servidores protegidos</li>
+        </ul>
+        
+        <h3>5. Tus Derechos</h3>
+        <p>Tienes derecho a:</p>
+        <ul>
+          <li>Acceder a tus datos personales</li>
+          <li>Corregir información incorrecta</li>
+          <li>Solicitar la eliminación de tu cuenta</li>
+          <li>Exportar tus datos</li>
+          <li>Revocar consentimientos</li>
+        </ul>
+        <p>Para ejercer estos derechos, contáctanos en: <a href="mailto:privacidad@pyxolotl.com">privacidad@pyxolotl.com</a></p>
+        
+        <h3>6. Retención de Datos</h3>
+        <p>Conservamos tus datos mientras tu cuenta esté activa. Si eliminas tu cuenta, conservaremos datos esenciales solo por el tiempo necesario para cumplir obligaciones legales (historial de ventas, datos fiscales).</p>
+        
+        <h3>7. Contacto</h3>
+        <p>Para preguntas sobre privacidad:</p>
+        <ul>
+          <li>Email: <a href="mailto:privacidad@pyxolotl.com">privacidad@pyxolotl.com</a></li>
+          <li>Correo general: <a href="mailto:contacto@pyxolotl.com">contacto@pyxolotl.com</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // Sistema de tags
+    // ============================================
+    // FUNCIONES PARA MODALES LEGALES
+    // ============================================
+    
+    function openDevTermsModal(event) {
+      if (event) event.preventDefault();
+      document.getElementById('devTermsModal').classList.add('active');
+      document.body.classList.add('modal-open');
+    }
+    
+    function closeDevTermsModal() {
+      document.getElementById('devTermsModal').classList.remove('active');
+      document.body.classList.remove('modal-open');
+    }
+    
+    function openDevPrivacyModal(event) {
+      if (event) event.preventDefault();
+      document.getElementById('devPrivacyModal').classList.add('active');
+      document.body.classList.add('modal-open');
+    }
+    
+    function closeDevPrivacyModal() {
+      document.getElementById('devPrivacyModal').classList.remove('active');
+      document.body.classList.remove('modal-open');
+    }
+    
+    // Cerrar modales con tecla Escape
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeDevTermsModal();
+        closeDevPrivacyModal();
+      }
+    });
+
+    // ============================================
+    // SISTEMA DE TAGS
+    // ============================================
     const tags = [];
     const tagInput = document.getElementById('tagInput');
     const tagContainer = document.getElementById('tagContainer');
@@ -656,32 +966,133 @@
       tags.forEach(text => addTag(text));
     }
 
-    // Manejo de archivos
-    function handleFileUpload(inputId, listId) {
+    // ============================================
+    // MANEJO DE ARCHIVOS CON PREVIEW DE IMAGEN
+    // ============================================
+    
+    // Variable global para almacenar screenshots
+    let screenshotFiles = [];
+
+    function handleFileUpload(inputId, listId, showPreview = false) {
       const input = document.getElementById(inputId);
       const list = document.getElementById(listId);
       
       input.addEventListener('change', () => {
         list.innerHTML = '';
-        Array.from(input.files).forEach(file => {
+        
+        // Si es screenshots, validar cantidad
+        if (inputId === 'screenshots') {
+          screenshotFiles = Array.from(input.files);
+          validateScreenshots();
+        }
+        
+        Array.from(input.files).forEach((file, index) => {
           const item = document.createElement('div');
           item.className = 'file-item';
-          item.innerHTML = `
-            <span>📄</span>
-            <span style="flex:1">${file.name}</span>
-            <span style="color:var(--muted)">${(file.size / 1024 / 1024).toFixed(2)} MB</span>
-            <button type="button" class="file-item-remove">🗑️</button>
-          `;
+          item.dataset.index = index;
+          
+          // Si es imagen y queremos preview
+          if (showPreview && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              item.innerHTML = `
+                <img src="${e.target.result}" class="file-item-preview" alt="Preview">
+                <span style="flex:1">${file.name}</span>
+                <span style="color:var(--muted)">${(file.size / 1024 / 1024).toFixed(2)} MB</span>
+                <button type="button" class="file-item-remove" onclick="removeFileItem('${inputId}', ${index}, this)">🗑️</button>
+              `;
+              
+              // Actualizar preview del juego si es imagen principal
+              if (inputId === 'mainImage') {
+                updatePreviewImage(e.target.result);
+              }
+            };
+            reader.readAsDataURL(file);
+          } else {
+            item.innerHTML = `
+              <span>📄</span>
+              <span style="flex:1">${file.name}</span>
+              <span style="color:var(--muted)">${(file.size / 1024 / 1024).toFixed(2)} MB</span>
+              <button type="button" class="file-item-remove" onclick="removeFileItem('${inputId}', ${index}, this)">🗑️</button>
+            `;
+            
+            // Actualizar tamaño del archivo si es gameFile
+            if (inputId === 'gameFile') {
+              document.getElementById('gameSize').value = (file.size / 1024 / 1024).toFixed(2);
+            }
+          }
+          
           list.appendChild(item);
         });
       });
     }
 
-    handleFileUpload('mainImage', 'mainImageList');
-    handleFileUpload('screenshots', 'screenshotsList');
-    handleFileUpload('gameFile', 'gameFileList');
+    function removeFileItem(inputId, index, button) {
+      const item = button.closest('.file-item');
+      item.remove();
+      
+      // Si era imagen principal, resetear preview
+      if (inputId === 'mainImage') {
+        document.getElementById('previewThumb').innerHTML = '?';
+        document.getElementById('mainImage').value = '';
+      }
+      
+      // Si era gameFile, resetear tamaño
+      if (inputId === 'gameFile') {
+        document.getElementById('gameSize').value = '';
+        document.getElementById('gameFile').value = '';
+      }
+      
+      // Si era screenshots, actualizar array y validar
+      if (inputId === 'screenshots') {
+        screenshotFiles.splice(index, 1);
+        validateScreenshots();
+        // Re-renderizar lista
+        const list = document.getElementById('screenshotsList');
+        list.innerHTML = '';
+        screenshotFiles.forEach((file, i) => {
+          const newItem = document.createElement('div');
+          newItem.className = 'file-item';
+          newItem.dataset.index = i;
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            newItem.innerHTML = `
+              <img src="${e.target.result}" class="file-item-preview" alt="Preview">
+              <span style="flex:1">${file.name}</span>
+              <span style="color:var(--muted)">${(file.size / 1024 / 1024).toFixed(2)} MB</span>
+              <button type="button" class="file-item-remove" onclick="removeFileItem('screenshots', ${i}, this)">🗑️</button>
+            `;
+          };
+          reader.readAsDataURL(file);
+          list.appendChild(newItem);
+        });
+      }
+    }
 
-    // Mostrar/ocultar campo de precio
+    function validateScreenshots() {
+      const errorEl = document.getElementById('screenshotsError');
+      if (screenshotFiles.length !== 3) {
+        errorEl.classList.add('show');
+        return false;
+      } else {
+        errorEl.classList.remove('show');
+        return true;
+      }
+    }
+
+    function updatePreviewImage(src) {
+      const previewThumb = document.getElementById('previewThumb');
+      previewThumb.innerHTML = `<img src="${src}" alt="Preview">`;
+    }
+
+    // Inicializar uploads con preview para imágenes
+    handleFileUpload('mainImage', 'mainImageList', true);
+    handleFileUpload('screenshots', 'screenshotsList', true);
+    handleFileUpload('gameFile', 'gameFileList', false);
+
+    // ============================================
+    // MOSTRAR/OCULTAR CAMPO DE PRECIO
+    // ============================================
     document.querySelectorAll('input[name="pricing"]').forEach(radio => {
       radio.addEventListener('change', () => {
         const priceGroup = document.getElementById('priceGroup');
@@ -690,7 +1101,9 @@
       });
     });
 
-    // Actualizar vista previa en tiempo real
+    // ============================================
+    // ACTUALIZAR VISTA PREVIA EN TIEMPO REAL
+    // ============================================
     function updatePreview() {
       const title = document.getElementById('gameTitle').value || 'Título del juego';
       const shortDesc = document.getElementById('shortDesc').value || 'Descripción corta';
@@ -699,14 +1112,19 @@
       
       document.getElementById('previewTitle').textContent = title;
       document.getElementById('previewDesc').textContent = shortDesc;
-      document.getElementById('previewThumb').textContent = title[0]?.toUpperCase() || '?';
+      
+      // Solo actualizar inicial si no hay imagen
+      const previewThumb = document.getElementById('previewThumb');
+      if (!previewThumb.querySelector('img')) {
+        previewThumb.textContent = title[0]?.toUpperCase() || '?';
+      }
       
       if (pricing === 'free') {
         document.getElementById('previewPrice').textContent = '🎁 GRATIS';
       } else if (pricing === 'pwyw') {
         document.getElementById('previewPrice').textContent = '💝 Paga lo que quieras';
       } else {
-        document.getElementById('previewPrice').textContent = price ? `$${parseFloat(price).toFixed(2)}` : '$0.00';
+        document.getElementById('previewPrice').textContent = price ? `$${parseFloat(price).toFixed(2)} MXN` : '$0.00 MXN';
       }
     }
 
@@ -714,9 +1132,41 @@
     document.getElementById('shortDesc').addEventListener('input', updatePreview);
     document.getElementById('price').addEventListener('input', updatePreview);
 
-    // Envío del formulario
-    document.getElementById('publishForm').addEventListener('submit', (e) => {
+    // ============================================
+    // VERIFICACIÓN DE USUARIO AL CARGAR
+    // ============================================
+    document.addEventListener('DOMContentLoaded', function() {
+      const user = JSON.parse(localStorage.getItem('current_user') || '{}');
+      const token = localStorage.getItem('auth_token');
+      
+      // Verificar si el usuario está logueado Y es desarrollador
+      if (!user || !token) {
+        alert('❌ Debes iniciar sesión para publicar un juego');
+        window.location.href = 'inicio.html';
+        return;
+      }
+      
+      if (user.tipo_cuenta !== 'desarrollador' && user.tipo_cuenta !== 'administrador') {
+        alert('❌ Solo los desarrolladores pueden publicar juegos. Por favor, registra una cuenta de desarrollador.');
+        window.location.href = 'index.html';
+        return;
+      }
+    });
+
+    // ============================================
+    // ENVÍO DEL FORMULARIO
+    // ============================================
+    document.getElementById('publishForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+      
+      // Verificar tipo de usuario nuevamente
+      const user = JSON.parse(localStorage.getItem('current_user') || '{}');
+      const token = localStorage.getItem('auth_token');
+      
+      if (!user || !token || (user.tipo_cuenta !== 'desarrollador' && user.tipo_cuenta !== 'administrador')) {
+        alert('❌ No tienes permisos para publicar juegos');
+        return;
+      }
       
       // Validar que al menos una plataforma esté seleccionada
       const platforms = ['windows', 'mac', 'linux', 'web'];
@@ -727,49 +1177,140 @@
         return;
       }
       
-      // Recopilar datos
-      const formData = {
-        title: document.getElementById('gameTitle').value,
-        shortDesc: document.getElementById('shortDesc').value,
-        fullDesc: document.getElementById('fullDesc').value,
-        genre: document.getElementById('genre').value,
-        releaseDate: document.getElementById('releaseDate').value,
-        tags: tags,
-        pricing: document.querySelector('input[name="pricing"]:checked').value,
-        price: document.getElementById('price').value,
-        devName: document.getElementById('devName').value,
-        website: document.getElementById('website').value,
-        platforms: platforms.filter(p => document.getElementById(p).checked),
-        requirements: {
-          min: {
-            os: document.getElementById('minOS').value,
-            cpu: document.getElementById('minCPU').value,
-            ram: document.getElementById('minRAM').value,
-            gpu: document.getElementById('minGPU').value,
-            storage: document.getElementById('minStorage').value
-          },
-          rec: {
-            os: document.getElementById('recOS').value,
-            cpu: document.getElementById('recCPU').value,
-            ram: document.getElementById('recRAM').value,
-            gpu: document.getElementById('recGPU').value,
-            storage: document.getElementById('recStorage').value
-          }
+      // Validar screenshots (debe ser exactamente 3)
+      if (!validateScreenshots()) {
+        alert('⚠️ Debes subir exactamente 3 capturas de pantalla');
+        return;
+      }
+      
+      // Validar archivos requeridos
+      const mainImage = document.getElementById('mainImage').files[0];
+      const gameFile = document.getElementById('gameFile').files[0];
+      
+      if (!mainImage) {
+        alert('⚠️ Debes subir una imagen principal');
+        return;
+      }
+      
+      if (!gameFile) {
+        alert('⚠️ Debes subir el archivo del juego');
+        return;
+      }
+      
+      // Construir requisitos como JSON
+      const requisitos = JSON.stringify({
+        minimos: {
+          os: document.getElementById('minOS').value,
+          cpu: document.getElementById('minCPU').value,
+          ram: document.getElementById('minRAM').value,
+          gpu: document.getElementById('minGPU').value,
+          storage: document.getElementById('minStorage').value
         },
-        videoUrl: document.getElementById('videoUrl').value,
-        submittedAt: new Date().toISOString()
-      };
+        recomendados: {
+          os: document.getElementById('recOS').value,
+          cpu: document.getElementById('recCPU').value,
+          ram: document.getElementById('recRAM').value,
+          gpu: document.getElementById('recGPU').value,
+          storage: document.getElementById('recStorage').value
+        },
+        plataformas: platforms.filter(p => document.getElementById(p).checked)
+      });
       
-      // Guardar en localStorage (simulación)
-      const submissions = JSON.parse(localStorage.getItem('pixolot_submissions') || '[]');
-      submissions.push(formData);
-      localStorage.setItem('pixolot_submissions', JSON.stringify(submissions));
+      // Determinar precio según modelo de distribución
+      const pricing = document.querySelector('input[name="pricing"]:checked').value;
+      let finalPrice = 0;
+      if (pricing === 'paid') {
+        finalPrice = parseFloat(document.getElementById('price').value) || 0;
+      }
       
-      console.log('📝 Juego enviado:', formData);
+      // Crear FormData para envío multipart
+      const formData = new FormData();
       
-      // Mostrar modal de éxito
-      document.getElementById('successModal').classList.add('show');
+      // Agregar campos básicos
+      formData.append('titulo', document.getElementById('gameTitle').value);
+      formData.append('descripcion', document.getElementById('fullDesc').value);
+      formData.append('genero', document.getElementById('genre').value);
+      formData.append('precio', finalPrice);
+      formData.append('requisitos', requisitos);
+      formData.append('tipo_descarga', 'archivo');
+      
+      // Agregar archivos
+      formData.append('portada', mainImage);
+      formData.append('archivo_juego', gameFile);
+      
+      // Agregar screenshots
+      const screenshotInput = document.getElementById('screenshots');
+      for (let i = 0; i < screenshotInput.files.length; i++) {
+        formData.append('screenshots', screenshotInput.files[i]);
+      }
+      
+      // Agregar trailer si existe
+      const trailerInput = document.getElementById('trailer');
+      if (trailerInput.files[0]) {
+        formData.append('trailer', trailerInput.files[0]);
+      }
+      
+      // Link externo (opcional)
+      const linkExterno = document.getElementById('gameLink')?.value;
+      if (linkExterno) {
+        formData.append('link_externo', linkExterno);
+      }
+      
+      // Mostrar mensaje de carga
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const originalText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = '📤 Publicando...';
+      
+      try {
+        // Hacer la petición al backend
+        const response = await fetch(`${window.API_URL || 'https://pyxolotl-production.up.railway.app'}/api/juegos/publicar`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          // Éxito - mostrar modal
+          console.log('✅ Juego publicado:', data);
+          document.getElementById('successModal').classList.add('show');
+          
+          // Limpiar formulario
+          document.getElementById('publishForm').reset();
+          tags.length = 0;
+          updateTagDisplay();
+        } else {
+          // Error del servidor
+          console.error('❌ Error:', data);
+          alert(`❌ Error al publicar: ${data.detail || data.message || 'Error desconocido'}`);
+        }
+        
+      } catch (error) {
+        // Error de red
+        console.error('❌ Error de red:', error);
+        alert('❌ Error de conexión. Por favor, intenta de nuevo.');
+      } finally {
+        // Restaurar botón
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
     });
+
+    // ============================================
+    // MENÚ MÓVIL
+    // ============================================
+    const menuBtn = document.getElementById('menuBtn');
+    const nav = document.querySelector('.nav');
+    
+    if (menuBtn && nav) {
+      menuBtn.addEventListener('click', function() {
+        nav.classList.toggle('open');
+      });
+    }
   </script>
 </body>
 </html>
