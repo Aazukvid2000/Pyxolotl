@@ -402,7 +402,7 @@
       <div class="footer-column">
         <h4 class="footer-heading">DESARROLLADORES</h4>
         <ul class="footer-links">
-          <li><a href="publicar-juego.html">Publicar juego</a></li>
+          <li><a href="publicar-juego.html" id="footerPublishLink">Publicar juego</a></li>
           <li><a href="#about">Acerca de Pyxolotl</a></li>
         </ul>
       </div>
@@ -1854,6 +1854,7 @@
       const developerPromo = document.getElementById('developerPromo');
       const publicarBtns = document.querySelectorAll('#publicarBtn, #publicarBtnHero');
       const noGamesPublishBtn = document.getElementById('noGamesPublishBtn');
+      const footerPublishLink = document.getElementById('footerPublishLink');
       
       if (user && token) {
         // Usuario logueado
@@ -1873,14 +1874,17 @@
         });
         
         // Verificar tipo de cuenta
-        if (user.tipo_cuenta === 'desarrollador') {
-          // ES DESARROLLADOR - Mostrar botones de publicar, ocultar promo
+        if (user.tipo_cuenta === 'desarrollador' || user.tipo_cuenta === 'administrador') {
+          // ES DESARROLLADOR/ADMIN - Mostrar botones de publicar
           if (developerPromo) developerPromo.style.display = 'none';
           publicarBtns.forEach(btn => {
             btn.style.display = 'inline-block';
           });
           if (noGamesPublishBtn) {
             noGamesPublishBtn.style.display = 'inline-block';
+          }
+          if (footerPublishLink) {
+            footerPublishLink.parentElement.style.display = 'block';
           }
         } else {
           // ES COMPRADOR - Ocultar botones, mostrar promo
@@ -1890,6 +1894,9 @@
           });
           if (noGamesPublishBtn) {
             noGamesPublishBtn.style.display = 'none';
+          }
+          if (footerPublishLink) {
+            footerPublishLink.parentElement.style.display = 'none';
           }
         }
       } else {
@@ -1901,12 +1908,15 @@
         // Mostrar mensaje promocional
         if (developerPromo) developerPromo.style.display = 'block';
         
-        // Ocultar TODOS los botones de publicar
+        // Ocultar TODOS los botones de publicar (incluido footer)
         publicarBtns.forEach(btn => {
           btn.style.display = 'none';
         });
         if (noGamesPublishBtn) {
           noGamesPublishBtn.style.display = 'none';
+        }
+        if (footerPublishLink) {
+          footerPublishLink.parentElement.style.display = 'none';
         }
       }
     }

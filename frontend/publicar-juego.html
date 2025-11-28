@@ -1133,10 +1133,40 @@
     document.getElementById('price').addEventListener('input', updatePreview);
 
     // ============================================
+    // VERIFICACIÓN DE USUARIO AL CARGAR
+    // ============================================
+    document.addEventListener('DOMContentLoaded', function() {
+      const user = JSON.parse(localStorage.getItem('current_user') || '{}');
+      const token = localStorage.getItem('auth_token');
+      
+      // Verificar si el usuario está logueado Y es desarrollador
+      if (!user || !token) {
+        alert('❌ Debes iniciar sesión para publicar un juego');
+        window.location.href = 'inicio.html';
+        return;
+      }
+      
+      if (user.tipo_cuenta !== 'desarrollador' && user.tipo_cuenta !== 'administrador') {
+        alert('❌ Solo los desarrolladores pueden publicar juegos. Por favor, registra una cuenta de desarrollador.');
+        window.location.href = 'index.html';
+        return;
+      }
+    });
+
+    // ============================================
     // ENVÍO DEL FORMULARIO
     // ============================================
-    document.getElementById('publishForm').addEventListener('submit', (e) => {
+    document.getElementById('publishForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+      
+      // Verificar tipo de usuario nuevamente
+      const user = JSON.parse(localStorage.getItem('current_user') || '{}');
+      const token = localStorage.getItem('auth_token');
+      
+      if (!user || !token || (user.tipo_cuenta !== 'desarrollador' && user.tipo_cuenta !== 'administrador')) {
+        alert('❌ No tienes permisos para publicar juegos');
+        return;
+      }
       
       // Validar que al menos una plataforma esté seleccionada
       const platforms = ['windows', 'mac', 'linux', 'web'];
@@ -1150,6 +1180,20 @@
       // Validar screenshots (debe ser exactamente 3)
       if (!validateScreenshots()) {
         alert('⚠️ Debes subir exactamente 3 capturas de pantalla');
+        return;
+      }
+      
+      // Validar archivos requeridos
+      const mainImage = document.getElementById('mainImage').files[0];
+      const gameFile = document.getElementById('gameFile').files[0];
+      
+      if (!mainImage) {
+        alert('⚠️ Debes subir una imagen principal');
+        return;
+      }
+      
+      if (!gameFile) {
+        alert('⚠️ Debes subir el archivo del juego');
         return;
       }
       
@@ -1179,47 +1223,81 @@
         finalPrice = parseFloat(document.getElementById('price').value) || 0;
       }
       
-      // Recopilar datos según la estructura de la BD
-      const formData = {
-        // Campos de la tabla juegos
-        titulo: document.getElementById('gameTitle').value,
-        descripcion: document.getElementById('fullDesc').value,
-        descripcion_corta: document.getElementById('shortDesc').value,
-        genero: document.getElementById('genre').value,
-        precio: finalPrice,
-        requisitos: requisitos,
-        
-        // Multimedia
-        portada_url: '', // Se llenará al subir la imagen
-        screenshots_urls: '[]', // Se llenará con array JSON de URLs
-        trailer_url: document.getElementById('videoUrl').value || null,
-        
-        // Archivo del juego
-        tipo_descarga: 'archivo',
-        archivo_juego_url: '', // Se llenará al subir
-        tamano_mb: parseFloat(document.getElementById('gameSize').value) || 0,
-        
-        // Estado inicial
-        estado: 'en_revision',
-        
-        // Metadata adicional
-        tags: tags,
-        devName: document.getElementById('devName').value,
-        website: document.getElementById('website').value,
-        releaseDate: document.getElementById('releaseDate').value,
-        
-        submittedAt: new Date().toISOString()
-      };
+      // Crear FormData para envío multipart
+      const formData = new FormData();
       
-      // Guardar en localStorage (simulación)
-      const submissions = JSON.parse(localStorage.getItem('pyxolotl_submissions') || '[]');
-      submissions.push(formData);
-      localStorage.setItem('pyxolotl_submissions', JSON.stringify(submissions));
+      // Agregar campos básicos
+      formData.append('titulo', document.getElementById('gameTitle').value);
+      formData.append('descripcion', document.getElementById('fullDesc').value);
+      formData.append('genero', document.getElementById('genre').value);
+      formData.append('precio', finalPrice);
+      formData.append('requisitos', requisitos);
+      formData.append('tipo_descarga', 'archivo');
       
-      console.log('📝 Juego enviado:', formData);
+      // Agregar archivos
+      formData.append('portada', mainImage);
+      formData.append('archivo_juego', gameFile);
       
-      // Mostrar modal de éxito
-      document.getElementById('successModal').classList.add('show');
+      // Agregar screenshots
+      const screenshotInput = document.getElementById('screenshots');
+      for (let i = 0; i < screenshotInput.files.length; i++) {
+        formData.append('screenshots', screenshotInput.files[i]);
+      }
+      
+      // Agregar trailer si existe
+      const trailerInput = document.getElementById('trailer');
+      if (trailerInput.files[0]) {
+        formData.append('trailer', trailerInput.files[0]);
+      }
+      
+      // Link externo (opcional)
+      const linkExterno = document.getElementById('gameLink')?.value;
+      if (linkExterno) {
+        formData.append('link_externo', linkExterno);
+      }
+      
+      // Mostrar mensaje de carga
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const originalText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = '📤 Publicando...';
+      
+      try {
+        // Hacer la petición al backend
+        const response = await fetch(`${window.API_URL || 'https://pyxolotl-production.up.railway.app'}/api/juegos/publicar`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          // Éxito - mostrar modal
+          console.log('✅ Juego publicado:', data);
+          document.getElementById('successModal').classList.add('show');
+          
+          // Limpiar formulario
+          document.getElementById('publishForm').reset();
+          tags.length = 0;
+          updateTagDisplay();
+        } else {
+          // Error del servidor
+          console.error('❌ Error:', data);
+          alert(`❌ Error al publicar: ${data.detail || data.message || 'Error desconocido'}`);
+        }
+        
+      } catch (error) {
+        // Error de red
+        console.error('❌ Error de red:', error);
+        alert('❌ Error de conexión. Por favor, intenta de nuevo.');
+      } finally {
+        // Restaurar botón
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
     });
 
     // ============================================
