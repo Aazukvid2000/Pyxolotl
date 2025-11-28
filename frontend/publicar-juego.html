@@ -890,6 +890,15 @@
 
   <script>
     // ============================================
+    // CONFIGURACIÓN DE API
+    // ============================================
+    window.API_URL = window.location.hostname === 'localhost' 
+      ? 'http://localhost:8000'
+      : 'https://pyxolotl-production.up.railway.app';
+    
+    console.log('🔧 API URL configurado:', window.API_URL);
+    
+    // ============================================
     // FUNCIONES PARA MODALES LEGALES
     // ============================================
     
@@ -1240,20 +1249,22 @@
       
       // Agregar screenshots
       const screenshotInput = document.getElementById('screenshots');
-      for (let i = 0; i < screenshotInput.files.length; i++) {
-        formData.append('screenshots', screenshotInput.files[i]);
+      if (screenshotInput && screenshotInput.files.length > 0) {
+        for (let i = 0; i < screenshotInput.files.length; i++) {
+          formData.append('screenshots', screenshotInput.files[i]);
+        }
       }
       
-      // Agregar trailer si existe
-      const trailerInput = document.getElementById('trailer');
-      if (trailerInput.files[0]) {
-        formData.append('trailer', trailerInput.files[0]);
+      // Agregar trailer si existe (video es opcional)
+      const videoUrl = document.getElementById('videoUrl');
+      if (videoUrl && videoUrl.value) {
+        formData.append('trailer_url', videoUrl.value);
       }
       
-      // Link externo (opcional)
-      const linkExterno = document.getElementById('gameLink')?.value;
-      if (linkExterno) {
-        formData.append('link_externo', linkExterno);
+      // Link externo (opcional) - Usar el campo correcto
+      const gameLink = document.getElementById('gameLink');
+      if (gameLink && gameLink.value) {
+        formData.append('link_externo', gameLink.value);
       }
       
       // Mostrar mensaje de carga
