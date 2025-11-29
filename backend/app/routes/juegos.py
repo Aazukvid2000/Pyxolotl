@@ -53,66 +53,105 @@ async def publicar_juego(
 ):
     """Desarrollador publica un nuevo juego"""
     
-    # Crear registro inicial del juego
-    new_game = Juego(
-        titulo=titulo,
-        descripcion=descripcion,
-        genero=genero,
-        precio=precio,
-        requisitos=requisitos,
-        desarrollador_id=current_user.id,
-        estado=EstadoJuego.EN_REVISION,
-        portada_url="temp",  # Se actualiza después
-        tipo_descarga=TipoDescarga(tipo_descarga)
-    )
-    
-    db.add(new_game)
-    db.flush()  # Obtener ID sin commit
-    
     try:
-        # Guardar portada
-        portada_url = await file_service.save_image(portada, new_game.id, "portada")
-        new_game.portada_url = portada_url
+        # ========== VALIDACIONES PREVIAS ==========
+        # Validar archivo del juego o link ANTES de crear el registro
+        archivo_juego_url = None
+        tamano_mb = None
         
-        # Guardar screenshots
-        screenshots_urls = []
-        for idx, screenshot in enumerate(screenshots):
-            url = await file_service.save_image(screenshot, new_game.id, f"screenshot_{idx}")
-            screenshots_urls.append(url)
-        new_game.screenshots_urls = json.dumps(screenshots_urls)
-        
-        # Guardar trailer si existe
-        if trailer:
-            trailer_url = await file_service.save_video(trailer, new_game.id)
-            new_game.trailer_url = trailer_url
-        
-        # Guardar archivo del juego o link
         if tipo_descarga == "archivo":
             if not archivo_juego:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="Debes subir el archivo del juego"
                 )
-            
-            game_url, size_mb = await file_service.save_game_file(archivo_juego, new_game.id)
-            new_game.archivo_juego_url = game_url
-            new_game.tamano_mb = size_mb
-            
+            # Validar que el archivo tenga contenido
+            if archivo_juego.size == 0:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="El archivo del juego está vacío"
+                )
         else:  # link externo
             if not link_externo:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="Debes proporcionar un link externo"
                 )
-            new_game.archivo_juego_url = link_externo
+            archivo_juego_url = link_externo
         
+        # ========== SUBIR ARCHIVOS PRIMERO (sin ID de juego) ==========
+        # Usamos un ID temporal basado en timestamp para organizar archivos
+        import time
+        temp_id = f"temp_{current_user.id}_{int(time.time())}"
+        
+        # Guardar portada
+        logger.info(f"Subiendo portada para juego temporal {temp_id}")
+        portada_url = await file_service.save_image(portada, None, "portada")
+        
+        # Guardar screenshots
+        screenshots_urls = []
+        for idx, screenshot in enumerate(screenshots):
+            # Verificar que el screenshot tenga contenido
+            if screenshot.size and screenshot.size > 0:
+                url = await file_service.save_image(screenshot, None, f"screenshot_{idx}")
+                screenshots_urls.append(url)
+        
+        # Guardar trailer si existe
+        trailer_url = None
+        if trailer and trailer.size and trailer.size > 0:
+            logger.info(f"Subiendo trailer para juego temporal {temp_id}")
+            trailer_url = await file_service.save_video(trailer, 0)
+        
+        # Guardar archivo del juego si es tipo archivo
+        if tipo_descarga == "archivo" and archivo_juego:
+            logger.info(f"Subiendo archivo del juego para {temp_id}")
+            try:
+                game_url, size_mb = await file_service.save_game_file(archivo_juego, 0)
+                archivo_juego_url = game_url
+                tamano_mb = size_mb
+                logger.info(f"Archivo del juego subido exitosamente: {game_url}")
+            except Exception as upload_error:
+                logger.error(f"Error al subir archivo del juego: {str(upload_error)}")
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail=f"Error al subir el archivo del juego: {str(upload_error)}"
+                )
+        
+        # ========== VERIFICAR QUE TENEMOS URL DEL ARCHIVO ==========
+        if not archivo_juego_url:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="No se pudo obtener la URL del archivo del juego"
+            )
+        
+        # ========== CREAR REGISTRO EN BD (con todos los datos) ==========
+        new_game = Juego(
+            titulo=titulo,
+            descripcion=descripcion,
+            genero=genero,
+            precio=precio,
+            requisitos=requisitos,
+            desarrollador_id=current_user.id,
+            estado=EstadoJuego.EN_REVISION,
+            portada_url=portada_url,
+            screenshots_urls=json.dumps(screenshots_urls) if screenshots_urls else None,
+            trailer_url=trailer_url,
+            tipo_descarga=TipoDescarga(tipo_descarga),
+            archivo_juego_url=archivo_juego_url,
+            tamano_mb=tamano_mb
+        )
+        
+        db.add(new_game)
         db.commit()
         db.refresh(new_game)
         
-        logger.info(f"Juego publicado: {titulo} por {current_user.email}")
+        logger.info(f"Juego publicado exitosamente: {titulo} (ID: {new_game.id}) por {current_user.email}")
         
         return new_game
         
+    except HTTPException:
+        # Re-lanzar excepciones HTTP sin modificar
+        raise
     except Exception as e:
         db.rollback()
         logger.error(f"Error al publicar juego: {str(e)}")
