@@ -12,6 +12,7 @@
     .juego-pendiente{background:var(--glass);padding:20px;margin:15px 0;border-radius:10px;border-left:4px solid var(--accent-1)}
     .btn-approve{background:#4CAF50;color:white}
     .btn-reject{background:#ff4757;color:white}
+    .btn-download{background:var(--glass);color:var(--accent-1);text-decoration:none;display:inline-block}
   </style>
 </head>
 <body>
@@ -24,7 +25,7 @@
       </div>
     </div>
     <nav class="nav">
-      <a href="/index.html">Tienda</a>
+      <a href="index.html">Tienda</a>
       <a href="#" onclick="logout()">Cerrar sesión</a>
     </nav>
   </header>
@@ -57,11 +58,28 @@
 
   <script src="api.js"></script>
   <script>
+    // Función para construir la URL de descarga correctamente
+    function getDownloadUrl(archivoUrl) {
+      // Si ya es una URL completa (Cloudinary), usarla directamente
+      if (archivoUrl && (archivoUrl.startsWith('http://') || archivoUrl.startsWith('https://'))) {
+        return archivoUrl;
+      }
+      
+      // Si es una ruta relativa, construir la URL del backend
+      // La URL del archivo viene como "/uploads/juegos/..." 
+      // Necesitamos agregar el dominio del backend
+      const backendUrl = window.location.hostname === 'localhost' 
+        ? 'http://localhost:8000'
+        : 'https://pyxolotl-production.up.railway.app';
+      
+      return `${backendUrl}${archivoUrl}`;
+    }
+
     async function cargarJuegosPendientes() {
       const user = getCurrentUser();
       if (!user || user.tipo_cuenta !== 'administrador') {
         alert('Acceso denegado');
-        window.location.href = '/pixolot.html';
+        window.location.href = 'index.html';
         return;
       }
 
@@ -76,30 +94,36 @@
           return;
         }
 
-        container.innerHTML = juegos.map(juego => `
-          <div class="juego-pendiente">
-            <h3>${juego.titulo}</h3>
-            <p><strong>Desarrollador:</strong> ${juego.desarrollador?.nombre || 'N/A'}</p>
-            <p><strong>Género:</strong> ${juego.genero} | <strong>Precio:</strong> $${juego.precio}</p>
-            <p style="color:var(--muted)">${juego.descripcion.substring(0, 150)}...</p>
-            
-            <div style="margin-top:15px;display:flex;gap:10px">
-              <button class="btn btn-approve" onclick="aprobarJuego(${juego.id})">
-                ✅ Aprobar
-              </button>
-              <button class="btn btn-reject" onclick="rechazarJuego(${juego.id})">
-                ❌ Rechazar
-              </button>
-              <a href="${juego.archivo_juego_url}" target="_blank" class="btn btn-ghost">
-                📥 Descargar y Probar
-              </a>
+        container.innerHTML = juegos.map(juego => {
+          // Construir URL de descarga
+          const downloadUrl = getDownloadUrl(juego.archivo_juego_url);
+          
+          return `
+            <div class="juego-pendiente">
+              <h3>${juego.titulo}</h3>
+              <p><strong>Desarrollador:</strong> ${juego.desarrollador?.nombre || 'N/A'}</p>
+              <p><strong>Género:</strong> ${juego.genero} | <strong>Precio:</strong> $${juego.precio}</p>
+              <p style="color:var(--muted)">${juego.descripcion.substring(0, 150)}...</p>
+              
+              <div style="margin-top:15px;display:flex;gap:10px;flex-wrap:wrap">
+                <button class="btn btn-approve" onclick="aprobarJuego(${juego.id})">
+                  ✅ Aprobar
+                </button>
+                <button class="btn btn-reject" onclick="rechazarJuego(${juego.id})">
+                  ❌ Rechazar
+                </button>
+                <a href="${downloadUrl}" download class="btn btn-download" target="_blank">
+                  📥 Descargar y Probar
+                </a>
+              </div>
             </div>
-          </div>
-        `).join('');
+          `;
+        }).join('');
 
       } catch (error) {
         console.error('Error:', error);
-        alert('Error al cargar juegos');
+        document.getElementById('juegosPendientes').innerHTML = 
+          '<p style="color:#ff4757;text-align:center;padding:40px">Error al cargar juegos: ' + error.message + '</p>';
       }
     }
 
@@ -107,11 +131,17 @@
       if (!confirm('¿Aprobar este juego?')) return;
 
       try {
-        await apiAprobarJuego(id, true);
-        alert('Juego aprobado y publicado');
-        cargarJuegosPendientes();
+        const result = await apiAprobarJuego(id, true);
+        
+        if (result.success) {
+          alert('✅ Juego aprobado y publicado');
+          cargarJuegosPendientes();
+        } else {
+          alert('Error: ' + (result.detail || result.message || 'No se pudo aprobar'));
+        }
       } catch (error) {
-        alert('Error al aprobar');
+        console.error('Error al aprobar:', error);
+        alert('Error al aprobar: ' + error.message);
       }
     }
 
@@ -120,14 +150,21 @@
       if (!motivo) return;
 
       try {
-        await apiAprobarJuego(id, false, motivo);
-        alert('Juego rechazado');
-        cargarJuegosPendientes();
+        const result = await apiAprobarJuego(id, false, motivo);
+        
+        if (result.success) {
+          alert('Juego rechazado. El desarrollador será notificado.');
+          cargarJuegosPendientes();
+        } else {
+          alert('Error: ' + (result.detail || result.message || 'No se pudo rechazar'));
+        }
       } catch (error) {
-        alert('Error al rechazar');
+        console.error('Error al rechazar:', error);
+        alert('Error al rechazar: ' + error.message);
       }
     }
 
+    // Inicializar
     cargarJuegosPendientes();
   </script>
 </body>

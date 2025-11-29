@@ -2167,6 +2167,21 @@
     // INICIALIZACIÓN CRÍTICA - DETECTAR SESIÓN
     // ============================================
     
+    // Función para actualizar el contador del carrito
+    function actualizarContadorCarrito() {
+      try {
+        const cart = localStorage.getItem('cart');
+        const cartItems = cart ? JSON.parse(cart) : [];
+        const cartCount = document.getElementById('cartCount');
+        
+        if (cartCount) {
+          cartCount.textContent = cartItems.length;
+        }
+      } catch (error) {
+        console.error('Error al actualizar contador del carrito:', error);
+      }
+    }
+    
     // Función principal de inicialización
     async function initializeApp() {
       console.log('Inicializando aplicación...');
