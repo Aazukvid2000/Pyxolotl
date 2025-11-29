@@ -5,7 +5,7 @@ Publicar, buscar, filtrar, aprobar/rechazar juegos
 
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Form
 from sqlalchemy.orm import Session
-from sqlalchemy import or_, and_
+from sqlalchemy import or_, and_, func
 from typing import List, Optional
 from app.database import get_db
 from app.models import Usuario, Juego, EstadoJuego, TipoDescarga, BibliotecaItem
@@ -287,7 +287,7 @@ async def aprobar_juego(
         # Aprobar
         juego.estado = EstadoJuego.APROBADO
         juego.aprobado_por_id = current_admin.id
-        juego.fecha_aprobacion = db.func.now()
+        juego.fecha_aprobacion = func.now()
         
         # Enviar email al desarrollador
         desarrollador = db.query(Usuario).filter(Usuario.id == juego.desarrollador_id).first()
