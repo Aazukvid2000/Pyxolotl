@@ -1657,6 +1657,14 @@
       try {
         const response = await apiGetJuegos({ estado: 'aprobado' });
         
+        // DEBUG: Ver qué devuelve la API
+        console.log('=== DEBUG: Respuesta de API juegos ===');
+        console.log('Response:', response);
+        if (response && response.length > 0) {
+          console.log('Primer juego:', response[0]);
+          console.log('Tiene ID?:', response[0].id);
+        }
+        
         loader.style.display = 'none';
 
         if (!response || response.length === 0) {
@@ -1732,10 +1740,13 @@
         const downloadBtn = document.createElement('button');
         downloadBtn.className = 'btn';
         downloadBtn.style.cssText = 'width:100%;margin-top:12px;background:linear-gradient(90deg,#4CAF50,#45a049);color:#fff;font-weight:600';
-        downloadBtn.textContent = '⬇️ Obtener gratis';
+        downloadBtn.textContent = '👁️ Ver detalles';
         downloadBtn.onclick = (e) => {
           e.stopPropagation();
-          handleFreeGame(game.id);
+          console.log('Ver detalles clicked, game.id:', game.id);
+          if (game.id) {
+            window.location.href = `producto-detalle.html?id=${game.id}`;
+          }
         };
         article.appendChild(downloadBtn);
       } else {
