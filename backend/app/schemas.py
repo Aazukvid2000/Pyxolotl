@@ -55,15 +55,24 @@ class TokenData(BaseModel):
 # ==================== JUEGO SCHEMAS ====================
 
 class JuegoBase(BaseModel):
+    """Base para creación con validaciones estrictas"""
     titulo: str = Field(..., min_length=3, max_length=200)
     descripcion: str = Field(..., min_length=10)
     genero: str
     precio: float = Field(..., ge=0.0)
     requisitos: Optional[str] = None
 
+class JuegoResponseBase(BaseModel):
+    """Base para respuestas sin validaciones min_length (datos ya en BD)"""
+    titulo: str
+    descripcion: str
+    genero: str
+    precio: float
+    requisitos: Optional[str] = None
+
 class JuegoCreate(JuegoBase):
     tipo_descarga: TipoDescarga = TipoDescarga.ARCHIVO
-    archivo_juego_url: Optional[str] = None  # Se llena después del upload
+    archivo_juego_url: Optional[str] = None
     link_externo: Optional[str] = None
     
     @validator('precio')
@@ -79,7 +88,7 @@ class JuegoUpdate(BaseModel):
     precio: Optional[float] = None
     requisitos: Optional[str] = None
 
-class JuegoResponse(JuegoBase):
+class JuegoResponse(JuegoResponseBase):
     id: int
     portada_url: str
     screenshots_urls: Optional[str] = None
@@ -95,7 +104,6 @@ class JuegoResponse(JuegoBase):
     total_ventas: int
     fecha_creacion: datetime
     
-    # Info del desarrollador
     desarrollador: Optional[UsuarioResponse] = None
     
     class Config:
@@ -210,8 +218,8 @@ class JuegosFiltros(BaseModel):
     precio_min: Optional[float] = None
     precio_max: Optional[float] = None
     solo_gratuitos: bool = False
-    ordenar_por: str = "fecha_creacion"  # fecha_creacion, precio, calificacion
-    orden: str = "desc"  # asc o desc
+    ordenar_por: str = "fecha_creacion"
+    orden: str = "desc"
     pagina: int = 1
     por_pagina: int = 20
 
