@@ -375,3 +375,136 @@ async def obtener_juego_gratis(
         "message": "Juego agregado a tu biblioteca. Ya puedes descargarlo.",
         "success": True
     }
+
+# ==================== RESEÑAS ====================
+
+from app.models import Resena
+from app.schemas import ResenaCreate, ResenaResponse
+
+@router.get("/{juego_id}/resenas", response_model=List[ResenaResponse])
+async def obtener_resenas(
+    juego_id: int,
+    db: Session = Depends(get_db)
+):
+    """Obtiene todas las reseñas de un juego"""
+    
+    # Verificar que el juego existe
+    juego = db.query(Juego).filter(Juego.id == juego_id).first()
+    if not juego:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Juego no encontrado"
+        )
+    
+    resenas = db.query(Resena).filter(
+        Resena.juego_id == juego_id
+    ).order_by(Resena.fecha_creacion.desc()).all()
+    
+    return resenas
+
+@router.post("/{juego_id}/resenas", response_model=ResenaResponse, status_code=status.HTTP_201_CREATED)
+async def crear_resena(
+    juego_id: int,
+    resena_data: ResenaCreate,
+    db: Session = Depends(get_db),
+    current_user: Usuario = Depends(get_current_active_user)
+):
+    """Crea una nueva reseña para un juego"""
+    
+    # Verificar que el juego existe y está aprobado
+    juego = db.query(Juego).filter(
+        Juego.id == juego_id,
+        Juego.estado == EstadoJuego.APROBADO
+    ).first()
+    
+    if not juego:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Juego no encontrado"
+        )
+    
+    # Verificar que el usuario no haya dejado ya una reseña
+    existing_resena = db.query(Resena).filter(
+        Resena.usuario_id == current_user.id,
+        Resena.juego_id == juego_id
+    ).first()
+    
+    if existing_resena:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Ya has dejado una reseña para este juego"
+        )
+    
+    # Crear la reseña
+    nueva_resena = Resena(
+        usuario_id=current_user.id,
+        juego_id=juego_id,
+        calificacion=resena_data.calificacion,
+        texto=resena_data.texto
+    )
+    
+    db.add(nueva_resena)
+    
+    # Actualizar estadísticas del juego
+    juego.total_resenas += 1
+    
+    # Recalcular calificación promedio
+    todas_resenas = db.query(Resena).filter(Resena.juego_id == juego_id).all()
+    total_calificaciones = sum(r.calificacion for r in todas_resenas) + resena_data.calificacion
+    juego.calificacion_promedio = total_calificaciones / (len(todas_resenas) + 1)
+    
+    db.commit()
+    db.refresh(nueva_resena)
+    
+    logger.info(f"Reseña creada para juego {juego_id} por {current_user.email}")
+    
+    return nueva_resena
+
+@router.delete("/{juego_id}/resenas/{resena_id}", response_model=Message)
+async def eliminar_resena(
+    juego_id: int,
+    resena_id: int,
+    db: Session = Depends(get_db),
+    current_user: Usuario = Depends(get_current_active_user)
+):
+    """Elimina una reseña (solo el autor puede hacerlo)"""
+    
+    resena = db.query(Resena).filter(
+        Resena.id == resena_id,
+        Resena.juego_id == juego_id
+    ).first()
+    
+    if not resena:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Reseña no encontrada"
+        )
+    
+    # Solo el autor puede eliminar su reseña
+    if resena.usuario_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="No puedes eliminar esta reseña"
+        )
+    
+    # Actualizar estadísticas del juego
+    juego = db.query(Juego).filter(Juego.id == juego_id).first()
+    juego.total_resenas -= 1
+    
+    # Recalcular calificación promedio
+    otras_resenas = db.query(Resena).filter(
+        Resena.juego_id == juego_id,
+        Resena.id != resena_id
+    ).all()
+    
+    if otras_resenas:
+        juego.calificacion_promedio = sum(r.calificacion for r in otras_resenas) / len(otras_resenas)
+    else:
+        juego.calificacion_promedio = 0.0
+    
+    db.delete(resena)
+    db.commit()
+    
+    logger.info(f"Reseña {resena_id} eliminada por {current_user.email}")
+    
+    return {"message": "Reseña eliminada correctamente", "success": True}

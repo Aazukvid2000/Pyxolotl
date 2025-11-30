@@ -231,6 +231,47 @@ async function apiAprobarJuego(juegoId, aprobado, motivo = null) {
 }
 
 // ============================================
+// RESEÑAS
+// ============================================
+
+// Obtener reseñas de un juego
+async function apiGetResenas(juegoId) {
+  try {
+    const response = await fetch(`${API_URL}/api/juegos/${juegoId}/resenas`);
+    if (!response.ok) {
+      throw new Error('Error al obtener reseñas');
+    }
+    return response.json();
+  } catch (error) {
+    console.error('Error en apiGetResenas:', error);
+    return [];
+  }
+}
+
+// Crear una reseña
+async function apiCrearResena(juegoId, calificacion, texto) {
+  const response = await fetch(`${API_URL}/api/juegos/${juegoId}/resenas`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify({
+      juego_id: juegoId,
+      calificacion: calificacion,
+      texto: texto
+    })
+  });
+  return response.json();
+}
+
+// Eliminar una reseña
+async function apiEliminarResena(juegoId, resenaId) {
+  const response = await fetch(`${API_URL}/api/juegos/${juegoId}/resenas/${resenaId}`, {
+    method: 'DELETE',
+    headers: getAuthHeaders()
+  });
+  return response.json();
+}
+
+// ============================================
 // UTILIDADES
 // ============================================
 
