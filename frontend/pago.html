@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Pago – Pixolot</title>
+  <title>Pago – Pyxolotl</title>
   <link rel="stylesheet" href="styles.css">
   <style>
     .payment-container {
@@ -46,6 +46,19 @@
     .form-group input:focus, .form-group select:focus {
       outline: none;
       border-color: var(--accent-1);
+    }
+    .form-group input.invalid {
+      border-color: #ff4757;
+    }
+    .form-group .error-msg {
+      color: #ff4757;
+      font-size: 12px;
+      margin-top: 4px;
+      display: none;
+    }
+    .form-group input.invalid + .error-msg,
+    .form-group input.invalid ~ .error-msg {
+      display: block;
     }
     .form-row {
       display: grid;
@@ -161,16 +174,18 @@
   </style>
 </head>
 <body>
-  <header class="container header" style="background:rgba(52,73,94,0.85);backdrop-filter:blur(10px);position:sticky;top:0;z-index:999;box-shadow:0 2px 20px rgba(0,0,0,0.3)">
+  <!-- HEADER CORREGIDO - Igual al de index.html -->
+  <header class="container header">
     <div class="brand">
-      <img id="brandImg" src="PIXOLOTEL.png" alt="Logo Pixolot" class="brand-logo" data-initials="PX" onerror="this.style.display='none'">
-      <span id="brandFallback" class="logo" aria-hidden="true" style="display:none">PX</span>
+      <img src="PIXOLOTEL.png" alt="Logo Pyxolotl" class="brand-logo" onerror="this.style.display='none'">
       <div>
         <div class="site-title">Pyxolotl</div>
-        <div style="font-size:12px;color:var(--muted)">Checkout seguro</div>
+        <div style="font-size:12px;color:var(--muted)">Marketplace de juegos indie mexicanos</div>
       </div>
     </div>
-    <a href="/index.html" class="btn btn-ghost">← Volver a la tienda</a>
+    <nav class="nav">
+      <a href="index.html">Inicio</a>
+    </nav>
   </header>
 
   <div class="payment-container">
@@ -185,46 +200,35 @@
         <div class="payment-form">
           <h3 style="margin-top:0">Información de pago</h3>
           
-          <form id="paymentForm">
-            <div class="form-group">
-              <label>Método de pago</label>
-              <select required>
-                <option value="card">Tarjeta de crédito/débito</option>
-                <option value="paypal">PayPal</option>
-                <option value="crypto">Criptomonedas</option>
-              </select>
-            </div>
-
+          <form id="paymentForm" novalidate>
             <div class="form-group">
               <label>Número de tarjeta</label>
-              <input type="text" placeholder="1234 5678 9012 3456" maxlength="19" required id="cardNumber">
+              <input type="text" placeholder="1234 5678 9012 3456" maxlength="19" required id="cardNumber" inputmode="numeric" autocomplete="cc-number">
               <div class="card-logos">
                 <span class="card-logo">VISA</span>
                 <span class="card-logo">MASTERCARD</span>
                 <span class="card-logo">AMEX</span>
               </div>
+              <span class="error-msg">Ingresa un número de tarjeta válido (16 dígitos)</span>
             </div>
 
             <div class="form-group">
               <label>Nombre en la tarjeta</label>
-              <input type="text" placeholder="Juan Pérez" required>
+              <input type="text" placeholder="JUAN PEREZ" required id="cardName" autocomplete="cc-name" pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+">
+              <span class="error-msg">Ingresa el nombre como aparece en la tarjeta (solo letras)</span>
             </div>
 
             <div class="form-row">
               <div class="form-group">
                 <label>Fecha de expiración</label>
-                <input type="text" placeholder="MM/AA" maxlength="5" required id="expiry">
+                <input type="text" placeholder="MM/AA" maxlength="5" required id="expiry" inputmode="numeric" autocomplete="cc-exp">
+                <span class="error-msg">Formato: MM/AA</span>
               </div>
               <div class="form-group">
                 <label>CVV</label>
-                <input type="text" placeholder="123" maxlength="4" required>
+                <input type="text" placeholder="123" maxlength="4" required id="cvv" inputmode="numeric" autocomplete="cc-csc">
+                <span class="error-msg">3-4 dígitos</span>
               </div>
-            </div>
-
-            <div class="form-group" style="margin-top:28px">
-              <label>Correo electrónico</label>
-              <input type="email" placeholder="tu@email.com" required>
-              <p style="font-size:12px;color:var(--muted);margin:6px 0 0">Recibirás el recibo y enlace de descarga aquí</p>
             </div>
 
             <div class="security-badge">
@@ -235,7 +239,7 @@
               </div>
             </div>
 
-            <button type="submit" class="btn" style="width:100%;margin-top:24px;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;font-weight:600;padding:16px;font-size:16px">
+            <button type="submit" class="btn" id="payBtn" style="width:100%;margin-top:24px;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;font-weight:600;padding:16px;font-size:16px">
               Pagar ahora 💳
             </button>
           </form>
@@ -257,22 +261,22 @@
 
           <div class="price-line">
             <span style="color:var(--muted)">Subtotal</span>
-            <span id="subtotal">$0.00</span>
+            <span id="subtotal">$0.00 MXN</span>
           </div>
           
           <div class="price-line">
             <span style="color:var(--muted)">Impuestos (IVA 16%)</span>
-            <span id="taxes">$0.00</span>
+            <span id="taxes">$0.00 MXN</span>
           </div>
 
           <div class="price-line">
             <span style="color:var(--muted)">Comisión de plataforma</span>
-            <span id="fee">$0.99</span>
+            <span id="fee">$15.00 MXN</span>
           </div>
 
           <div class="price-line total">
             <span>Total</span>
-            <span id="total">$0.00</span>
+            <span id="total">$0.00 MXN</span>
           </div>
 
           <div style="margin-top:24px;padding:16px;background:rgba(123,97,255,0.08);border-radius:8px;font-size:13px;color:var(--muted)">
@@ -302,12 +306,12 @@
         </div>
         <div style="display:flex;justify-content:space-between">
           <span style="color:var(--muted)">Total pagado:</span>
-          <strong style="color:var(--accent-1)" id="successTotal">$0.00</strong>
+          <strong style="color:var(--accent-1)" id="successTotal">$0.00 MXN</strong>
         </div>
       </div>
 
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-        <button class="btn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a" onclick="window.location.href='index.html'">
+        <button class="btn" id="downloadBtn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a">
           📥 Descargar juego
         </button>
         <button class="btn btn-ghost" onclick="window.location.href='index.html'">
@@ -318,31 +322,272 @@
   </div>
 
   <script>
+    // Variables globales para el carrito
+    let checkoutCart = [];
+    let totalAmount = 0;
+
     // Función para mostrar toast
     function showPaymentToast(message, type = 'info') {
+      const existing = document.querySelector('.payment-toast');
+      if (existing) existing.remove();
+      
       const toast = document.createElement('div');
+      toast.className = 'payment-toast';
       toast.style.cssText = `
         position: fixed;
         bottom: 20px;
         right: 20px;
         padding: 16px 24px;
-        border-radius: 8px;
+        border-radius: 12px;
         color: white;
         font-weight: 500;
         z-index: 10000;
+        max-width: 350px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        animation: toastIn 0.3s ease;
         background: ${type === 'error' ? '#ff4757' : type === 'success' ? '#4CAF50' : '#7b61ff'};
       `;
       toast.textContent = message;
       document.body.appendChild(toast);
+      
+      // Agregar estilos de animación
+      if (!document.getElementById('toast-anim')) {
+        const style = document.createElement('style');
+        style.id = 'toast-anim';
+        style.textContent = `
+          @keyframes toastIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        `;
+        document.head.appendChild(style);
+      }
+      
       setTimeout(() => toast.remove(), 3000);
     }
 
-    // Cargar datos del carrito desde sessionStorage
-    document.addEventListener('DOMContentLoaded', ()=>{
-      const checkoutCart = JSON.parse(sessionStorage.getItem('checkoutCart')) || [];
+    // ============================================
+    // VALIDACIONES DE FORMULARIO
+    // ============================================
+    
+    // Solo números para tarjeta
+    function setupCardNumberValidation() {
+      const input = document.getElementById('cardNumber');
+      input.addEventListener('input', function(e) {
+        // Remover todo excepto números
+        let value = e.target.value.replace(/\D/g, '');
+        // Limitar a 16 dígitos
+        value = value.substring(0, 16);
+        // Formatear con espacios cada 4 dígitos
+        let formatted = value.match(/.{1,4}/g)?.join(' ') || value;
+        e.target.value = formatted;
+        
+        // Validar
+        if (value.length === 16) {
+          input.classList.remove('invalid');
+        }
+      });
       
-      if(checkoutCart.length === 0) {
-        // Si no hay items, redirigir
+      input.addEventListener('blur', function() {
+        const value = input.value.replace(/\s/g, '');
+        if (value.length !== 16) {
+          input.classList.add('invalid');
+        } else {
+          input.classList.remove('invalid');
+        }
+      });
+      
+      // Prevenir pegado de texto no numérico
+      input.addEventListener('paste', function(e) {
+        e.preventDefault();
+        const paste = (e.clipboardData || window.clipboardData).getData('text');
+        const numbers = paste.replace(/\D/g, '').substring(0, 16);
+        const formatted = numbers.match(/.{1,4}/g)?.join(' ') || numbers;
+        input.value = formatted;
+      });
+    }
+    
+    // Solo letras para nombre
+    function setupCardNameValidation() {
+      const input = document.getElementById('cardName');
+      input.addEventListener('input', function(e) {
+        // Solo letras, espacios y acentos
+        let value = e.target.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '');
+        e.target.value = value.toUpperCase();
+        
+        if (value.length >= 3) {
+          input.classList.remove('invalid');
+        }
+      });
+      
+      input.addEventListener('blur', function() {
+        if (input.value.trim().length < 3) {
+          input.classList.add('invalid');
+        } else {
+          input.classList.remove('invalid');
+        }
+      });
+    }
+    
+    // Fecha de expiración MM/AA
+    function setupExpiryValidation() {
+      const input = document.getElementById('expiry');
+      input.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        
+        if (value.length >= 2) {
+          let month = parseInt(value.substring(0, 2));
+          // Validar mes 01-12
+          if (month > 12) month = 12;
+          if (month < 1 && value.length >= 2) month = '0' + value[1];
+          value = month.toString().padStart(2, '0') + '/' + value.substring(2, 4);
+        }
+        
+        e.target.value = value;
+        
+        if (value.length === 5) {
+          input.classList.remove('invalid');
+        }
+      });
+      
+      input.addEventListener('blur', function() {
+        const value = input.value;
+        if (value.length !== 5 || !value.includes('/')) {
+          input.classList.add('invalid');
+        } else {
+          // Validar que no esté expirada
+          const [month, year] = value.split('/');
+          const expDate = new Date(2000 + parseInt(year), parseInt(month) - 1);
+          const now = new Date();
+          if (expDate < now) {
+            input.classList.add('invalid');
+          } else {
+            input.classList.remove('invalid');
+          }
+        }
+      });
+    }
+    
+    // CVV solo números 3-4 dígitos
+    function setupCVVValidation() {
+      const input = document.getElementById('cvv');
+      input.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        e.target.value = value.substring(0, 4);
+        
+        if (value.length >= 3) {
+          input.classList.remove('invalid');
+        }
+      });
+      
+      input.addEventListener('blur', function() {
+        const value = input.value;
+        if (value.length < 3 || value.length > 4) {
+          input.classList.add('invalid');
+        } else {
+          input.classList.remove('invalid');
+        }
+      });
+    }
+    
+    // Validar todo el formulario
+    function validateForm() {
+      let isValid = true;
+      
+      const cardNumber = document.getElementById('cardNumber');
+      const cardName = document.getElementById('cardName');
+      const expiry = document.getElementById('expiry');
+      const cvv = document.getElementById('cvv');
+      
+      // Validar número de tarjeta (16 dígitos)
+      if (cardNumber.value.replace(/\s/g, '').length !== 16) {
+        cardNumber.classList.add('invalid');
+        isValid = false;
+      }
+      
+      // Validar nombre (mínimo 3 caracteres)
+      if (cardName.value.trim().length < 3) {
+        cardName.classList.add('invalid');
+        isValid = false;
+      }
+      
+      // Validar fecha (formato MM/AA y no expirada)
+      if (expiry.value.length !== 5) {
+        expiry.classList.add('invalid');
+        isValid = false;
+      } else {
+        const [month, year] = expiry.value.split('/');
+        const expDate = new Date(2000 + parseInt(year), parseInt(month) - 1);
+        if (expDate < new Date()) {
+          expiry.classList.add('invalid');
+          isValid = false;
+        }
+      }
+      
+      // Validar CVV (3-4 dígitos)
+      if (cvv.value.length < 3) {
+        cvv.classList.add('invalid');
+        isValid = false;
+      }
+      
+      return isValid;
+    }
+
+    // ============================================
+    // FUNCIÓN DE DESCARGA
+    // ============================================
+    function downloadPurchasedGame() {
+      if (checkoutCart.length === 0) {
+        showPaymentToast('No hay juego para descargar', 'error');
+        return;
+      }
+      
+      // Obtener el primer juego del carrito (o todos si hay varios)
+      const game = checkoutCart[0];
+      
+      // Construir URL de descarga
+      let downloadUrl = game.archivo_juego_url || game.downloadUrl;
+      
+      if (!downloadUrl) {
+        // Si no hay URL directa, redirigir a biblioteca
+        showPaymentToast('📚 Ve a tu biblioteca para descargar', 'info');
+        setTimeout(() => {
+          window.location.href = 'biblioteca.html';
+        }, 1500);
+        return;
+      }
+      
+      // Si es ruta relativa, agregar dominio del backend
+      if (!downloadUrl.startsWith('http')) {
+        const backendUrl = window.location.hostname === 'localhost' 
+          ? 'http://localhost:8000'
+          : 'https://pyxolotl-production.up.railway.app';
+        downloadUrl = `${backendUrl}${downloadUrl}`;
+      }
+      
+      showPaymentToast('📥 Iniciando descarga...', 'success');
+      
+      // Crear link de descarga
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = `${game.title.replace(/[^a-z0-9]/gi, '_')}.zip`;
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // ============================================
+    // INICIALIZACIÓN
+    // ============================================
+    document.addEventListener('DOMContentLoaded', () => {
+      // Configurar validaciones
+      setupCardNumberValidation();
+      setupCardNameValidation();
+      setupExpiryValidation();
+      setupCVVValidation();
+      
+      // Cargar datos del carrito
+      checkoutCart = JSON.parse(sessionStorage.getItem('checkoutCart')) || [];
+      
+      if (checkoutCart.length === 0) {
         showPaymentToast('Tu carrito está vacío', 'error');
         setTimeout(() => {
           window.location.href = 'index.html';
@@ -350,28 +595,26 @@
         return;
       }
 
-      // Calcular totales
+      // Calcular totales en PESOS MEXICANOS
       let subtotal = 0;
       checkoutCart.forEach(item => {
         subtotal += parseFloat(item.price);
       });
 
       const taxes = subtotal * 0.16;
-      const fee = 0.99;
-      const total = subtotal + taxes + fee;
+      const fee = 15; // $15 MXN de comisión
+      totalAmount = subtotal + taxes + fee;
 
-      // Mostrar items del carrito
-      const orderItem = document.querySelector('.order-item');
-      if(checkoutCart.length === 1) {
-        // Un solo juego
+      // Mostrar info del juego
+      if (checkoutCart.length === 1) {
         document.getElementById('gameTitle').textContent = checkoutCart[0].title;
-        document.getElementById('gameThumb').textContent = checkoutCart[0].thumb;
+        document.getElementById('gameThumb').textContent = checkoutCart[0].thumb || checkoutCart[0].title.substring(0, 2).toUpperCase();
       } else {
-        // Múltiples juegos
         document.getElementById('gameTitle').textContent = `${checkoutCart.length} juegos`;
         document.getElementById('gameThumb').textContent = checkoutCart.length;
         
-        // Agregar lista de juegos
+        // Lista de juegos
+        const orderItem = document.querySelector('.order-item');
         const gamesList = document.createElement('div');
         gamesList.style.cssText = 'margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06)';
         checkoutCart.forEach(item => {
@@ -379,60 +622,56 @@
           gameItem.style.cssText = 'display:flex;justify-content:space-between;margin:8px 0;font-size:14px';
           gameItem.innerHTML = `
             <span style="color:var(--muted)">${item.title}</span>
-            <span>${parseFloat(item.price).toFixed(2)}</span>
+            <span>$${parseFloat(item.price).toFixed(2)}</span>
           `;
           gamesList.appendChild(gameItem);
         });
         orderItem.parentElement.insertBefore(gamesList, orderItem.nextSibling);
       }
 
-      // Actualizar precios
-      document.getElementById('subtotal').textContent = `${subtotal.toFixed(2)}`;
-      document.getElementById('taxes').textContent = `${taxes.toFixed(2)}`;
-      document.getElementById('total').textContent = `${total.toFixed(2)} USD`;
+      // Actualizar precios en MXN
+      document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)} MXN`;
+      document.getElementById('taxes').textContent = `$${taxes.toFixed(2)} MXN`;
+      document.getElementById('fee').textContent = `$${fee.toFixed(2)} MXN`;
+      document.getElementById('total').textContent = `$${totalAmount.toFixed(2)} MXN`;
 
-      // Formatear número de tarjeta
-      document.getElementById('cardNumber').addEventListener('input', function(e) {
-        let value = e.target.value.replace(/\s/g, '');
-        let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
-        e.target.value = formattedValue;
-      });
-
-      // Formatear fecha de expiración
-      document.getElementById('expiry').addEventListener('input', function(e) {
-        let value = e.target.value.replace(/\D/g, '');
-        if(value.length >= 2) {
-          value = value.slice(0,2) + '/' + value.slice(2,4);
-        }
-        e.target.value = value;
-      });
+      // Configurar botón de descarga
+      document.getElementById('downloadBtn').addEventListener('click', downloadPurchasedGame);
 
       // Procesar pago
-      document.getElementById('paymentForm').addEventListener('submit', (e)=>{
+      document.getElementById('paymentForm').addEventListener('submit', (e) => {
         e.preventDefault();
         
+        // Validar formulario
+        if (!validateForm()) {
+          showPaymentToast('Por favor corrige los errores en el formulario', 'error');
+          return;
+        }
+        
         // Simular procesamiento
-        const btn = e.target.querySelector('button[type="submit"]');
+        const btn = document.getElementById('payBtn');
         btn.textContent = 'Procesando...';
         btn.disabled = true;
+        btn.style.opacity = '0.7';
 
-        setTimeout(()=>{
+        setTimeout(() => {
           // Mostrar mensaje de éxito
           document.getElementById('paymentSection').style.display = 'none';
           const successMsg = document.getElementById('successMessage');
           successMsg.classList.add('show');
           
           // Actualizar datos de éxito
-          document.getElementById('orderNumber').textContent = `#PX-${Math.floor(Math.random()*999999)}`;
+          document.getElementById('orderNumber').textContent = `#PX-${Math.floor(Math.random() * 999999).toString().padStart(6, '0')}`;
           document.getElementById('successGameTitle').textContent = checkoutCart.length === 1 ? checkoutCart[0].title : `${checkoutCart.length} juegos`;
-          document.getElementById('successTotal').textContent = `${total.toFixed(2)} USD`;
+          document.getElementById('successTotal').textContent = `$${totalAmount.toFixed(2)} MXN`;
 
-          // Limpiar carrito y sessionStorage
-          localStorage.removeItem('pixolotCart');
-          sessionStorage.removeItem('checkoutCart');
+          // Limpiar carrito de localStorage pero mantener sessionStorage para descarga
+          localStorage.removeItem('cart');
 
           // Scroll to top
-          window.scrollTo({top:0, behavior:'smooth'});
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          
+          showPaymentToast('¡Pago procesado exitosamente!', 'success');
         }, 2000);
       });
     });

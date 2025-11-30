@@ -16,14 +16,14 @@ function saveCart(cart) {
 }
 
 // Agregar juego al carrito
-function addToCart(gameId, gameTitle, gamePrice, gameImage = null) {
+function addToCart(gameId, gameTitle, gamePrice, gameImage = null, downloadUrl = null) {
   let cart = getCart();
   
   // Verificar si el juego ya está en el carrito
   const existingItem = cart.find(item => item.id === gameId);
   
   if (existingItem) {
-    alert('Este juego ya está en tu carrito');
+    showCartToast('Este juego ya está en tu carrito', 'info');
     return;
   }
   
@@ -32,11 +32,12 @@ function addToCart(gameId, gameTitle, gamePrice, gameImage = null) {
     id: gameId,
     title: gameTitle,
     price: parseFloat(gamePrice),
-    image: gameImage
+    image: gameImage,
+    downloadUrl: downloadUrl
   });
   
   saveCart(cart);
-  alert(`✅ "${gameTitle}" agregado al carrito`);
+  showCartToast(`✅ "${gameTitle}" agregado al carrito`, 'success');
 }
 
 // Eliminar juego del carrito
@@ -171,7 +172,8 @@ if (checkoutBtn) {
       id: item.id,
       title: item.title,
       price: item.price,
-      thumb: item.title.substring(0, 2).toUpperCase()
+      thumb: item.title.substring(0, 2).toUpperCase(),
+      downloadUrl: item.downloadUrl || null
     }));
     
     // Guardar en sessionStorage para la página de pago
