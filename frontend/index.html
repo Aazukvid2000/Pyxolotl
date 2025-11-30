@@ -1657,13 +1657,7 @@
       try {
         const response = await apiGetJuegos({ estado: 'aprobado' });
         
-        // DEBUG: Ver qué devuelve la API
-        console.log('=== DEBUG: Respuesta de API juegos ===');
-        console.log('Response:', response);
-        if (response && response.length > 0) {
-          console.log('Primer juego:', response[0]);
-          console.log('Tiene ID?:', response[0].id);
-        }
+        console.log('Juegos cargados:', response?.length || 0);
         
         loader.style.display = 'none';
 
@@ -1743,10 +1737,7 @@
         downloadBtn.textContent = '👁️ Ver detalles';
         downloadBtn.onclick = (e) => {
           e.stopPropagation();
-          console.log('Ver detalles clicked, game.id:', game.id);
-          if (game.id) {
-            window.location.href = `producto-detalle.html?id=${game.id}`;
-          }
+          window.location.href = `producto-detalle.html?id=${game.id}`;
         };
         article.appendChild(downloadBtn);
       } else {
@@ -1772,14 +1763,7 @@
       }
 
       article.onclick = () => {
-        console.log('Card clicked, game:', game);
-        console.log('Game ID:', game.id);
-        if (game.id) {
-          window.location.href = `producto-detalle.html?id=${game.id}`;
-        } else {
-          console.error('Game ID is undefined!');
-          alert('Error: No se pudo obtener el ID del juego');
-        }
+        window.location.href = `producto-detalle.html?id=${game.id}`;
       };
 
       return article;
