@@ -27,6 +27,62 @@
       font-weight: bold;
       font-size: 16px;
     }
+    /* Footer styles */
+    .pyxolotl-footer {
+      background: linear-gradient(180deg, #0a0e1a 0%, #07102a 100%);
+      border-top: 1px solid rgba(123, 97, 255, 0.1);
+      padding: 60px 0 0 0;
+      margin-top: 100px;
+      color: #e0e0e0;
+    }
+    .footer-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: grid;
+      grid-template-columns: 1.5fr repeat(3, 1fr);
+      gap: 50px;
+    }
+    .footer-column { display: flex; flex-direction: column; gap: 20px; }
+    .footer-title {
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .footer-description { color: #b0b0b0; font-size: 14px; line-height: 1.6; }
+    .footer-social { display: flex; gap: 12px; }
+    .social-link {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(123, 97, 255, 0.1);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--accent-1); transition: all 0.3s ease;
+    }
+    .social-link:hover {
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      color: #07102a; transform: translateY(-3px);
+    }
+    .footer-heading { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; color: #808080; }
+    .footer-links { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+    .footer-links li a { color: #b0b0b0; font-size: 14px; text-decoration: none; transition: all 0.2s; }
+    .footer-links li a:hover { color: var(--accent-1); transform: translateX(4px); }
+    .footer-bottom {
+      background: #060a16;
+      border-top: 1px solid rgba(123, 97, 255, 0.1);
+      padding: 24px 0; margin-top: 50px;
+    }
+    .footer-bottom .footer-container { display: flex; justify-content: space-between; align-items: center; }
+    .footer-copyright { color: #808080; font-size: 13px; margin: 0; }
+    .footer-legal { display: flex; gap: 16px; align-items: center; }
+    .footer-legal a { color: #808080; font-size: 13px; text-decoration: none; }
+    .footer-legal a:hover { color: var(--accent-1); }
+    .footer-legal .separator { color: #404040; }
+    @media (max-width: 768px) {
+      .footer-container { grid-template-columns: 1fr; gap: 30px; padding: 0 20px; }
+      .footer-bottom .footer-container { flex-direction: column; gap: 16px; text-align: center; }
+    }
   </style>
 </head>
 <body>
@@ -52,22 +108,68 @@
     </nav>
   </header>
 
-  <main class="container">
+  <main class="container" style="min-height: 60vh;">
     <h1>Mi Biblioteca de Juegos</h1>
     <p style="color:var(--muted)">Todos tus juegos comprados y gratuitos</p>
 
     <div id="bibliotecaContainer" style="margin-top:40px">
       <div id="loading" style="text-align:center;padding:60px">
+        <div style="width:40px;height:40px;border:4px solid rgba(123,97,255,0.2);border-top-color:var(--accent-1);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 20px"></div>
         Cargando biblioteca...
       </div>
     </div>
   </main>
 
+  <!-- Footer -->
+  <footer class="pyxolotl-footer">
+    <div class="footer-container">
+      <div class="footer-column">
+        <h3 class="footer-title">PYXOLOTL</h3>
+        <p class="footer-description">Plataforma mexicana de videojuegos indie. Conectando desarrolladores con jugadores apasionados.</p>
+        <div class="footer-social">
+          <a href="https://www.instagram.com/pyxo.lotl" target="_blank" class="social-link">📷</a>
+          <a href="https://www.facebook.com/profile.php?id=61584296583769" target="_blank" class="social-link">👤</a>
+        </div>
+      </div>
+      <div class="footer-column">
+        <h4 class="footer-heading">DESARROLLADORES</h4>
+        <ul class="footer-links">
+          <li><a href="publicar-juego.html">Publicar juego</a></li>
+          <li><a href="index.html#about">Acerca de Pyxolotl</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4 class="footer-heading">AYUDA</h4>
+        <ul class="footer-links">
+          <li><a href="faq.html">Preguntas frecuentes</a></li>
+          <li><a href="mailto:soporte@pyxolotl.com">Soporte</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4 class="footer-heading">PYXOLOTL</h4>
+        <ul class="footer-links">
+          <li><a href="biblioteca.html">Mi biblioteca</a></li>
+          <li><a href="inicio.html">Iniciar sesión</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-container">
+        <p class="footer-copyright">© 2025 Pyxolotl. Todos los derechos reservados.</p>
+        <div class="footer-legal">
+          <a href="faq.html">FAQ</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+
   <script src="api.js"></script>
   <script>
     async function cargarBiblioteca() {
       if (!isAuthenticated()) {
-        window.location.href = '/inicio.html';
+        window.location.href = 'inicio.html';
         return;
       }
 
@@ -75,12 +177,13 @@
         const items = await apiGetBiblioteca();
         const container = document.getElementById('bibliotecaContainer');
         
-        if (items.length === 0) {
+        if (!items || items.length === 0 || items.detail) {
           container.innerHTML = `
             <div style="text-align:center;padding:60px;color:var(--muted)">
+              <div style="font-size:64px;margin-bottom:20px">🎮</div>
               <h3>No tienes juegos aún</h3>
-              <p>Explora el catálogo y compra tu primer juego</p>
-              <a href="/index.html" class="btn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;margin-top:20px">Explorar juegos</a>
+              <p>Explora el catálogo y obtén tu primer juego</p>
+              <a href="index.html" class="btn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;margin-top:20px;display:inline-block">Explorar juegos</a>
             </div>
           `;
           return;
@@ -91,12 +194,15 @@
 
         items.forEach(item => {
           const juego = item.juego;
+          if (!juego) return;
           const card = document.createElement('article');
           card.className = 'card';
           card.innerHTML = `
-            <div class="thumb">${juego.titulo.substring(0,2).toUpperCase()}</div>
+            <div class="thumb" style="background:linear-gradient(135deg,var(--accent-1),var(--accent-2));display:flex;align-items:center;justify-content:center;font-size:32px;color:#07102a;font-weight:bold">
+              ${juego.portada_url ? `<img src="${juego.portada_url.startsWith('http') ? juego.portada_url : API_URL + juego.portada_url}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none';this.parentElement.textContent='${juego.titulo.substring(0,2).toUpperCase()}'">` : juego.titulo.substring(0,2).toUpperCase()}
+            </div>
             <h3>${juego.titulo}</h3>
-            <p>${juego.genero} • ${item.es_gratuito ? 'Gratis' : '$' + juego.precio}</p>
+            <p style="color:var(--muted)">${juego.genero || 'Indie'} • ${item.es_gratuito ? 'Gratis' : '$' + juego.precio}</p>
             <div style="margin-top:12px">
               <button class="btn" onclick="descargarJuego(${juego.id})" style="width:100%;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a">
                 📥 Descargar
@@ -108,13 +214,20 @@
 
       } catch (error) {
         console.error('Error:', error);
-        alert('Error al cargar biblioteca');
+        document.getElementById('bibliotecaContainer').innerHTML = `
+          <div style="text-align:center;padding:60px;color:var(--muted)">
+            <div style="font-size:64px;margin-bottom:20px">😕</div>
+            <h3>Error al cargar la biblioteca</h3>
+            <p>Por favor recarga la página o intenta más tarde</p>
+            <button onclick="location.reload()" class="btn btn-ghost" style="margin-top:20px">Recargar</button>
+          </div>
+        `;
       }
     }
 
     function descargarJuego(juegoId) {
       apiDescargarJuego(juegoId);
-      alert('Descarga iniciada');
+      alert('✅ Descarga iniciada');
     }
 
     function updateUserInfo() {
@@ -126,7 +239,6 @@
       }
     }
 
-    // Cargar al iniciar
     updateUserInfo();
     cargarBiblioteca();
   </script>

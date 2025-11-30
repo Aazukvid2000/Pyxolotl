@@ -3,10 +3,141 @@
 // Conecta el frontend con el backend
 // ============================================
 
-// URL del backend (cambiar en producción)
+// URL del backend - SIEMPRE usar HTTPS en producción
 const API_URL = window.location.hostname === 'localhost' 
   ? 'http://localhost:8000'
   : 'https://pyxolotl-production.up.railway.app';
+
+// Exponer globalmente
+window.API_URL = API_URL;
+
+// ============================================
+// SISTEMA DE NOTIFICACIONES (Toast)
+// ============================================
+
+// Crear contenedor de toasts si no existe
+function initToastContainer() {
+  if (document.getElementById('toast-container')) return;
+  
+  const container = document.createElement('div');
+  container.id = 'toast-container';
+  container.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+  `;
+  document.body.appendChild(container);
+  
+  // Agregar estilos
+  const style = document.createElement('style');
+  style.textContent = `
+    .pyxo-toast {
+      padding: 16px 24px;
+      border-radius: 12px;
+      color: #fff;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+      animation: toastSlideIn 0.4s ease;
+      pointer-events: auto;
+      max-width: 400px;
+      backdrop-filter: blur(10px);
+    }
+    .pyxo-toast.success {
+      background: linear-gradient(135deg, rgba(67,233,123,0.95), rgba(56,249,215,0.95));
+      color: #07102a;
+    }
+    .pyxo-toast.error {
+      background: linear-gradient(135deg, rgba(255,71,87,0.95), rgba(255,99,72,0.95));
+    }
+    .pyxo-toast.warning {
+      background: linear-gradient(135deg, rgba(255,193,7,0.95), rgba(255,152,0,0.95));
+      color: #07102a;
+    }
+    .pyxo-toast.info {
+      background: linear-gradient(135deg, rgba(123,97,255,0.95), rgba(78,163,255,0.95));
+    }
+    .pyxo-toast-icon { font-size: 24px; }
+    .pyxo-toast-message { flex: 1; line-height: 1.4; }
+    .pyxo-toast-close {
+      background: none;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      font-size: 20px;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .pyxo-toast-close:hover { opacity: 1; }
+    @keyframes toastSlideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes toastSlideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+// Mostrar toast
+function showToast(message, type = 'info', duration = 4000) {
+  initToastContainer();
+  
+  const icons = {
+    success: '✅',
+    error: '❌',
+    warning: '⚠️',
+    info: 'ℹ️'
+  };
+  
+  const toast = document.createElement('div');
+  toast.className = `pyxo-toast ${type}`;
+  toast.innerHTML = `
+    <span class="pyxo-toast-icon">${icons[type]}</span>
+    <span class="pyxo-toast-message">${message}</span>
+    <button class="pyxo-toast-close" onclick="this.parentElement.remove()">×</button>
+  `;
+  
+  document.getElementById('toast-container').appendChild(toast);
+  
+  // Auto-remove
+  setTimeout(() => {
+    toast.style.animation = 'toastSlideOut 0.4s ease forwards';
+    setTimeout(() => toast.remove(), 400);
+  }, duration);
+  
+  return toast;
+}
+
+// Funciones de conveniencia
+function toastSuccess(message) { return showToast(message, 'success'); }
+function toastError(message) { return showToast(message, 'error'); }
+function toastWarning(message) { return showToast(message, 'warning'); }
+function toastInfo(message) { return showToast(message, 'info'); }
+
+// Reemplazar alert nativo
+window.originalAlert = window.alert;
+window.alert = function(message) {
+  // Detectar tipo por contenido
+  if (message.includes('✅') || message.toLowerCase().includes('éxito') || message.toLowerCase().includes('agregado')) {
+    toastSuccess(message.replace(/[✅❌⚠️ℹ️]/g, '').trim());
+  } else if (message.includes('❌') || message.toLowerCase().includes('error')) {
+    toastError(message.replace(/[✅❌⚠️ℹ️]/g, '').trim());
+  } else if (message.includes('⚠️') || message.toLowerCase().includes('debes')) {
+    toastWarning(message.replace(/[✅❌⚠️ℹ️]/g, '').trim());
+  } else {
+    toastInfo(message.replace(/[✅❌⚠️ℹ️]/g, '').trim());
+  }
+};
 
 // ============================================
 // AUTENTICACIÓN

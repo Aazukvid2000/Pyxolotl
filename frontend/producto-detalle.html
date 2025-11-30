@@ -511,12 +511,88 @@
     </div>
   </main>
 
-  <footer class="footer" style="margin-top:60px">
-    <div class="container" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px">
-      <div>© 2025 Pyxolotl · Hecho con ♥ para desarrolladores indie mexicanos</div>
-      <div style="color:var(--muted)">contacto@pyxolotl.com</div>
+  <!-- Footer -->
+  <footer class="pyxolotl-footer">
+    <div class="footer-container">
+      <div class="footer-column">
+        <h3 class="footer-title">PYXOLOTL</h3>
+        <p class="footer-description">Plataforma mexicana de videojuegos indie. Conectando desarrolladores con jugadores apasionados.</p>
+        <div class="footer-social">
+          <a href="https://www.instagram.com/pyxo.lotl" target="_blank" class="social-link">📷</a>
+          <a href="https://www.facebook.com/profile.php?id=61584296583769" target="_blank" class="social-link">👤</a>
+        </div>
+      </div>
+      <div class="footer-column">
+        <h4 class="footer-heading">DESARROLLADORES</h4>
+        <ul class="footer-links">
+          <li><a href="publicar-juego.html">Publicar juego</a></li>
+          <li><a href="index.html#about">Acerca de Pyxolotl</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4 class="footer-heading">AYUDA</h4>
+        <ul class="footer-links">
+          <li><a href="faq.html">Preguntas frecuentes</a></li>
+          <li><a href="mailto:soporte@pyxolotl.com">Soporte</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4 class="footer-heading">PYXOLOTL</h4>
+        <ul class="footer-links">
+          <li><a href="biblioteca.html">Mi biblioteca</a></li>
+          <li><a href="inicio.html">Iniciar sesión</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-container">
+        <p class="footer-copyright">© 2025 Pyxolotl. Todos los derechos reservados.</p>
+        <div class="footer-legal">
+          <a href="faq.html">FAQ</a>
+        </div>
+      </div>
     </div>
   </footer>
+
+  <style>
+    .pyxolotl-footer {
+      background: linear-gradient(180deg, #0a0e1a 0%, #07102a 100%);
+      border-top: 1px solid rgba(123, 97, 255, 0.1);
+      padding: 60px 0 0 0; margin-top: 100px; color: #e0e0e0;
+    }
+    .footer-container {
+      max-width: 1400px; margin: 0 auto; padding: 0 40px;
+      display: grid; grid-template-columns: 1.5fr repeat(3, 1fr); gap: 50px;
+    }
+    .footer-column { display: flex; flex-direction: column; gap: 20px; }
+    .footer-title {
+      font-size: 24px; font-weight: 700;
+      background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .footer-description { color: #b0b0b0; font-size: 14px; line-height: 1.6; }
+    .footer-social { display: flex; gap: 12px; }
+    .social-link {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(123, 97, 255, 0.1);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--accent-1); transition: all 0.3s ease; text-decoration: none;
+    }
+    .social-link:hover { background: linear-gradient(135deg, var(--accent-1), var(--accent-2)); color: #07102a; }
+    .footer-heading { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; color: #808080; }
+    .footer-links { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+    .footer-links li a { color: #b0b0b0; font-size: 14px; text-decoration: none; }
+    .footer-links li a:hover { color: var(--accent-1); }
+    .footer-bottom { background: #060a16; border-top: 1px solid rgba(123, 97, 255, 0.1); padding: 24px 0; margin-top: 50px; }
+    .footer-bottom .footer-container { display: flex; justify-content: space-between; align-items: center; }
+    .footer-copyright { color: #808080; font-size: 13px; margin: 0; }
+    .footer-legal { display: flex; gap: 16px; }
+    .footer-legal a { color: #808080; font-size: 13px; text-decoration: none; }
+    @media (max-width: 768px) {
+      .footer-container { grid-template-columns: 1fr; gap: 30px; padding: 0 20px; }
+      .footer-bottom .footer-container { flex-direction: column; gap: 16px; }
+    }
+  </style>
 
   <script src="api.js"></script>
   <script>
