@@ -153,20 +153,53 @@ if (checkoutBtn) {
     const cart = getCart();
     
     if (cart.length === 0) {
-      alert('Tu carrito está vacío');
+      showCartToast('Tu carrito está vacío', 'error');
       return;
     }
     
     // Verificar autenticación
     if (typeof isAuthenticated === 'function' && !isAuthenticated()) {
-      alert('Debes iniciar sesión para comprar');
-      window.location.href = 'inicio.html';
+      showCartToast('Debes iniciar sesión para comprar', 'error');
+      setTimeout(() => {
+        window.location.href = 'inicio.html';
+      }, 1500);
       return;
     }
+    
+    // Preparar datos para checkout - convertir al formato que espera pago.html
+    const checkoutCart = cart.map(item => ({
+      id: item.id,
+      title: item.title,
+      price: item.price,
+      thumb: item.title.substring(0, 2).toUpperCase()
+    }));
+    
+    // Guardar en sessionStorage para la página de pago
+    sessionStorage.setItem('checkoutCart', JSON.stringify(checkoutCart));
     
     // Ir a página de pago
     window.location.href = 'pago.html';
   });
+}
+
+// Función para mostrar toast en carrito
+function showCartToast(message, type = 'info') {
+  const toast = document.createElement('div');
+  toast.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 16px 24px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    z-index: 10000;
+    animation: slideIn 0.3s ease;
+    background: ${type === 'error' ? '#ff4757' : type === 'success' ? '#4CAF50' : '#7b61ff'};
+  `;
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
 }
 
 // Exponer funciones globalmente para que otros scripts las usen

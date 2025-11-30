@@ -307,10 +307,10 @@
       </div>
 
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-        <button class="btn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a" onclick="window.location.href='pixolot.html'">
+        <button class="btn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a" onclick="window.location.href='index.html'">
           📥 Descargar juego
         </button>
-        <button class="btn btn-ghost" onclick="window.location.href='pixolot.html'">
+        <button class="btn btn-ghost" onclick="window.location.href='index.html'">
           ← Volver a la tienda
         </button>
       </div>
@@ -318,14 +318,35 @@
   </div>
 
   <script>
+    // Función para mostrar toast
+    function showPaymentToast(message, type = 'info') {
+      const toast = document.createElement('div');
+      toast.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 16px 24px;
+        border-radius: 8px;
+        color: white;
+        font-weight: 500;
+        z-index: 10000;
+        background: ${type === 'error' ? '#ff4757' : type === 'success' ? '#4CAF50' : '#7b61ff'};
+      `;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
     // Cargar datos del carrito desde sessionStorage
     document.addEventListener('DOMContentLoaded', ()=>{
       const checkoutCart = JSON.parse(sessionStorage.getItem('checkoutCart')) || [];
       
       if(checkoutCart.length === 0) {
         // Si no hay items, redirigir
-        alert('Tu carrito está vacío');
-        window.location.href = 'pixolot.html';
+        showPaymentToast('Tu carrito está vacío', 'error');
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 1500);
         return;
       }
 

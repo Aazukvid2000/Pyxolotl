@@ -58,28 +58,104 @@
 
   <script src="api.js"></script>
   <script>
+    // ============================================
+    // SISTEMA DE TOAST NOTIFICATIONS
+    // ============================================
+    function showToast(message, type = 'info') {
+      // Remover toast anterior si existe
+      const existing = document.querySelector('.admin-toast');
+      if (existing) existing.remove();
+      
+      const toast = document.createElement('div');
+      toast.className = 'admin-toast';
+      toast.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 16px 24px;
+        border-radius: 12px;
+        color: white;
+        font-weight: 500;
+        z-index: 10000;
+        max-width: 400px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        animation: slideInRight 0.3s ease;
+        background: ${type === 'error' ? '#ff4757' : type === 'success' ? '#4CAF50' : '#7b61ff'};
+      `;
+      toast.innerHTML = `<span>${message}</span>`;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.animation = 'slideOutRight 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+    
+    // Agregar estilos de animación
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideInRight {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      @keyframes slideOutRight {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
+
     // Función para construir la URL de descarga correctamente
     function getDownloadUrl(archivoUrl) {
+      if (!archivoUrl) return '#';
+      
       // Si ya es una URL completa (Cloudinary), usarla directamente
-      if (archivoUrl && (archivoUrl.startsWith('http://') || archivoUrl.startsWith('https://'))) {
+      if (archivoUrl.startsWith('http://') || archivoUrl.startsWith('https://')) {
         return archivoUrl;
       }
       
       // Si es una ruta relativa, construir la URL del backend
-      // La URL del archivo viene como "/uploads/juegos/..." 
-      // Necesitamos agregar el dominio del backend
       const backendUrl = window.location.hostname === 'localhost' 
         ? 'http://localhost:8000'
         : 'https://pyxolotl-production.up.railway.app';
       
       return `${backendUrl}${archivoUrl}`;
     }
+    
+    // Función para descargar archivo directamente
+    async function downloadGame(archivoUrl, titulo) {
+      const downloadUrl = getDownloadUrl(archivoUrl);
+      
+      showToast(`📥 Iniciando descarga de "${titulo}"...`, 'info');
+      
+      try {
+        // Crear link de descarga invisible
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = `${titulo.replace(/[^a-z0-9]/gi, '_')}.zip`;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        setTimeout(() => {
+          showToast(`✅ Descarga iniciada para "${titulo}"`, 'success');
+        }, 500);
+      } catch (error) {
+        console.error('Error al descargar:', error);
+        showToast('❌ Error al iniciar descarga', 'error');
+        // Fallback: abrir en nueva pestaña
+        window.open(downloadUrl, '_blank');
+      }
+    }
 
     async function cargarJuegosPendientes() {
       const user = getCurrentUser();
       if (!user || user.tipo_cuenta !== 'administrador') {
-        alert('Acceso denegado');
-        window.location.href = 'index.html';
+        showToast('Acceso denegado', 'error');
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 1500);
         return;
       }
 
@@ -95,15 +171,12 @@
         }
 
         container.innerHTML = juegos.map(juego => {
-          // Construir URL de descarga
-          const downloadUrl = getDownloadUrl(juego.archivo_juego_url);
-          
           return `
             <div class="juego-pendiente">
               <h3>${juego.titulo}</h3>
               <p><strong>Desarrollador:</strong> ${juego.desarrollador?.nombre || 'N/A'}</p>
               <p><strong>Género:</strong> ${juego.genero} | <strong>Precio:</strong> $${juego.precio}</p>
-              <p style="color:var(--muted)">${juego.descripcion.substring(0, 150)}...</p>
+              <p style="color:var(--muted)">${juego.descripcion ? juego.descripcion.substring(0, 150) : 'Sin descripción'}...</p>
               
               <div style="margin-top:15px;display:flex;gap:10px;flex-wrap:wrap">
                 <button class="btn btn-approve" onclick="aprobarJuego(${juego.id})">
@@ -112,9 +185,9 @@
                 <button class="btn btn-reject" onclick="rechazarJuego(${juego.id})">
                   ❌ Rechazar
                 </button>
-                <a href="${downloadUrl}" download class="btn btn-download" target="_blank">
+                <button class="btn btn-download" onclick="downloadGame('${juego.archivo_juego_url}', '${juego.titulo.replace(/'/g, "\\'")}')">
                   📥 Descargar y Probar
-                </a>
+                </button>
               </div>
             </div>
           `;
@@ -128,40 +201,110 @@
     }
 
     async function aprobarJuego(id) {
-      if (!confirm('¿Aprobar este juego?')) return;
+      // Crear modal de confirmación
+      const confirmed = await showConfirmModal('¿Aprobar este juego?', 'El juego será publicado y visible para todos los usuarios.');
+      if (!confirmed) return;
 
       try {
         const result = await apiAprobarJuego(id, true);
         
-        if (result.success) {
-          alert('✅ Juego aprobado y publicado');
+        if (result.success !== false) {
+          showToast('✅ Juego aprobado y publicado', 'success');
           cargarJuegosPendientes();
         } else {
-          alert('Error: ' + (result.detail || result.message || 'No se pudo aprobar'));
+          showToast('Error: ' + (result.detail || result.message || 'No se pudo aprobar'), 'error');
         }
       } catch (error) {
         console.error('Error al aprobar:', error);
-        alert('Error al aprobar: ' + error.message);
+        showToast('Error al aprobar: ' + error.message, 'error');
       }
     }
 
     async function rechazarJuego(id) {
-      const motivo = prompt('Motivo del rechazo:');
+      const motivo = await showPromptModal('Motivo del rechazo:', 'Explica brevemente por qué se rechaza el juego');
       if (!motivo) return;
 
       try {
         const result = await apiAprobarJuego(id, false, motivo);
         
-        if (result.success) {
-          alert('Juego rechazado. El desarrollador será notificado.');
+        if (result.success !== false) {
+          showToast('Juego rechazado. El desarrollador será notificado.', 'info');
           cargarJuegosPendientes();
         } else {
-          alert('Error: ' + (result.detail || result.message || 'No se pudo rechazar'));
+          showToast('Error: ' + (result.detail || result.message || 'No se pudo rechazar'), 'error');
         }
       } catch (error) {
         console.error('Error al rechazar:', error);
-        alert('Error al rechazar: ' + error.message);
+        showToast('Error al rechazar: ' + error.message, 'error');
       }
+    }
+    
+    // ============================================
+    // MODALES PERSONALIZADOS
+    // ============================================
+    function showConfirmModal(title, message) {
+      return new Promise((resolve) => {
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+          position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(0,0,0,0.8); z-index: 9999;
+          display: flex; align-items: center; justify-content: center;
+        `;
+        
+        overlay.innerHTML = `
+          <div style="background: var(--card); padding: 30px; border-radius: 16px; max-width: 400px; text-align: center;">
+            <h3 style="margin: 0 0 12px; color: #fff;">${title}</h3>
+            <p style="color: var(--muted); margin: 0 0 24px;">${message}</p>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+              <button id="confirmNo" class="btn btn-ghost" style="padding: 10px 24px;">Cancelar</button>
+              <button id="confirmYes" class="btn btn-approve" style="padding: 10px 24px;">Confirmar</button>
+            </div>
+          </div>
+        `;
+        
+        document.body.appendChild(overlay);
+        
+        overlay.querySelector('#confirmYes').onclick = () => { overlay.remove(); resolve(true); };
+        overlay.querySelector('#confirmNo').onclick = () => { overlay.remove(); resolve(false); };
+        overlay.onclick = (e) => { if (e.target === overlay) { overlay.remove(); resolve(false); } };
+      });
+    }
+    
+    function showPromptModal(title, placeholder) {
+      return new Promise((resolve) => {
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+          position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(0,0,0,0.8); z-index: 9999;
+          display: flex; align-items: center; justify-content: center;
+        `;
+        
+        overlay.innerHTML = `
+          <div style="background: var(--card); padding: 30px; border-radius: 16px; max-width: 450px; width: 90%;">
+            <h3 style="margin: 0 0 16px; color: #fff;">${title}</h3>
+            <textarea id="promptInput" placeholder="${placeholder}" style="
+              width: 100%; height: 100px; padding: 12px; border-radius: 8px;
+              border: 1px solid rgba(255,255,255,0.1); background: var(--glass);
+              color: #fff; font-size: 14px; resize: none; margin-bottom: 20px;
+            "></textarea>
+            <div style="display: flex; gap: 12px; justify-content: flex-end;">
+              <button id="promptCancel" class="btn btn-ghost" style="padding: 10px 24px;">Cancelar</button>
+              <button id="promptConfirm" class="btn btn-reject" style="padding: 10px 24px;">Rechazar</button>
+            </div>
+          </div>
+        `;
+        
+        document.body.appendChild(overlay);
+        overlay.querySelector('#promptInput').focus();
+        
+        overlay.querySelector('#promptConfirm').onclick = () => {
+          const value = overlay.querySelector('#promptInput').value.trim();
+          overlay.remove();
+          resolve(value || null);
+        };
+        overlay.querySelector('#promptCancel').onclick = () => { overlay.remove(); resolve(null); };
+        overlay.onclick = (e) => { if (e.target === overlay) { overlay.remove(); resolve(null); } };
+      });
     }
 
     // Inicializar

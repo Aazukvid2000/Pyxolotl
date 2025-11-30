@@ -1734,10 +1734,10 @@
         const downloadBtn = document.createElement('button');
         downloadBtn.className = 'btn';
         downloadBtn.style.cssText = 'width:100%;margin-top:12px;background:linear-gradient(90deg,#4CAF50,#45a049);color:#fff;font-weight:600';
-        downloadBtn.textContent = '👁️ Ver detalles';
+        downloadBtn.textContent = '📥 Descargar';
         downloadBtn.onclick = (e) => {
           e.stopPropagation();
-          window.location.href = `producto-detalle.html?id=${game.id}`;
+          handleFreeGameDownload(game);
         };
         article.appendChild(downloadBtn);
       } else {
@@ -1769,31 +1769,150 @@
       return article;
     }
 
+    async function handleFreeGameDownload(game) {
+      if (!isAuthenticated()) {
+        showToast('Debes iniciar sesión para descargar juegos gratis', 'error');
+        setTimeout(() => {
+          window.location.href = 'inicio.html';
+        }, 1500);
+        return;
+      }
+
+      try {
+        // Primero agregar a biblioteca
+        const response = await apiGetJuegoGratis(game.id);
+        
+        if (response.success || response.id) {
+          showToast('✅ ¡Juego agregado a tu biblioteca! Iniciando descarga...', 'success');
+          
+          // Ahora descargar directamente
+          setTimeout(() => {
+            downloadFreeGame(game);
+          }, 1000);
+        } else if (response.detail && response.detail.includes('ya')) {
+          // Ya lo tiene en biblioteca, solo descargar
+          showToast('📥 Iniciando descarga...', 'info');
+          downloadFreeGame(game);
+        } else {
+          showToast('❌ ' + (response.message || response.detail || 'Error al obtener el juego'), 'error');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        // Si el error es que ya lo tiene, descargar igual
+        if (error.message && error.message.includes('ya')) {
+          showToast('📥 Iniciando descarga...', 'info');
+          downloadFreeGame(game);
+        } else {
+          showToast('❌ Error al procesar la solicitud', 'error');
+        }
+      }
+    }
+    
+    function downloadFreeGame(game) {
+      // Construir URL de descarga
+      let downloadUrl = game.archivo_juego_url;
+      
+      if (downloadUrl && !downloadUrl.startsWith('http')) {
+        const backendUrl = window.location.hostname === 'localhost' 
+          ? 'http://localhost:8000'
+          : 'https://pyxolotl-production.up.railway.app';
+        downloadUrl = `${backendUrl}${downloadUrl}`;
+      }
+      
+      if (downloadUrl) {
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = `${game.titulo.replace(/[^a-z0-9]/gi, '_')}.zip`;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        showToast('❌ URL de descarga no disponible', 'error');
+      }
+    }
+
     async function handleFreeGame(gameId) {
       if (!isAuthenticated()) {
-        alert('Debes iniciar sesión para obtener juegos gratis');
-        window.location.href = 'inicio.html';
+        showToast('Debes iniciar sesión para obtener juegos gratis', 'error');
+        setTimeout(() => {
+          window.location.href = 'inicio.html';
+        }, 1500);
         return;
       }
 
       try {
         const response = await apiGetJuegoGratis(gameId);
         if (response.success) {
-          alert('✅ ¡Juego agregado a tu biblioteca! Ya puedes descargarlo.');
-          window.location.href = 'biblioteca.html';
+          showToast('✅ ¡Juego agregado a tu biblioteca! Ya puedes descargarlo.', 'success');
+          setTimeout(() => {
+            window.location.href = 'biblioteca.html';
+          }, 1500);
         } else {
-          alert('❌ ' + (response.message || 'Error al obtener el juego'));
+          showToast('❌ ' + (response.message || 'Error al obtener el juego'), 'error');
         }
       } catch (error) {
         console.error('Error:', error);
-        alert('❌ Error al procesar la solicitud');
+        showToast('❌ Error al procesar la solicitud', 'error');
       }
+    }
+    
+    // ============================================
+    // SISTEMA DE TOAST NOTIFICATIONS
+    // ============================================
+    function showToast(message, type = 'info') {
+      // Remover toast anterior si existe
+      const existing = document.querySelector('.pyxolotl-toast');
+      if (existing) existing.remove();
+      
+      const toast = document.createElement('div');
+      toast.className = 'pyxolotl-toast';
+      toast.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 16px 24px;
+        border-radius: 12px;
+        color: white;
+        font-weight: 500;
+        z-index: 10000;
+        max-width: 400px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        animation: toastSlideIn 0.3s ease;
+        background: ${type === 'error' ? '#ff4757' : type === 'success' ? '#4CAF50' : '#7b61ff'};
+      `;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      
+      // Agregar estilos de animación si no existen
+      if (!document.getElementById('toast-styles')) {
+        const style = document.createElement('style');
+        style.id = 'toast-styles';
+        style.textContent = `
+          @keyframes toastSlideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+          }
+          @keyframes toastSlideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+      
+      setTimeout(() => {
+        toast.style.animation = 'toastSlideOut 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
     }
 
     function handleAddToCart(game) {
       if (!isAuthenticated()) {
-        alert('Debes iniciar sesión para agregar juegos al carrito');
-        window.location.href = 'inicio.html';
+        showToast('Debes iniciar sesión para agregar juegos al carrito', 'error');
+        setTimeout(() => {
+          window.location.href = 'inicio.html';
+        }, 1500);
         return;
       }
 
