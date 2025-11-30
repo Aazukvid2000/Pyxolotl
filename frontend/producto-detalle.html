@@ -6,435 +6,256 @@
   <title>Detalles del Juego – Pyxolotl</title>
   <link rel="stylesheet" href="styles.css">
   <style>
+    /* Estilos específicos para la página de detalles */
     .product-hero {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1.2fr 0.8fr;
       gap: 40px;
       margin: 40px 0;
       align-items: start;
     }
-    .product-gallery {
-      position: sticky;
-      top: 100px;
-    }
+    
+    .product-gallery { position: sticky; top: 100px; }
+    
     .main-image {
-      width: 100%;
-      height: 400px;
-      border-radius: 16px;
+      width: 100%; height: 400px; border-radius: 16px;
       background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 80px;
-      color: #07102a;
-      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; box-shadow: 0 10px 40px rgba(123,97,255,0.2);
       margin-bottom: 20px;
-      box-shadow: 0 10px 40px rgba(123,97,255,0.3);
-      overflow: hidden;
     }
-    .main-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .thumbnail-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-    }
+    .main-image img, .main-image iframe, .main-image video { width: 100%; height: 100%; object-fit: cover; border: none; }
+    
+    .thumbnail-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
     .thumbnail {
-      height: 80px;
-      border-radius: 8px;
-      background: var(--glass);
-      cursor: pointer;
-      transition: all 0.2s;
-      border: 2px solid transparent;
-      overflow: hidden;
+      height: 80px; border-radius: 8px; background: var(--glass);
+      cursor: pointer; transition: all 0.2s; border: 2px solid transparent; overflow: hidden;
     }
-    .thumbnail img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    .thumbnail:hover, .thumbnail.active { border-color: var(--accent-1); }
+    .thumbnail img { width: 100%; height: 100%; object-fit: cover; }
+
+    .product-info { background: var(--card); padding: 32px; border-radius: 16px; }
+    
+    .stats-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      margin: 24px 0; padding: 20px; background: var(--glass); border-radius: 12px;
     }
-    .thumbnail:hover, .thumbnail.active {
-      border-color: var(--accent-1);
-      transform: scale(1.05);
-    }
-    .product-info {
-      background: var(--card);
-      padding: 32px;
-      border-radius: 16px;
-      box-shadow: 0 6px 30px rgba(2,6,23,0.6);
-    }
-    .price-section {
-      background: linear-gradient(135deg, rgba(123,97,255,0.1), rgba(78,163,255,0.1));
-      padding: 24px;
-      border-radius: 12px;
-      margin: 24px 0;
-    }
-    .current-price {
-      font-size: 42px;
-      font-weight: 700;
-      color: var(--accent-1);
-      margin: 8px 0;
-    }
-    .free-badge {
-      background: linear-gradient(135deg, #43e97b, #38f9d7);
-      color: #07102a;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 24px;
-      display: inline-block;
-    }
-    .action-buttons {
-      display: flex;
-      gap: 12px;
-      margin: 24px 0;
-      flex-wrap: wrap;
-    }
-    .tab-navigation {
-      display: flex;
-      gap: 12px;
-      border-bottom: 2px solid rgba(255,255,255,0.06);
-      margin: 40px 0 24px;
-      flex-wrap: wrap;
-    }
-    .tab-btn {
-      background: transparent;
-      border: none;
-      color: var(--muted);
-      padding: 12px 24px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 600;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -2px;
-      transition: all 0.2s;
-    }
-    .tab-btn:hover { color: var(--accent-2); }
-    .tab-btn.active {
-      color: var(--accent-1);
-      border-bottom-color: var(--accent-1);
-    }
-    .tab-content {
-      display: none;
-      animation: fadeIn 0.3s ease;
-    }
-    .tab-content.active { display: block; }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .requirements-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      margin: 20px 0;
-    }
-    .requirement-box {
-      background: var(--glass);
-      padding: 20px;
-      border-radius: 12px;
-    }
+    .stat-item small { display: block; color: var(--muted); font-size: 12px; }
+    .stat-item strong { display: block; font-size: 18px; color: #fff; }
+
+    /* Sistema de Reseñas */
     .reviews-summary {
-      background: var(--card);
-      padding: 32px;
-      border-radius: 16px;
-      margin-bottom: 24px;
-      display: flex;
-      gap: 40px;
-      align-items: center;
-      flex-wrap: wrap;
+      background: var(--card); padding: 32px; border-radius: 16px;
+      margin-bottom: 24px; display: flex; gap: 40px; align-items: center; flex-wrap: wrap;
     }
-    .reviews-score { text-align: center; }
-    .reviews-score .score {
-      font-size: 64px;
-      font-weight: 700;
-      color: var(--accent-1);
-    }
-    .reviews-bars { flex: 1; min-width: 250px; }
-    .bar-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin: 8px 0;
-    }
-    .bar-label { color: var(--muted); width: 30px; }
-    .bar-container {
-      flex: 1;
-      height: 8px;
-      background: var(--glass);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    .bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent-2), var(--accent-1));
-      border-radius: 4px;
-    }
-    .bar-count { color: var(--muted); width: 40px; text-align: right; }
-    .review-card {
-      background: var(--glass);
-      padding: 20px;
-      border-radius: 12px;
-      margin-bottom: 16px;
-    }
-    .review-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-    .review-user { display: flex; align-items: center; gap: 12px; }
-    .review-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      color: #07102a;
-    }
-    .rating-stars { color: #ffd700; font-size: 18px; }
-    .review-form-container {
-      background: var(--card);
-      padding: 32px;
-      border-radius: 16px;
-      margin-bottom: 24px;
-      display: none;
-    }
-    .review-form-container.active { display: block; }
-    .star-rating { display: flex; gap: 8px; margin: 16px 0; }
-    .star-rating .star {
-      font-size: 32px;
-      cursor: pointer;
-      color: var(--glass);
-      transition: all 0.2s;
-    }
-    .star-rating .star:hover,
-    .star-rating .star.active {
-      color: #ffd700;
-      transform: scale(1.1);
-    }
-    .review-textarea {
-      width: 100%;
-      min-height: 120px;
-      padding: 16px;
-      border-radius: 12px;
-      border: 2px solid var(--glass);
-      background: rgba(255,255,255,0.03);
-      color: #fff;
-      font-family: inherit;
-      font-size: 16px;
-      resize: vertical;
-      transition: border-color 0.2s;
-    }
-    .review-textarea:focus {
-      outline: none;
-      border-color: var(--accent-1);
-    }
-    .review-actions { display: flex; gap: 12px; margin-top: 16px; }
-    .no-reviews { text-align: center; padding: 40px; color: var(--muted); }
-    .dev-info {
-      background: linear-gradient(135deg, rgba(123,97,255,0.15), rgba(78,163,255,0.15));
-      padding: 20px;
-      border-radius: 12px;
-      margin-top: 24px;
-    }
-    .loading { text-align: center; padding: 60px; color: var(--muted); }
-    .loading-spinner {
-      width: 40px;
-      height: 40px;
-      border: 4px solid var(--glass);
-      border-top-color: var(--accent-1);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 20px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @media (max-width: 1024px) {
-      .product-hero { grid-template-columns: 1fr; gap: 24px; }
+    .rating-big { font-size: 64px; font-weight: 700; color: var(--accent-1); line-height: 1; }
+    .bars-container { flex: 1; min-width: 200px; }
+    .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+    .bar-bg { flex: 1; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
+    .bar-fill { height: 100%; background: var(--accent-1); }
+    
+    /* Formulario Reseña */
+    .review-form { background: var(--glass); padding: 24px; border-radius: 12px; margin-bottom: 32px; display: none; }
+    .review-form.active { display: block; }
+    .star-input { font-size: 32px; cursor: pointer; color: #444; transition: color 0.2s; background: none; border: none; }
+    .star-input:hover, .star-input.active { color: #ffd700; }
+    
+    .review-card { background: var(--glass); padding: 20px; border-radius: 12px; margin-bottom: 16px; }
+
+    @media (max-width: 900px) {
+      .product-hero { grid-template-columns: 1fr; }
       .product-gallery { position: static; }
-      .requirements-grid { grid-template-columns: 1fr; }
-      .reviews-summary { flex-direction: column; text-align: center; }
     }
   </style>
 </head>
 <body>
-  <header class="container header" style="background:rgba(52,73,94,0.85);backdrop-filter:blur(10px);position:sticky;top:0;z-index:999;box-shadow:0 2px 20px rgba(0,0,0,0.3)">
+  <header class="container header" style="background:rgba(52,73,94,0.95); position:sticky; top:0; z-index:999;">
     <div class="brand" onclick="window.location.href='index.html'" style="cursor:pointer">
-      <img src="PIXOLOTEL.png" alt="Logo Pyxolotl" class="brand-logo" onerror="this.style.display='none'">
+      <img src="PIXOLOTEL.png" alt="Pyxolotl" class="brand-logo" onerror="this.style.display='none'">
       <div>
         <div class="site-title">Pyxolotl</div>
-        <div style="font-size:12px;color:var(--muted)">Marketplace de juegos indie mexicanos</div>
       </div>
     </div>
     <nav class="nav">
       <a href="index.html">🏠 Inicio</a>
-      <a href="index.html#gallery">Juegos</a>
       <a href="biblioteca.html">📚 Biblioteca</a>
-      <button id="cartBtn" class="btn btn-ghost" style="position:relative">
-        🛒 <span id="cartCount" class="cart-badge">0</span>
-      </button>
+      <a href="cart.html">🛒 Carrito <span id="cartCount" style="background:var(--accent-1); padding:2px 6px; border-radius:10px; font-size:12px;">0</span></a>
     </nav>
   </header>
 
   <main class="container">
     <div style="margin: 20px 0">
-      <a href="index.html" style="color:var(--muted);text-decoration:none">← Volver a la tienda</a>
+      <a href="index.html" style="color:var(--accent-1); text-decoration:none">← Volver al catálogo</a>
     </div>
 
-    <div id="loadingState" class="loading">
-      <div class="loading-spinner"></div>
-      <p>Cargando información del juego...</p>
+    <div id="loadingState" style="text-align:center; padding: 100px;">
+      <div style="font-size: 40px; animation: spin 1s infinite linear;">↻</div>
+      <p>Cargando juego...</p>
     </div>
 
-    <div id="errorState" style="display:none;text-align:center;padding:60px">
-      <h2 style="color:#ff4757">❌ Juego no encontrado</h2>
-      <p style="color:var(--muted)">El juego que buscas no existe o no está disponible.</p>
-      <a href="index.html" class="btn" style="margin-top:20px">Volver al catálogo</a>
+    <div id="errorState" style="display:none; text-align:center; padding: 100px;">
+      <h2 style="color: #ff4757">⚠️ Juego no encontrado</h2>
+      <p>El juego que buscas no existe o ha sido eliminado.</p>
     </div>
 
     <div id="gameContent" style="display:none">
       <div class="product-hero">
         <div class="product-gallery">
-          <div class="main-image" id="mainImage"><span id="mainImageFallback"></span></div>
-          <div class="thumbnail-grid" id="thumbnailGrid"></div>
+          <div class="main-image" id="mainImageContainer">
+            </div>
+          <div class="thumbnail-grid" id="thumbnailGrid">
+            </div>
         </div>
 
-        <div>
-          <div style="margin-bottom:12px"><span class="kicker" id="gameGenre">Cargando...</span></div>
-          <h1 style="margin:0 0 16px;font-size:48px" id="productTitle">Cargando...</h1>
-          <p style="font-size:18px;color:var(--muted);line-height:1.6" id="gameDescription">Cargando descripción...</p>
+        <div class="product-info">
+          <span class="genre-badge" id="genreBadge" style="background:var(--accent-1); color:#000; padding:4px 12px; border-radius:20px; font-weight:bold; font-size:12px;">Indie</span>
+          
+          <h1 id="gameTitle" style="font-size: 42px; margin: 10px 0;">Titulo</h1>
+          <p id="devName" style="color: var(--muted);">Por: Desarrollador</p>
+          
+          <div class="price-section" style="margin: 24px 0; font-size: 36px; font-weight: 700; color: var(--accent-1);">
+            <span id="priceDisplay">$0.00</span>
+          </div>
 
-          <div class="product-info">
-            <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
-              <div class="rating-stars" id="headerStars">★★★★★</div>
-              <span style="color:var(--muted)" id="headerRating">0.0 (0 reseñas)</span>
-            </div>
+          <div style="display:flex; gap:12px; margin-bottom: 24px;">
+            <button id="addToCartBtn" class="btn" style="flex:1; background:linear-gradient(90deg,var(--accent-2),var(--accent-1)); color:#000; font-weight:bold;">
+              🛒 Agregar al carrito
+            </button>
+            <button id="downloadFreeBtn" class="btn" style="flex:1; display:none; background:#2ecc71; color:#fff;">
+              ⬇️ Obtener Gratis
+            </button>
+          </div>
 
-            <div class="price-section">
-              <div id="priceDisplay"><div class="current-price" id="productPrice">$0.00</div></div>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <small>📦 Tamaño</small>
+              <strong id="statSize">0 MB</strong>
             </div>
+            <div class="stat-item">
+              <small>⬇️ Descargas</small>
+              <strong id="statDownloads">0</strong>
+            </div>
+            <div class="stat-item">
+              <small>⭐ Calificación</small>
+              <strong id="statRating">0.0</strong>
+            </div>
+            <div class="stat-item">
+              <small>📅 Publicado</small>
+              <strong id="statDate">-</strong>
+            </div>
+          </div>
 
-            <div class="action-buttons">
-              <button id="addToCartBtn" class="btn" style="flex:1;padding:16px;font-size:18px;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a">🛒 Agregar al carrito</button>
-              <button id="getFreeBtn" class="btn" style="flex:1;padding:16px;font-size:18px;background:linear-gradient(135deg,#43e97b,#38f9d7);color:#07102a;display:none">🎮 Obtener gratis</button>
-              <button class="btn btn-ghost" style="padding:16px" title="Agregar a favoritos">❤️</button>
-            </div>
-
-            <div class="dev-info">
-              <p style="margin:0"><strong>🎮 Desarrollado por:</strong> <span id="devName">-</span></p>
-              <p style="margin:8px 0 0;color:var(--muted);font-size:14px"><span id="gameSize"></span></p>
-            </div>
+          <div style="background:rgba(255,255,255,0.05); padding:20px; border-radius:12px;">
+            <h3 style="margin-top:0;">Descripción</h3>
+            <p id="gameDesc" style="line-height:1.6; color:var(--muted);">...</p>
           </div>
         </div>
       </div>
 
-      <div class="tab-navigation">
-        <button class="tab-btn active" data-tab="description">📝 Descripción</button>
-        <button class="tab-btn" data-tab="requirements">💻 Requisitos</button>
-        <button class="tab-btn" data-tab="reviews">⭐ Reseñas</button>
+      <div style="border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 30px;">
+        <button class="btn btn-ghost" onclick="showTab('reqs')" style="color:var(--accent-1)">Requisitos del Sistema</button>
+        <button class="btn btn-ghost" onclick="showTab('reviews')">Reseñas y Opiniones</button>
       </div>
 
-      <div class="tab-content active" id="description">
-        <div style="background:var(--card);padding:32px;border-radius:16px">
-          <h2 style="margin-top:0">Acerca del juego</h2>
-          <div id="fullDescription" style="color:var(--muted);line-height:1.8"></div>
-        </div>
-      </div>
-
-      <div class="tab-content" id="requirements">
-        <div class="requirements-grid">
-          <div class="requirement-box">
-            <h3 style="margin-top:0;color:var(--accent-1)">💻 Requisitos Mínimos</h3>
-            <div id="minRequirements" style="color:var(--muted);line-height:1.8"><p>No especificados</p></div>
+      <div id="tab-reqs">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px;">
+          <div style="background:var(--glass); padding:20px; border-radius:12px;">
+            <h4 style="color:var(--accent-1)">Mínimos</h4>
+            <div id="reqsMin">No especificados</div>
           </div>
-          <div class="requirement-box">
-            <h3 style="margin-top:0;color:var(--accent-2)">🚀 Requisitos Recomendados</h3>
-            <div id="recRequirements" style="color:var(--muted);line-height:1.8"><p>No especificados</p></div>
+          <div style="background:var(--glass); padding:20px; border-radius:12px;">
+            <h4 style="color:var(--accent-2)">Recomendados</h4>
+            <div id="reqsRec">No especificados</div>
           </div>
         </div>
       </div>
 
-      <div class="tab-content" id="reviews">
+      <div id="tab-reviews" style="margin-top:40px;">
         <div class="reviews-summary">
-          <div class="reviews-score">
-            <div class="score" id="avgScore">0.0</div>
-            <div class="rating-stars" id="avgStars">☆☆☆☆☆</div>
-            <div style="color:var(--muted);margin-top:8px" id="totalReviews">0 reseñas</div>
+          <div style="text-align:center;">
+            <div class="rating-big" id="avgRatingBig">0.0</div>
+            <div style="color:#ffd700; font-size:24px;" id="avgStars">☆☆☆☆☆</div>
+            <div style="color:var(--muted); margin-top:8px;"><span id="totalReviewsCount">0</span> reseñas</div>
           </div>
-          <div class="reviews-bars" id="reviewsBars"></div>
+          
+          <div class="bars-container" id="ratingBars">
+            </div>
+          
           <div>
-            <button id="writeReviewBtn" class="btn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a">✍️ Escribir reseña</button>
+            <button id="btnWriteReview" class="btn" style="background:var(--glass); border:1px solid var(--accent-1);">✍️ Escribir reseña</button>
           </div>
         </div>
 
-        <div class="review-form-container" id="reviewFormContainer">
-          <h3 style="margin-top:0">✍️ Escribe tu reseña</h3>
-          <p style="color:var(--muted)">Comparte tu experiencia con este juego</p>
-          <div>
-            <label style="color:var(--muted);display:block;margin-bottom:8px">Tu calificación:</label>
-            <div class="star-rating" id="starRating">
-              <span class="star" data-value="1">☆</span>
-              <span class="star" data-value="2">☆</span>
-              <span class="star" data-value="3">☆</span>
-              <span class="star" data-value="4">☆</span>
-              <span class="star" data-value="5">☆</span>
+        <div id="reviewForm" class="review-form">
+          <h3 style="margin-top:0;">Tu opinión sobre el juego</h3>
+          
+          <div style="margin-bottom:16px;">
+            <label>Calificación:</label>
+            <div id="starRatingInput">
+              <button type="button" class="star-input" data-val="1">★</button>
+              <button type="button" class="star-input" data-val="2">★</button>
+              <button type="button" class="star-input" data-val="3">★</button>
+              <button type="button" class="star-input" data-val="4">★</button>
+              <button type="button" class="star-input" data-val="5">★</button>
             </div>
           </div>
-          <div style="margin-top:16px">
-            <label style="color:var(--muted);display:block;margin-bottom:8px">Tu reseña (mínimo 10 caracteres):</label>
-            <textarea id="reviewText" class="review-textarea" placeholder="Cuéntanos qué te pareció el juego..."></textarea>
+          
+          <div style="margin-bottom:16px;">
+            <textarea id="reviewText" style="width:100%; height:100px; padding:12px; background:rgba(0,0,0,0.3); border:1px solid #444; color:#fff; border-radius:8px;" placeholder="Cuéntanos qué te pareció (mínimo 10 caracteres)..."></textarea>
+            <div style="text-align:right; font-size:12px; color:var(--muted);"><span id="charCount">0</span>/500</div>
           </div>
-          <div class="review-actions">
-            <button id="submitReviewBtn" class="btn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a">📤 Publicar reseña</button>
-            <button id="cancelReviewBtn" class="btn btn-ghost">Cancelar</button>
+          
+          <div style="display:flex; gap:10px;">
+            <button id="submitReviewBtn" class="btn" style="background:var(--accent-1); color:#000;">Publicar</button>
+            <button onclick="document.getElementById('reviewForm').classList.remove('active')" class="btn btn-ghost">Cancelar</button>
           </div>
         </div>
 
         <div id="reviewsList">
-          <div class="no-reviews">
-            <p>🎮 Aún no hay reseñas para este juego.</p>
-            <p>¡Sé el primero en dejar tu opinión!</p>
           </div>
-        </div>
       </div>
     </div>
   </main>
 
-  <footer class="footer" style="margin-top:60px">
-    <div class="container center" style="flex-direction:column;gap:10px">
-      <div style="width:100%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
-        <div>© 2025 Pyxolotl · Hecho con ♥ para desarrolladores indie mexicanos</div>
-        <div style="color:var(--muted)">Contacto: contacto@pyxolotl.com</div>
-      </div>
-    </div>
-  </footer>
-
   <script src="api.js"></script>
-  <script src="cart.js"></script>
   <script>
-    let currentGame = null;
+    // Variables Globales
+    let currentGameId = null;
     let currentRating = 0;
-    const urlParams = new URLSearchParams(window.location.search);
-    const gameId = urlParams.get('id');
+    
+    // Obtener ID de la URL
+    const params = new URLSearchParams(window.location.search);
+    currentGameId = params.get('id');
+    
+    console.log("📍 ID recuperado de URL:", currentGameId); // DEBUGGING
 
-    async function initPage() {
-      if (!gameId) { showError(); return; }
+    // Inicializar
+    document.addEventListener('DOMContentLoaded', () => {
+      if(!currentGameId) {
+        showError();
+      } else {
+        loadGameData();
+      }
+      
+      // Update cart count visual
+      const cart = JSON.parse(localStorage.getItem('pyxolotl_cart') || '[]');
+      document.getElementById('cartCount').textContent = cart.length;
+    });
+
+    async function loadGameData() {
       try {
-        const game = await apiGetJuego(gameId);
-        if (game.detail || !game.id) { showError(); return; }
-        currentGame = game;
+        // 1. Cargar datos del juego
+        const game = await apiGetJuego(currentGameId);
         renderGameDetails(game);
+        
+        // 2. Cargar reseñas
         await loadReviews();
+        
         document.getElementById('loadingState').style.display = 'none';
         document.getElementById('gameContent').style.display = 'block';
+        
       } catch (error) {
-        console.error('Error al cargar juego:', error);
+        console.error("Error cargando juego:", error);
         showError();
       }
     }
@@ -444,286 +265,278 @@
       document.getElementById('errorState').style.display = 'block';
     }
 
+    // Renderizar Detalles del Juego
     function renderGameDetails(game) {
-      document.getElementById('productTitle').textContent = game.titulo;
-      document.title = `${game.titulo} – Pyxolotl`;
-      document.getElementById('gameGenre').textContent = `${game.genero} • Indie`;
-      document.getElementById('gameDescription').textContent = game.descripcion.substring(0, 200) + (game.descripcion.length > 200 ? '...' : '');
-      document.getElementById('fullDescription').innerHTML = `<p>${game.descripcion.replace(/\n/g, '</p><p>')}</p>`;
+      document.title = `${game.titulo} - Pyxolotl`;
       
-      const mainImage = document.getElementById('mainImage');
-      if (game.portada_url && !game.portada_url.includes('temp')) {
-        const imgUrl = getImageUrl(game.portada_url);
-        mainImage.innerHTML = `<img src="${imgUrl}" alt="${game.titulo}" onerror="this.parentElement.innerHTML='<span>${getInitials(game.titulo)}</span>'">`;
-      } else {
-        document.getElementById('mainImageFallback').textContent = getInitials(game.titulo);
-      }
+      // Textos Básicos
+      document.getElementById('gameTitle').textContent = game.titulo;
+      document.getElementById('genreBadge').textContent = game.genero;
+      document.getElementById('devName').textContent = `Desarrollador: ${game.desarrollador?.nombre || 'Indie'}`;
+      document.getElementById('gameDesc').textContent = game.descripcion;
       
-      renderScreenshots(game);
-      
+      // Estadísticas Reales
+      document.getElementById('statSize').textContent = game.tamano_mb ? `${game.tamano_mb.toFixed(1)} MB` : 'N/A';
+      document.getElementById('statDownloads').textContent = game.total_descargas || 0;
+      document.getElementById('statRating').textContent = game.calificacion_promedio ? game.calificacion_promedio.toFixed(1) : '0.0';
+      document.getElementById('statDate').textContent = new Date(game.fecha_creacion).toLocaleDateString();
+
+      // Precio / Botones
+      const priceDisplay = document.getElementById('priceDisplay');
+      const cartBtn = document.getElementById('addToCartBtn');
+      const freeBtn = document.getElementById('downloadFreeBtn');
+
       if (game.precio === 0) {
-        document.getElementById('priceDisplay').innerHTML = '<span class="free-badge">✨ GRATIS</span>';
-        document.getElementById('addToCartBtn').style.display = 'none';
-        document.getElementById('getFreeBtn').style.display = 'block';
+        priceDisplay.textContent = "¡GRATIS!";
+        priceDisplay.style.color = "#2ecc71";
+        cartBtn.style.display = 'none';
+        freeBtn.style.display = 'block';
+        freeBtn.onclick = () => handleFreeDownload(game.id);
       } else {
-        document.getElementById('productPrice').textContent = `$${game.precio.toFixed(2)} MXN`;
+        priceDisplay.textContent = `$${game.precio.toFixed(2)} MXN`;
+        cartBtn.onclick = () => addToCart(game);
       }
-      
-      document.getElementById('headerStars').innerHTML = getStarsHTML(game.calificacion_promedio);
-      document.getElementById('headerRating').textContent = `${game.calificacion_promedio.toFixed(1)} (${game.total_resenas} reseñas)`;
-      
-      if (game.desarrollador) {
-        document.getElementById('devName').textContent = game.desarrollador.nombre;
+
+      // Galería y Trailer
+      setupGallery(game);
+
+      // Requisitos
+      if (game.requisitos) {
+        try {
+          const reqs = JSON.parse(game.requisitos);
+          document.getElementById('reqsMin').innerHTML = formatReqs(reqs.minimos);
+          document.getElementById('reqsRec').innerHTML = formatReqs(reqs.recomendados);
+        } catch(e) {
+          document.getElementById('reqsMin').textContent = "Ver descripción.";
+        }
       }
-      if (game.tamano_mb) {
-        document.getElementById('gameSize').textContent = `📦 Tamaño: ${game.tamano_mb.toFixed(1)} MB`;
-      }
-      renderRequirements(game.requisitos);
     }
 
-    function renderScreenshots(game) {
-      const grid = document.getElementById('thumbnailGrid');
-      grid.innerHTML = '';
+    function setupGallery(game) {
+      const mainContainer = document.getElementById('mainImageContainer');
+      const thumbGrid = document.getElementById('thumbnailGrid');
+      
+      // Función para setear la vista principal
+      const setMain = (content, isVideo = false) => {
+        mainContainer.innerHTML = '';
+        if (isVideo) {
+           mainContainer.innerHTML = content;
+        } else {
+           mainContainer.innerHTML = `<img src="${content}" alt="Main">`;
+        }
+      };
+
+      // 1. Portada (Thumbnail 1)
       if (game.portada_url) {
-        grid.appendChild(createThumbnail(game.portada_url, game.titulo, true));
+        const thumb = createThumb(game.portada_url);
+        thumb.onclick = () => setMain(game.portada_url);
+        thumbGrid.appendChild(thumb);
+        setMain(game.portada_url); // Default
       }
+
+      // 2. Trailer (Si existe)
+      if (game.trailer_url) {
+        const videoHtml = getEmbedVideo(game.trailer_url);
+        const thumbVideo = document.createElement('div');
+        thumbVideo.className = 'thumbnail';
+        thumbVideo.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:24px;">🎬</div>';
+        thumbVideo.onclick = () => setMain(videoHtml, true);
+        thumbGrid.appendChild(thumbVideo);
+      }
+
+      // 3. Screenshots
       if (game.screenshots_urls) {
         try {
-          const screenshots = JSON.parse(game.screenshots_urls);
-          screenshots.forEach((url, idx) => {
-            grid.appendChild(createThumbnail(url, `Screenshot ${idx + 1}`, false));
+          const screens = JSON.parse(game.screenshots_urls);
+          screens.forEach(url => {
+            const t = createThumb(url);
+            t.onclick = () => setMain(url);
+            thumbGrid.appendChild(t);
           });
-        } catch (e) { console.error('Error parsing screenshots:', e); }
+        } catch(e) {}
       }
     }
 
-    function createThumbnail(url, alt, isActive) {
+    function createThumb(url) {
       const div = document.createElement('div');
-      div.className = 'thumbnail' + (isActive ? ' active' : '');
-      const imgUrl = getImageUrl(url);
-      div.innerHTML = `<img src="${imgUrl}" alt="${alt}" onerror="this.parentElement.style.background='linear-gradient(135deg,var(--accent-1),var(--accent-2))'">`;
-      div.addEventListener('click', () => {
-        document.getElementById('mainImage').innerHTML = `<img src="${imgUrl}" alt="${alt}">`;
-        document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
-        div.classList.add('active');
-      });
+      div.className = 'thumbnail';
+      div.innerHTML = `<img src="${url}">`;
       return div;
     }
 
-    function renderRequirements(requisitos) {
-      if (!requisitos) return;
-      try {
-        const reqs = JSON.parse(requisitos);
-        if (reqs.minimos) document.getElementById('minRequirements').innerHTML = formatRequirements(reqs.minimos);
-        if (reqs.recomendados) document.getElementById('recRequirements').innerHTML = formatRequirements(reqs.recomendados);
-      } catch (e) {
-        document.getElementById('minRequirements').innerHTML = `<p>${requisitos}</p>`;
+    function getEmbedVideo(url) {
+      // Detectar YouTube
+      const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/);
+      if (ytMatch) {
+        return `<iframe src="https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1" allowfullscreen style="width:100%;height:100%;border:0;"></iframe>`;
       }
+      // Video directo
+      return `<video controls autoplay src="${url}" style="width:100%;height:100%"></video>`;
     }
 
-    function formatRequirements(reqs) {
-      let html = '<ul style="list-style:none;padding:0">';
-      if (reqs.os) html += `<li><strong>SO:</strong> ${reqs.os}</li>`;
-      if (reqs.cpu) html += `<li><strong>Procesador:</strong> ${reqs.cpu}</li>`;
-      if (reqs.ram) html += `<li><strong>Memoria:</strong> ${reqs.ram}</li>`;
-      if (reqs.gpu) html += `<li><strong>Gráficos:</strong> ${reqs.gpu}</li>`;
-      if (reqs.storage) html += `<li><strong>Almacenamiento:</strong> ${reqs.storage}</li>`;
-      return html + '</ul>';
+    function formatReqs(obj) {
+      if (!obj) return 'No especificado';
+      return `
+        <ul style="list-style:none; padding:0; margin:0; font-size:14px; color:var(--muted);">
+          <li><strong>SO:</strong> ${obj.os || '-'}</li>
+          <li><strong>CPU:</strong> ${obj.cpu || '-'}</li>
+          <li><strong>RAM:</strong> ${obj.ram || '-'}</li>
+          <li><strong>GPU:</strong> ${obj.gpu || '-'}</li>
+          <li><strong>Espacio:</strong> ${obj.storage || '-'}</li>
+        </ul>
+      `;
     }
+
+    // ==========================================
+    // SISTEMA DE RESEÑAS
+    // ==========================================
 
     async function loadReviews() {
-      try {
-        const reviews = await apiGetResenas(gameId);
-        renderReviews(reviews);
-      } catch (error) { console.error('Error al cargar reseñas:', error); }
-    }
-
-    function renderReviews(reviews) {
-      const container = document.getElementById('reviewsList');
-      if (!reviews || reviews.length === 0) {
-        container.innerHTML = `<div class="no-reviews"><p>🎮 Aún no hay reseñas para este juego.</p><p>¡Sé el primero en dejar tu opinión!</p></div>`;
-        renderReviewsSummary([0,0,0,0,0], 0, 0);
-        return;
-      }
-      const totalReviews = reviews.length;
-      const avgScore = reviews.reduce((sum, r) => sum + r.calificacion, 0) / totalReviews;
-      const distribution = [0, 0, 0, 0, 0];
-      reviews.forEach(r => distribution[r.calificacion - 1]++);
-      renderReviewsSummary(distribution, avgScore, totalReviews);
-      container.innerHTML = reviews.map(review => `
-        <div class="review-card">
-          <div class="review-header">
-            <div class="review-user">
-              <div class="review-avatar">${getInitials(review.usuario?.nombre || 'Usuario')}</div>
-              <div>
-                <strong>${review.usuario?.nombre || 'Usuario'}</strong>
-                <div style="color:var(--muted);font-size:13px">${formatDate(review.fecha_creacion)}</div>
-              </div>
-            </div>
-            <div class="rating-stars">${getStarsHTML(review.calificacion)}</div>
+      const reviews = await apiGetResenas(currentGameId);
+      
+      // Calcular Stats
+      const total = reviews.length;
+      const sum = reviews.reduce((a, b) => a + b.calificacion, 0);
+      const avg = total ? (sum / total) : 0;
+      
+      // Actualizar UI Header Reseñas
+      document.getElementById('avgRatingBig').textContent = avg.toFixed(1);
+      document.getElementById('avgStars').textContent = '★'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg));
+      document.getElementById('totalReviewsCount').textContent = total;
+      
+      // Barras de distribución
+      const counts = {1:0, 2:0, 3:0, 4:0, 5:0};
+      reviews.forEach(r => counts[r.calificacion]++);
+      
+      const barsHtml = [5,4,3,2,1].map(star => {
+        const p = total ? (counts[star] / total * 100) : 0;
+        return `
+          <div class="bar-row">
+            <span style="width:20px">${star}★</span>
+            <div class="bar-bg"><div class="bar-fill" style="width:${p}%"></div></div>
+            <span style="width:30px; text-align:right">${counts[star]}</span>
           </div>
-          <p style="color:var(--muted);line-height:1.6;margin:0">${review.texto}</p>
-        </div>
-      `).join('');
-    }
-
-    function renderReviewsSummary(distribution, avgScore, total) {
-      document.getElementById('avgScore').textContent = avgScore.toFixed(1);
-      document.getElementById('avgStars').innerHTML = getStarsHTML(avgScore);
-      document.getElementById('totalReviews').textContent = `${total} reseña${total !== 1 ? 's' : ''}`;
-      const barsContainer = document.getElementById('reviewsBars');
-      barsContainer.innerHTML = '';
-      for (let i = 5; i >= 1; i--) {
-        const count = distribution[i - 1] || 0;
-        const percentage = total > 0 ? (count / total) * 100 : 0;
-        barsContainer.innerHTML += `<div class="bar-row"><span class="bar-label">${i}★</span><div class="bar-container"><div class="bar-fill" style="width:${percentage}%"></div></div><span class="bar-count">${count}</span></div>`;
-      }
-    }
-
-    document.getElementById('writeReviewBtn').addEventListener('click', () => {
-      if (!isAuthenticated()) {
-        alert('⚠️ Debes iniciar sesión para escribir una reseña');
-        window.location.href = 'inicio.html';
-        return;
-      }
-      document.getElementById('reviewFormContainer').classList.add('active');
-      document.getElementById('writeReviewBtn').style.display = 'none';
-    });
-
-    document.getElementById('cancelReviewBtn').addEventListener('click', () => {
-      document.getElementById('reviewFormContainer').classList.remove('active');
-      document.getElementById('writeReviewBtn').style.display = 'block';
-      resetReviewForm();
-    });
-
-    document.querySelectorAll('#starRating .star').forEach(star => {
-      star.addEventListener('click', () => {
-        currentRating = parseInt(star.dataset.value);
-        updateStarDisplay();
-      });
-      star.addEventListener('mouseenter', () => {
-        const value = parseInt(star.dataset.value);
-        document.querySelectorAll('#starRating .star').forEach((s, idx) => {
-          s.textContent = idx < value ? '★' : '☆';
-        });
-      });
-    });
-
-    document.getElementById('starRating').addEventListener('mouseleave', updateStarDisplay);
-
-    function updateStarDisplay() {
-      document.querySelectorAll('#starRating .star').forEach((s, idx) => {
-        s.textContent = idx < currentRating ? '★' : '☆';
-        s.classList.toggle('active', idx < currentRating);
-      });
-    }
-
-    document.getElementById('submitReviewBtn').addEventListener('click', async () => {
-      const texto = document.getElementById('reviewText').value.trim();
-      if (currentRating === 0) { alert('⚠️ Por favor selecciona una calificación'); return; }
-      if (texto.length < 10) { alert('⚠️ La reseña debe tener al menos 10 caracteres'); return; }
-      try {
-        const result = await apiCrearResena(gameId, currentRating, texto);
-        if (result.id) {
-          alert('✅ ¡Reseña publicada exitosamente!');
-          document.getElementById('reviewFormContainer').classList.remove('active');
-          document.getElementById('writeReviewBtn').style.display = 'block';
-          resetReviewForm();
-          await loadReviews();
-        } else {
-          alert('❌ ' + (result.detail || 'Error al publicar la reseña'));
-        }
-      } catch (error) {
-        console.error('Error al crear reseña:', error);
-        alert('❌ Error al publicar la reseña');
-      }
-    });
-
-    function resetReviewForm() {
-      currentRating = 0;
-      document.getElementById('reviewText').value = '';
-      updateStarDisplay();
-    }
-
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById(btn.dataset.tab).classList.add('active');
-      });
-    });
-
-    document.getElementById('addToCartBtn').addEventListener('click', () => {
-      if (!currentGame) return;
-      let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-      if (cart.find(item => item.id === currentGame.id)) {
-        alert('⚠️ Este juego ya está en tu carrito');
+        `;
+      }).join('');
+      document.getElementById('ratingBars').innerHTML = barsHtml;
+      
+      // Listado
+      const list = document.getElementById('reviewsList');
+      if (total === 0) {
+        list.innerHTML = '<p style="text-align:center; color:var(--muted); padding:20px;">No hay reseñas aún. ¡Sé el primero!</p>';
       } else {
-        cart.push({ id: currentGame.id, title: currentGame.titulo, price: currentGame.precio, image: currentGame.portada_url });
-        localStorage.setItem('cart', JSON.stringify(cart));
-        alert('✅ Juego agregado al carrito');
-        updateCartCount();
+        list.innerHTML = reviews.map(r => `
+          <div class="review-card">
+            <div style="display:flex; justify-content:space-between;">
+              <strong>${r.usuario?.nombre || 'Usuario'}</strong>
+              <span style="color:#ffd700">${'★'.repeat(r.calificacion)}</span>
+            </div>
+            <div style="font-size:12px; color:var(--muted); margin-bottom:8px;">${new Date(r.fecha_creacion).toLocaleDateString()}</div>
+            <p style="margin:0; line-height:1.5;">${r.texto}</p>
+          </div>
+        `).join('');
       }
-    });
+    }
 
-    document.getElementById('getFreeBtn').addEventListener('click', async () => {
+    // Lógica Formulario Reseña
+    const btnWrite = document.getElementById('btnWriteReview');
+    const form = document.getElementById('reviewForm');
+    
+    btnWrite.onclick = () => {
       if (!isAuthenticated()) {
-        alert('⚠️ Debes iniciar sesión para obtener este juego');
+        alert("Debes iniciar sesión para escribir una reseña");
         window.location.href = 'inicio.html';
         return;
       }
-      try {
-        const result = await apiGetJuegoGratis(gameId);
-        if (result.success) {
-          alert('✅ ' + result.message);
-          window.location.href = 'biblioteca.html';
-        } else {
-          alert('❌ ' + (result.detail || result.message));
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        alert('❌ Error al obtener el juego');
-      }
+      form.classList.add('active');
+      btnWrite.style.display = 'none';
+    };
+
+    // Estrellas input
+    document.querySelectorAll('.star-input').forEach(btn => {
+      btn.onclick = () => {
+        currentRating = parseInt(btn.dataset.val);
+        updateStarInputVisuals();
+      };
     });
 
-    function updateCartCount() {
-      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    function updateStarInputVisuals() {
+      document.querySelectorAll('.star-input').forEach(btn => {
+        const val = parseInt(btn.dataset.val);
+        if (val <= currentRating) btn.classList.add('active');
+        else btn.classList.remove('active');
+      });
+    }
+
+    // Contador Caracteres
+    document.getElementById('reviewText').addEventListener('input', function() {
+      document.getElementById('charCount').textContent = this.value.length;
+    });
+
+    // Enviar Reseña
+    document.getElementById('submitReviewBtn').onclick = async () => {
+      const text = document.getElementById('reviewText').value;
+      
+      if (currentRating === 0) return alert("Selecciona una calificación");
+      if (text.length < 10) return alert("La reseña es muy corta (mínimo 10 caracteres)");
+      
+      try {
+        await apiCrearResena(currentGameId, currentRating, text);
+        alert("¡Reseña publicada!");
+        
+        // Reset
+        form.classList.remove('active');
+        btnWrite.style.display = 'block';
+        document.getElementById('reviewText').value = '';
+        currentRating = 0;
+        updateStarInputVisuals();
+        
+        // Recargar
+        await loadReviews();
+        
+      } catch(e) {
+        alert("Error: " + e.message);
+      }
+    };
+
+    // ==========================================
+    // CARRITO Y DESCARGAS
+    // ==========================================
+
+    function addToCart(game) {
+      if (!isAuthenticated()) return window.location.href = 'inicio.html';
+      
+      let cart = JSON.parse(localStorage.getItem('pyxolotl_cart') || '[]');
+      if (cart.find(i => i.id === game.id)) return alert("Ya está en el carrito");
+      
+      cart.push({
+        id: game.id,
+        titulo: game.titulo,
+        precio: game.precio,
+        imagen: game.portada_url
+      });
+      
+      localStorage.setItem('pyxolotl_cart', JSON.stringify(cart));
       document.getElementById('cartCount').textContent = cart.length;
+      alert("Agregado al carrito");
     }
 
-    function getInitials(title) {
-      if (!title) return '?';
-      const words = title.split(' ');
-      return words.length >= 2 ? (words[0][0] + words[1][0]).toUpperCase() : title.substring(0, 2).toUpperCase();
+    async function handleFreeDownload(id) {
+      if (!isAuthenticated()) return window.location.href = 'inicio.html';
+      try {
+        const res = await apiGetJuegoGratis(id);
+        alert(res.message);
+        window.location.href = 'biblioteca.html';
+      } catch(e) {
+        alert("Error al obtener juego");
+      }
     }
 
-    function getStarsHTML(rating) {
-      let stars = '';
-      for (let i = 0; i < 5; i++) stars += i < Math.round(rating) ? '★' : '☆';
-      return stars;
+    function showTab(id) {
+      // Simplificado, podrías añadir clases 'active'
+      document.getElementById('tab-reqs').style.display = id === 'reqs' ? 'block' : 'none';
+      document.getElementById('tab-reviews').style.display = id === 'reviews' ? 'block' : 'none';
     }
-
-    function getImageUrl(url) {
-      if (!url) return '';
-      if (url.startsWith('http')) return url;
-      const backendUrl = window.location.hostname === 'localhost' ? 'http://localhost:8000' : 'https://pyxolotl-production.up.railway.app';
-      return `${backendUrl}${url}`;
-    }
-
-    function formatDate(dateString) {
-      const date = new Date(dateString);
-      const now = new Date();
-      const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
-      if (diffDays === 0) return 'Hoy';
-      if (diffDays === 1) return 'Ayer';
-      if (diffDays < 7) return `Hace ${diffDays} días`;
-      if (diffDays < 30) return `Hace ${Math.floor(diffDays / 7)} semana${Math.floor(diffDays / 7) > 1 ? 's' : ''}`;
-      return date.toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' });
-    }
-
-    updateCartCount();
-    initPage();
   </script>
 </body>
 </html>
