@@ -5,20 +5,50 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Mi Biblioteca — Pyxolotl</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      overflow: hidden;
+    }
+    .user-avatar span {
+      color: #07102a;
+      font-weight: bold;
+      font-size: 16px;
+    }
+  </style>
 </head>
 <body>
   <header class="container header">
-    <div class="brand">
-      <img src="PIXOLOTEL.png" alt="Logo Pixolot" class="brand-logo">
+    <div class="brand" onclick="window.location.href='index.html'" style="cursor:pointer">
+      <img src="PIXOLOTEL.png" alt="Logo Pyxolotl" class="brand-logo" onerror="this.style.display='none'">
       <div>
         <div class="site-title">Pyxolotl</div>
-        <div style="font-size:12px;color:var(--muted)">Mi Biblioteca</div>
+        <div style="font-size:12px;color:var(--muted)">Marketplace de juegos indie mexicanos</div>
       </div>
     </div>
     <nav class="nav">
-      <a href="/index.html">Tienda</a>
-      <a href="biblioteca.html">Biblioteca</a>
-      <a href="#" onclick="logout()">Cerrar sesión</a>
+      <a href="index.html">🏠 Inicio</a>
+      <a href="biblioteca.html" style="color:var(--accent-1)">📚 Biblioteca</a>
+      
+      <div id="userProfile" class="user-profile">
+        <div class="user-avatar">
+          <span id="userInitials">U</span>
+        </div>
+        <span id="userName" style="color:var(--accent-1);font-weight:600">Usuario</span>
+        <button class="btn btn-ghost" onclick="logout()">Cerrar sesión</button>
+      </div>
     </nav>
   </header>
 
@@ -87,7 +117,17 @@
       alert('Descarga iniciada');
     }
 
+    function updateUserInfo() {
+      const user = getCurrentUser();
+      if (user && user.nombre) {
+        document.getElementById('userName').textContent = user.nombre;
+        const initials = user.nombre.split(' ').map(w => w[0]).join('').substring(0,2).toUpperCase();
+        document.getElementById('userInitials').textContent = initials;
+      }
+    }
+
     // Cargar al iniciar
+    updateUserInfo();
     cargarBiblioteca();
   </script>
 </body>

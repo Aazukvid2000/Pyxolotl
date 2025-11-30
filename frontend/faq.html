@@ -267,20 +267,24 @@
   <!-- Header -->
   <header class="container header">
     <div class="brand" onclick="window.location.href='index.html'" style="cursor:pointer">
-      <img src="PIXOLOTEL.png" alt="Logo Pyxolotl" class="brand-logo" onerror="this.style.display='none'; document.getElementById('brandFallbackFaq').style.display='flex'">
-      <span id="brandFallbackFaq" class="logo" style="display:none">PX</span>
+      <img src="PIXOLOTEL.png" alt="Logo Pyxolotl" class="brand-logo" onerror="this.style.display='none'">
       <div>
         <div class="site-title">Pyxolotl</div>
         <div style="font-size:12px;color:var(--muted)">Marketplace de juegos indie mexicanos</div>
       </div>
     </div>
     <nav class="nav">
-      <a href="index.html">Inicio</a>
-      <a href="index.html#gallery">Juegos</a>
-      <a href="index.html#about">Acerca</a>
-      <a class="btn btn-ghost" href="inicio.html">Iniciar sesión</a>
+      <a href="index.html">🏠 Inicio</a>
+      <a href="biblioteca.html">📚 Biblioteca</a>
+      <a class="btn btn-ghost" href="inicio.html" id="loginBtn">Iniciar sesión</a>
+      <div id="userProfile" style="display:none;align-items:center;gap:10px">
+        <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(90deg,var(--accent-1),var(--accent-2));display:flex;align-items:center;justify-content:center">
+          <span id="userInitials" style="color:#07102a;font-weight:bold">U</span>
+        </div>
+        <span id="userName" style="color:var(--accent-1);font-weight:600">Usuario</span>
+        <button class="btn btn-ghost" onclick="logout()">Cerrar sesión</button>
+      </div>
     </nav>
-    <button id="menuBtn" class="btn btn-ghost" aria-label="menu">☰</button>
   </header>
 
   <main class="faq-container">
@@ -574,6 +578,23 @@
         });
       }
     });
+
+    // User state
+    function checkUserState() {
+      const user = JSON.parse(localStorage.getItem('current_user') || 'null');
+      if (user && user.nombre) {
+        document.getElementById('loginBtn').style.display = 'none';
+        document.getElementById('userProfile').style.display = 'flex';
+        document.getElementById('userName').textContent = user.nombre;
+        document.getElementById('userInitials').textContent = user.nombre.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+      }
+    }
+    function logout() {
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('current_user');
+      window.location.href = 'inicio.html';
+    }
+    checkUserState();
   </script>
 </body>
 </html>

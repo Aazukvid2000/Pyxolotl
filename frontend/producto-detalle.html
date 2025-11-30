@@ -6,16 +6,45 @@
   <title>Detalles del Juego – Pyxolotl</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-    /* Header fix */
-    .header {
-      background: rgba(52,73,94,0.85);
-      backdrop-filter: blur(10px);
-      position: sticky;
-      top: 0;
-      z-index: 999;
-      box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+    /* Estilos del header consistentes con index.html */
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .user-avatar:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .user-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .user-avatar span {
+      color: #07102a;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    #userName {
+      color: var(--accent-1);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Product styles */
     .product-hero {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -23,12 +52,7 @@
       margin: 40px 0;
       align-items: start;
     }
-    
-    .product-gallery {
-      position: sticky;
-      top: 100px;
-    }
-    
+    .product-gallery { position: sticky; top: 100px; }
     .main-image {
       width: 100%;
       height: 400px;
@@ -44,19 +68,12 @@
       box-shadow: 0 10px 40px rgba(123,97,255,0.3);
       overflow: hidden;
     }
-    
-    .main-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    
+    .main-image img { width: 100%; height: 100%; object-fit: cover; }
     .thumbnail-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 12px;
     }
-    
     .thumbnail {
       height: 80px;
       border-radius: 8px;
@@ -66,117 +83,57 @@
       border: 2px solid transparent;
       overflow: hidden;
     }
-    
-    .thumbnail img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    
-    .thumbnail:hover,
-    .thumbnail.active {
+    .thumbnail img { width: 100%; height: 100%; object-fit: cover; }
+    .thumbnail:hover, .thumbnail.active {
       border-color: var(--accent-1);
       transform: scale(1.05);
     }
-    
     .product-info {
       background: var(--card);
       padding: 32px;
       border-radius: 16px;
       box-shadow: 0 6px 30px rgba(2,6,23,0.6);
     }
-    
-    .genre-badge {
-      display: inline-block;
-      padding: 6px 12px;
-      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
-      color: #07102a;
-      font-size: 12px;
-      font-weight: 600;
-      border-radius: 20px;
-      margin-bottom: 16px;
-    }
-    
-    .product-title {
-      font-size: 36px;
-      font-weight: 700;
-      margin: 0 0 16px;
-    }
-    
-    .product-subtitle {
-      color: var(--muted);
-      margin-bottom: 24px;
-      line-height: 1.6;
-    }
-    
     .price-section {
       background: linear-gradient(135deg, rgba(123,97,255,0.1), rgba(78,163,255,0.1));
       padding: 24px;
       border-radius: 12px;
       margin: 24px 0;
     }
-    
-    .original-price {
-      text-decoration: line-through;
-      color: var(--muted);
-      font-size: 18px;
-    }
-    
     .current-price {
       font-size: 42px;
       font-weight: 700;
       color: var(--accent-1);
-      margin: 8px 0;
     }
-    
-    .discount-badge {
-      background: linear-gradient(135deg, #ff4757, #ff6348);
-      color: #fff;
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-weight: 600;
+    .free-badge {
+      background: linear-gradient(135deg, #43e97b, #38f9d7);
+      color: #07102a;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 24px;
       display: inline-block;
-      margin-left: 12px;
     }
-    
     .action-buttons {
       display: flex;
       gap: 12px;
       margin: 24px 0;
+      flex-wrap: wrap;
     }
-    
-    .stats-list {
-      list-style: none;
-      margin: 20px 0;
-      padding: 0;
-    }
-    
-    .stats-list li {
-      padding: 12px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .stats-list li:last-child {
-      border-bottom: none;
-    }
-    
-    .developer-info {
-      background: var(--glass);
-      padding: 16px;
-      border-radius: 8px;
+    .dev-info {
+      background: linear-gradient(135deg, rgba(123,97,255,0.15), rgba(78,163,255,0.15));
+      padding: 20px;
+      border-radius: 12px;
       margin-top: 24px;
     }
-    
+
+    /* Tabs */
     .tabs {
       display: flex;
       gap: 24px;
       border-bottom: 2px solid rgba(255,255,255,0.1);
       margin: 40px 0 32px;
     }
-    
     .tab {
       padding: 12px 24px;
       cursor: pointer;
@@ -184,16 +141,12 @@
       font-weight: 500;
       transition: all 0.2s;
       position: relative;
+      background: none;
+      border: none;
+      font-size: 16px;
     }
-    
-    .tab:hover {
-      color: #fff;
-    }
-    
-    .tab.active {
-      color: var(--accent-1);
-    }
-    
+    .tab:hover { color: #fff; }
+    .tab.active { color: var(--accent-1); }
     .tab.active::after {
       content: '';
       position: absolute;
@@ -203,1128 +156,769 @@
       height: 2px;
       background: var(--accent-1);
     }
-    
-    .tab-content {
-      display: none;
-    }
-    
-    .tab-content.active {
-      display: block;
-    }
-    
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Requirements */
     .requirements-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 32px;
-      margin: 24px 0;
     }
-    
     .requirement-box {
       background: var(--glass);
       padding: 24px;
       border-radius: 12px;
     }
-    
     .requirement-box h4 {
       color: var(--accent-1);
       margin: 0 0 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
-    
     .requirement-box ul {
       list-style: none;
       margin: 0;
       padding: 0;
     }
-    
     .requirement-box li {
       padding: 8px 0;
       color: var(--muted);
     }
-    
-    .requirement-box strong {
-      color: #fff;
-      font-weight: 500;
-    }
-    
-    /* Review System Styles */
-    .reviews-section {
-      margin-top: 32px;
-    }
-    
-    .review-summary {
-      background: var(--glass);
-      padding: 24px;
-      border-radius: 12px;
+
+    /* Reviews */
+    .reviews-summary {
+      background: var(--card);
+      padding: 32px;
+      border-radius: 16px;
       margin-bottom: 24px;
       display: flex;
-      gap: 32px;
+      gap: 40px;
       align-items: center;
+      flex-wrap: wrap;
     }
-    
-    .rating-number {
-      font-size: 48px;
+    .rating-big {
+      text-align: center;
+    }
+    .rating-big .score {
+      font-size: 64px;
       font-weight: 700;
       color: var(--accent-1);
     }
-    
-    .rating-bars {
-      flex: 1;
+    .rating-big .stars {
+      color: #ffd700;
+      font-size: 24px;
     }
-    
+    .rating-bars { flex: 1; min-width: 250px; }
     .rating-bar {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin: 4px 0;
+      margin: 6px 0;
     }
-    
     .rating-bar-fill {
       flex: 1;
       height: 8px;
-      background: rgba(255,255,255,0.1);
+      background: var(--glass);
       border-radius: 4px;
       overflow: hidden;
     }
-    
     .rating-bar-fill div {
       height: 100%;
-      background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+      background: linear-gradient(90deg, var(--accent-2), var(--accent-1));
       border-radius: 4px;
     }
-    
-    /* Add Review Form */
-    .add-review-box {
-      background: var(--glass);
-      padding: 24px;
-      border-radius: 12px;
+
+    /* Review form */
+    .review-form {
+      background: var(--card);
+      padding: 32px;
+      border-radius: 16px;
       margin-bottom: 24px;
+      display: none;
     }
-    
-    .add-review-box h4 {
-      margin: 0 0 16px;
-      color: var(--accent-1);
-    }
-    
-    .star-rating {
+    .review-form.active { display: block; }
+    .star-select {
       display: flex;
       gap: 8px;
-      margin-bottom: 16px;
+      margin: 16px 0;
     }
-    
-    .star-rating button {
+    .star-select button {
+      font-size: 32px;
       background: none;
       border: none;
-      font-size: 32px;
       cursor: pointer;
-      color: #444;
-      transition: color 0.2s;
+      color: var(--glass);
+      transition: all 0.2s;
     }
-    
-    .star-rating button:hover,
-    .star-rating button.active {
+    .star-select button:hover,
+    .star-select button.active {
       color: #ffd700;
+      transform: scale(1.1);
     }
-    
     .review-textarea {
       width: 100%;
-      min-height: 100px;
-      padding: 12px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 8px;
+      min-height: 120px;
+      padding: 16px;
+      border-radius: 12px;
+      border: 2px solid var(--glass);
+      background: rgba(255,255,255,0.03);
       color: #fff;
       font-family: inherit;
+      font-size: 16px;
       resize: vertical;
-      margin-bottom: 16px;
     }
-    
     .review-textarea:focus {
       outline: none;
       border-color: var(--accent-1);
     }
-    
+
+    /* Review cards */
     .review-card {
       background: var(--glass);
       padding: 20px;
       border-radius: 12px;
-      margin: 16px 0;
+      margin-bottom: 16px;
     }
-    
     .review-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 12px;
     }
-    
-    .review-author {
-      font-weight: 600;
+    .review-user {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
-    
-    .review-date {
-      font-size: 14px;
-      color: var(--muted);
-    }
-    
-    .review-stars {
-      color: #ffd700;
-    }
-    
-    .similar-games {
-      margin: 48px 0;
-    }
-    
-    .games-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      margin-top: 24px;
-    }
-    
-    .game-card {
-      background: var(--card);
-      border-radius: 12px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    
-    .game-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 10px 30px rgba(123,97,255,0.3);
-    }
-    
-    .game-card .thumb {
-      height: 150px;
+    .review-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
       background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 36px;
-      font-weight: 700;
+      font-weight: bold;
       color: #07102a;
-      overflow: hidden;
     }
-    
-    .game-card .thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    .review-stars { color: #ffd700; font-size: 18px; }
+
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 60px;
+      color: var(--muted);
     }
-    
-    .game-card-info {
-      padding: 16px;
-    }
-    
-    .loading-spinner {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 60vh;
-    }
-    
     .spinner {
-      width: 50px;
-      height: 50px;
-      border: 3px solid var(--glass);
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--glass);
       border-top-color: var(--accent-1);
       border-radius: 50%;
       animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
     }
-    
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-    
-    .error-message {
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Error state */
+    .error-state {
       text-align: center;
-      padding: 60px 20px;
-      color: var(--muted);
+      padding: 60px;
     }
-    
-    .error-message h2 {
-      color: var(--accent-1);
-      margin-bottom: 16px;
-    }
-    
-    @media (max-width: 768px) {
-      .product-hero {
-        grid-template-columns: 1fr;
-      }
-      .product-gallery {
-        position: relative;
-        top: 0;
-      }
-      .tabs {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-      }
-      .requirements-grid {
-        grid-template-columns: 1fr;
-      }
-      .games-grid {
-        grid-template-columns: 1fr;
-      }
+    .error-state h2 { color: #ff4757; }
+
+    @media (max-width: 1024px) {
+      .product-hero { grid-template-columns: 1fr; }
+      .product-gallery { position: static; }
+      .requirements-grid { grid-template-columns: 1fr; }
+      .reviews-summary { flex-direction: column; }
     }
   </style>
 </head>
 <body>
-  <!-- Header -->
+  <!-- Header igual a index.html -->
   <header class="container header">
     <div class="brand" onclick="window.location.href='index.html'" style="cursor:pointer">
-      <img src="PIXOLOTEL.png" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
+      <img src="PIXOLOTEL.png" alt="Logo Pyxolotl" class="brand-logo" onerror="this.style.display='none'">
       <div>
         <div class="site-title">Pyxolotl</div>
         <div style="font-size:12px;color:var(--muted)">Marketplace de juegos indie mexicanos</div>
       </div>
     </div>
+
     <nav class="nav">
       <a href="index.html">🏠 Inicio</a>
-      <a href="index.html#gallery">Juegos</a>
-      <a href="#" id="userProfileBtn" style="display:none">👤 Perfil</a>
-      <a href="cart.html" style="position:relative">
-        🛒 <span id="cartCount" style="position:absolute;top:-8px;right:-8px;background:var(--accent-1);color:#fff;border-radius:50%;padding:2px 6px;font-size:12px;display:none">0</span>
-      </a>
+      <a href="biblioteca.html">📚 Biblioteca</a>
+      
+      <!-- Botones de login (por defecto visibles) -->
+      <a class="btn btn-ghost" href="inicio.html" id="loginBtn">Iniciar sesión</a>
+      
+      <!-- Perfil del usuario (oculto por defecto) -->
+      <div id="userProfile" class="user-profile" style="display:none">
+        <div id="userAvatar" class="user-avatar">
+          <span id="userInitials">U</span>
+        </div>
+        <span id="userName">Usuario</span>
+        <button id="logoutBtn" class="btn btn-ghost" onclick="logout()">Cerrar sesión</button>
+      </div>
+      
+      <button id="cartBtn" class="btn btn-ghost" style="position:relative" onclick="window.location.href='pago.html'">
+        🛒 <span id="cartCount" class="cart-badge">0</span>
+      </button>
     </nav>
   </header>
 
-  <!-- Volver a la tienda -->
-  <div class="container" style="margin:20px auto">
-    <a href="index.html" style="color:var(--accent-1);text-decoration:none;display:inline-flex;align-items:center;gap:8px">
-      ← Volver a la tienda
-    </a>
-  </div>
-
-  <!-- Loading spinner -->
-  <div id="loadingSpinner" class="loading-spinner">
-    <div class="spinner"></div>
-  </div>
-
-  <!-- Error message (hidden by default) -->
-  <div id="errorMessage" class="container error-message" style="display:none">
-    <div style="font-size:64px;margin-bottom:16px">⚠️</div>
-    <h2>Juego no encontrado</h2>
-    <p>El juego que buscas no existe o ha sido eliminado.</p>
-    <a href="index.html" class="btn" style="margin-top:20px;display:inline-block">Volver al inicio</a>
-  </div>
-
-  <!-- Main content (hidden until loaded) -->
-  <div id="mainContent" class="container" style="display:none">
-    <!-- Product Hero Section -->
-    <div class="product-hero">
-      <!-- Gallery -->
-      <div class="product-gallery">
-        <div class="main-image" id="mainImage">
-          <span id="mainImageInitial">?</span>
-        </div>
-        <div class="thumbnail-grid" id="thumbnailGrid">
-          <!-- Screenshots will be added here dynamically -->
-        </div>
-      </div>
-
-      <!-- Product Info -->
-      <div class="product-info">
-        <span class="genre-badge" id="genreBadge">Cargando...</span>
-        <h1 class="product-title" id="productTitle">Cargando...</h1>
-        <p class="product-subtitle" id="productSubtitle">
-          Cargando descripción...
-        </p>
-
-        <!-- Price Section -->
-        <div class="price-section">
-          <div id="priceDisplay">
-            <!-- Price will be inserted here -->
-          </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="action-buttons">
-          <button class="btn" id="addToCartBtn" style="flex:1;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;font-weight:600">
-            Agregar al carrito
-          </button>
-          <button class="btn" id="wishlistBtn" style="background:var(--glass)">
-            ❤️ Lista de deseados
-          </button>
-        </div>
-
-        <!-- Game Stats -->
-        <h3 style="margin:24px 0 16px">📊 Estadísticas del juego</h3>
-        <ul class="stats-list">
-          <li>
-            <span>⭐ Calificación promedio</span>
-            <strong id="gameRating">0.0</strong>
-          </li>
-          <li>
-            <span>💬 Total de reseñas</span>
-            <strong id="totalReviews">0</strong>
-          </li>
-          <li>
-            <span>⬇️ Descargas totales</span>
-            <strong id="totalDownloads">0</strong>
-          </li>
-          <li>
-            <span>💰 Ventas totales</span>
-            <strong id="totalSales">0</strong>
-          </li>
-          <li>
-            <span>💾 Tamaño del archivo</span>
-            <strong id="fileSize">0 MB</strong>
-          </li>
-        </ul>
-
-        <!-- Developer Info -->
-        <div class="developer-info">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div>
-              <small style="color:var(--muted)">🎮 Desarrollado por:</small>
-              <div style="font-weight:600" id="developerName">Cargando...</div>
-            </div>
-            <div style="text-align:right">
-              <small style="color:var(--muted)">📅 Fecha de publicación:</small>
-              <div id="releaseDate">Cargando...</div>
-            </div>
-          </div>
-        </div>
-      </div>
+  <main class="container">
+    <div style="margin: 20px 0">
+      <a href="index.html" style="color:var(--muted);text-decoration:none">← Volver a la tienda</a>
     </div>
 
-    <!-- Tabs Section -->
-    <div class="tabs">
-      <div class="tab active" onclick="switchTab('description')">
-        📝 Descripción
-      </div>
-      <div class="tab" onclick="switchTab('requirements')">
-        💻 Requisitos
-      </div>
-      <div class="tab" onclick="switchTab('reviews')">
-        ⭐ Reseñas (<span id="reviewCount">0</span>)
-      </div>
+    <!-- Loading -->
+    <div id="loadingState" class="loading">
+      <div class="spinner"></div>
+      <p>Cargando información del juego...</p>
     </div>
 
-    <!-- Tab Contents -->
-    <div id="descriptionTab" class="tab-content active">
-      <h2>Acerca de este juego</h2>
-      <div id="fullDescription" style="white-space: pre-wrap; line-height: 1.6;">
-        <!-- Full description will be inserted here -->
-      </div>
-
-      <!-- Trailer if exists -->
-      <div id="trailerSection" style="margin-top:32px;display:none;">
-        <h3 style="color:var(--accent-1);margin-bottom:16px;">🎬 Tráiler del juego</h3>
-        <div id="trailerContainer" style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;">
-          <!-- Video will be embedded here -->
-        </div>
-      </div>
+    <!-- Error -->
+    <div id="errorState" class="error-state" style="display:none">
+      <div style="font-size:80px;margin-bottom:20px">⚠️</div>
+      <h2>Juego no encontrado</h2>
+      <p style="color:var(--muted)">El juego que buscas no existe o ha sido eliminado.</p>
+      <a href="index.html" class="btn" style="margin-top:20px">Volver al inicio</a>
     </div>
 
-    <div id="requirementsTab" class="tab-content">
-      <div class="requirements-grid">
-        <div class="requirement-box">
-          <h4>💻 Requisitos Mínimos</h4>
-          <ul id="minRequirements">
-            <!-- Min requirements will be added here -->
-          </ul>
+    <!-- Contenido del juego -->
+    <div id="gameContent" style="display:none">
+      <div class="product-hero">
+        <!-- Galería -->
+        <div class="product-gallery">
+          <div class="main-image" id="mainImage"><span id="mainImageText">?</span></div>
+          <div class="thumbnail-grid" id="thumbnailGrid"></div>
         </div>
-        <div class="requirement-box">
-          <h4 style="color:var(--accent-2)">🚀 Requisitos Recomendados</h4>
-          <ul id="recRequirements">
-            <!-- Recommended requirements will be added here -->
-          </ul>
-        </div>
-      </div>
-      
-      <!-- Platforms -->
-      <div style="margin-top:32px;">
-        <h3 style="color:var(--accent-1);margin-bottom:16px;">🖥️ Plataformas compatibles</h3>
-        <div id="platformsList" style="display:flex;gap:16px;flex-wrap:wrap;">
-          <!-- Platforms will be added here -->
-        </div>
-      </div>
-    </div>
 
-    <div id="reviewsTab" class="tab-content">
-      <!-- Add Review Form (only for logged in users) -->
-      <div id="addReviewSection" class="add-review-box" style="display:none;">
-        <h4>✍️ Escribe tu reseña</h4>
-        <div class="star-rating" id="starRating">
-          <button data-rating="1">⭐</button>
-          <button data-rating="2">⭐</button>
-          <button data-rating="3">⭐</button>
-          <button data-rating="4">⭐</button>
-          <button data-rating="5">⭐</button>
-        </div>
-        <textarea 
-          id="reviewText" 
-          class="review-textarea" 
-          placeholder="Comparte tu experiencia con este juego..."
-          maxlength="500"
-        ></textarea>
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <small style="color:var(--muted)"><span id="charCount">0</span>/500 caracteres</small>
-          <button 
-            id="submitReviewBtn" 
-            class="btn" 
-            style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;font-weight:600;"
-          >
-            Publicar reseña
-          </button>
-        </div>
-      </div>
-
-      <!-- Login prompt for non-logged users -->
-      <div id="loginPrompt" class="add-review-box" style="display:none;text-align:center;">
-        <p style="color:var(--muted);margin-bottom:16px;">Debes iniciar sesión para dejar una reseña</p>
-        <a href="inicio.html" class="btn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;font-weight:600;">
-          Iniciar sesión
-        </a>
-      </div>
-
-      <!-- Review Summary -->
-      <div class="review-summary">
+        <!-- Info -->
         <div>
-          <div class="rating-number" id="avgRating">0.0</div>
-          <div class="review-stars" id="avgStars">⭐⭐⭐⭐⭐</div>
-          <div style="color:var(--muted);margin-top:8px"><span id="totalReviewsCount">0</span> reseñas</div>
-        </div>
-        <div class="rating-bars">
-          <div class="rating-bar">
-            <span>5★</span>
-            <div class="rating-bar-fill">
-              <div style="width:0%" id="bar5"></div>
-            </div>
-            <span id="count5">0</span>
+          <div style="margin-bottom:12px">
+            <span class="kicker" id="gameGenre">Género</span>
           </div>
-          <div class="rating-bar">
-            <span>4★</span>
-            <div class="rating-bar-fill">
-              <div style="width:0%" id="bar4"></div>
+          <h1 style="margin:0 0 16px;font-size:42px" id="gameTitle">Título del juego</h1>
+          <p style="color:var(--muted);line-height:1.6" id="gameShortDesc">Descripción corta...</p>
+
+          <div class="product-info">
+            <!-- Rating header -->
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
+              <span id="headerStars" style="color:#ffd700;font-size:20px">★★★★★</span>
+              <span style="color:var(--muted)" id="headerRating">5.0 (0 reseñas)</span>
             </div>
-            <span id="count4">0</span>
-          </div>
-          <div class="rating-bar">
-            <span>3★</span>
-            <div class="rating-bar-fill">
-              <div style="width:0%" id="bar3"></div>
+
+            <!-- Precio -->
+            <div class="price-section">
+              <div id="priceDisplay"><span class="current-price">$0.00</span></div>
             </div>
-            <span id="count3">0</span>
-          </div>
-          <div class="rating-bar">
-            <span>2★</span>
-            <div class="rating-bar-fill">
-              <div style="width:0%" id="bar2"></div>
+
+            <!-- Botones -->
+            <div class="action-buttons">
+              <button id="addToCartBtn" class="btn" style="flex:1;padding:16px;font-size:18px;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a">
+                🛒 Agregar al carrito
+              </button>
+              <button id="getFreeBtn" class="btn" style="flex:1;padding:16px;font-size:18px;background:linear-gradient(135deg,#43e97b,#38f9d7);color:#07102a;display:none">
+                🎮 Obtener gratis
+              </button>
             </div>
-            <span id="count2">0</span>
-          </div>
-          <div class="rating-bar">
-            <span>1★</span>
-            <div class="rating-bar-fill">
-              <div style="width:0%" id="bar1"></div>
+
+            <!-- Dev info -->
+            <div class="dev-info">
+              <p style="margin:0"><strong>🎮 Desarrollado por:</strong> <span id="devName">Desarrollador</span></p>
+              <p style="margin:8px 0 0;color:var(--muted);font-size:14px" id="gameSize"></p>
             </div>
-            <span id="count1">0</span>
           </div>
         </div>
       </div>
 
-      <div id="reviewsList">
-        <!-- Reviews will be added here dynamically -->
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab active" data-tab="description">📝 Descripción</button>
+        <button class="tab" data-tab="requirements">💻 Requisitos</button>
+        <button class="tab" data-tab="reviews">⭐ Reseñas</button>
+      </div>
+
+      <!-- Tab: Descripción -->
+      <div class="tab-content active" id="tab-description">
+        <div style="background:var(--card);padding:32px;border-radius:16px">
+          <h2 style="margin-top:0">Acerca del juego</h2>
+          <div id="gameFullDesc" style="color:var(--muted);line-height:1.8"></div>
+        </div>
+      </div>
+
+      <!-- Tab: Requisitos -->
+      <div class="tab-content" id="tab-requirements">
+        <div class="requirements-grid">
+          <div class="requirement-box">
+            <h4>💻 Requisitos Mínimos</h4>
+            <div id="minReqs"><p style="color:var(--muted)">No especificados</p></div>
+          </div>
+          <div class="requirement-box">
+            <h4 style="color:var(--accent-2)">🚀 Requisitos Recomendados</h4>
+            <div id="recReqs"><p style="color:var(--muted)">No especificados</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Reseñas -->
+      <div class="tab-content" id="tab-reviews">
+        <!-- Summary -->
+        <div class="reviews-summary">
+          <div class="rating-big">
+            <div class="score" id="avgScore">0.0</div>
+            <div class="stars" id="avgStars">☆☆☆☆☆</div>
+            <p style="color:var(--muted);margin:8px 0 0" id="totalReviewsText">0 reseñas</p>
+          </div>
+          <div class="rating-bars" id="ratingBars"></div>
+          <div>
+            <button id="writeReviewBtn" class="btn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a">
+              ✍️ Escribir reseña
+            </button>
+          </div>
+        </div>
+
+        <!-- Formulario de reseña -->
+        <div class="review-form" id="reviewForm">
+          <h3 style="margin-top:0">✍️ Tu reseña</h3>
+          <p style="color:var(--muted)">Comparte tu experiencia</p>
+          
+          <label style="color:var(--muted)">Tu calificación:</label>
+          <div class="star-select" id="starSelect">
+            <button data-value="1">☆</button>
+            <button data-value="2">☆</button>
+            <button data-value="3">☆</button>
+            <button data-value="4">☆</button>
+            <button data-value="5">☆</button>
+          </div>
+          
+          <label style="color:var(--muted)">Tu opinión (mínimo 10 caracteres):</label>
+          <textarea id="reviewText" class="review-textarea" placeholder="Cuéntanos qué te pareció el juego..."></textarea>
+          
+          <div style="display:flex;gap:12px;margin-top:16px">
+            <button id="submitReviewBtn" class="btn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a">
+              📤 Publicar
+            </button>
+            <button id="cancelReviewBtn" class="btn btn-ghost">Cancelar</button>
+          </div>
+        </div>
+
+        <!-- Lista de reseñas -->
+        <div id="reviewsList"></div>
       </div>
     </div>
+  </main>
 
-    <!-- Similar Games -->
-    <section class="similar-games">
-      <h2>🎮 También te puede interesar</h2>
-      <div class="games-grid" id="similarGames">
-        <!-- Similar games will be added here -->
-      </div>
-    </section>
-  </div>
-
-  <!-- Footer -->
-  <footer style="background:var(--card);padding:40px 0;margin-top:80px">
-    <div class="container" style="text-align:center">
-      <p style="color:var(--muted)">© 2025 Pyxolotl · Hecho con ♥ para desarrolladores indie</p>
-      <p style="margin-top:12px">
-        <a href="mailto:contacto@pyxolotl.com" style="color:var(--accent-1);margin:0 12px">contacto@pyxolotl.com</a>
-      </p>
+  <footer class="footer" style="margin-top:60px">
+    <div class="container" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px">
+      <div>© 2025 Pyxolotl · Hecho con ♥ para desarrolladores indie mexicanos</div>
+      <div style="color:var(--muted)">contacto@pyxolotl.com</div>
     </div>
   </footer>
 
   <script src="api.js"></script>
   <script>
-    // Global variables
+    // Variables globales
     let currentGame = null;
     let selectedRating = 0;
-
-    // Get game ID from URL
+    
+    // Obtener ID del juego de la URL
     const urlParams = new URLSearchParams(window.location.search);
     const gameId = urlParams.get('id');
     
     console.log('Game ID from URL:', gameId);
-    
-    if (!gameId) {
-      // If no ID in URL, try to get the first game or show error
-      showError();
-    } else {
-      loadGameDetails();
-    }
 
-    // Show error message
-    function showError() {
-      document.getElementById('loadingSpinner').style.display = 'none';
-      document.getElementById('errorMessage').style.display = 'block';
-      document.getElementById('mainContent').style.display = 'none';
-    }
-
-    // Load game details
-    async function loadGameDetails() {
+    // ========== INIT ==========
+    async function init() {
+      updateHeader();
+      updateCartCount();
+      
+      if (!gameId) {
+        showError();
+        return;
+      }
+      
       try {
-        console.log('Loading game with ID:', gameId);
+        const game = await apiGetJuego(gameId);
+        console.log('Game data:', game);
         
-        const response = await apiGetJuego(gameId);
-        console.log('Game data received:', response);
+        if (game.detail || !game.id) {
+          showError();
+          return;
+        }
         
-        if (!response) {
-          throw new Error('No se encontró el juego');
-        }
-
-        currentGame = response;
-
-        // Hide spinner, show content
-        document.getElementById('loadingSpinner').style.display = 'none';
-        document.getElementById('mainContent').style.display = 'block';
-
-        // Update page title
-        document.title = `${response.titulo} - Pyxolotl`;
-
-        // Basic info
-        document.getElementById('productTitle').textContent = response.titulo || 'Sin título';
-        document.getElementById('genreBadge').textContent = response.genero || 'Indie';
-        document.getElementById('productSubtitle').textContent = response.descripcion || 'Sin descripción disponible';
-        
-        // Main image
-        const mainImg = document.getElementById('mainImage');
-        if (response.portada_url) {
-          mainImg.innerHTML = `<img src="${response.portada_url}" alt="${response.titulo}">`;
-        } else {
-          document.getElementById('mainImageInitial').textContent = 
-            response.titulo ? response.titulo.substring(0, 2).toUpperCase() : '?';
-        }
-
-        // Screenshots
-        const thumbnailGrid = document.getElementById('thumbnailGrid');
-        thumbnailGrid.innerHTML = '';
-        
-        // Add main image as first thumbnail
-        const mainThumb = document.createElement('div');
-        mainThumb.className = 'thumbnail active';
-        if (response.portada_url) {
-          mainThumb.innerHTML = `<img src="${response.portada_url}" alt="Main">`;
-        } else {
-          mainThumb.innerHTML = response.titulo ? response.titulo.substring(0, 2).toUpperCase() : '?';
-        }
-        mainThumb.onclick = () => selectImage(response.portada_url, 0);
-        thumbnailGrid.appendChild(mainThumb);
-
-        // Add screenshots if available
-        if (response.screenshots_urls) {
-          try {
-            const screenshots = JSON.parse(response.screenshots_urls);
-            if (Array.isArray(screenshots)) {
-              screenshots.forEach((url, index) => {
-                const thumb = document.createElement('div');
-                thumb.className = 'thumbnail';
-                thumb.innerHTML = `<img src="${url}" alt="Screenshot ${index + 1}">`;
-                thumb.onclick = () => selectImage(url, index + 1);
-                thumbnailGrid.appendChild(thumb);
-              });
-            }
-          } catch (e) {
-            console.error('Error parsing screenshots:', e);
-          }
-        }
-
-        // Price
-        const priceDiv = document.getElementById('priceDisplay');
-        if (response.precio === 0 || response.precio === null) {
-          priceDiv.innerHTML = `
-            <div class="current-price">GRATIS</div>
-            <small style="color:#4CAF50">✨ Juego gratuito</small>
-          `;
-          document.getElementById('addToCartBtn').textContent = '⬇️ Obtener gratis';
-        } else {
-          priceDiv.innerHTML = `
-            <div class="current-price">$${parseFloat(response.precio).toFixed(2)} MXN</div>
-          `;
-        }
-
-        // Stats
-        document.getElementById('gameRating').textContent = 
-          response.calificacion_promedio ? response.calificacion_promedio.toFixed(1) : '0.0';
-        document.getElementById('totalReviews').textContent = response.total_resenas || 0;
-        document.getElementById('totalDownloads').textContent = response.total_descargas || 0;
-        document.getElementById('totalSales').textContent = response.total_ventas || 0;
-        document.getElementById('fileSize').textContent = 
-          response.tamano_mb ? `${response.tamano_mb} MB` : 'No especificado';
-
-        // Developer info
-        document.getElementById('developerName').textContent = 
-          response.desarrollador?.nombre || 'Desarrollador Indie';
-        
-        // Release date
-        if (response.fecha_creacion) {
-          const date = new Date(response.fecha_creacion);
-          const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
-                         'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-          document.getElementById('releaseDate').textContent = 
-            `${months[date.getMonth()]} ${date.getFullYear()}`;
-        } else {
-          document.getElementById('releaseDate').textContent = 'No especificada';
-        }
-
-        // Full description
-        document.getElementById('fullDescription').textContent = 
-          response.descripcion || 'No hay descripción disponible para este juego.';
-
-        // Trailer
-        if (response.trailer_url) {
-          const trailerSection = document.getElementById('trailerSection');
-          trailerSection.style.display = 'block';
-          
-          // Check if it's a YouTube URL
-          const youtubeMatch = response.trailer_url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
-          if (youtubeMatch) {
-            document.getElementById('trailerContainer').innerHTML = `
-              <iframe 
-                style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;border-radius:12px;"
-                src="https://www.youtube.com/embed/${youtubeMatch[1]}" 
-                frameborder="0" 
-                allowfullscreen>
-              </iframe>
-            `;
-          } else {
-            document.getElementById('trailerContainer').innerHTML = `
-              <video 
-                controls 
-                style="width:100%;border-radius:12px;"
-                src="${response.trailer_url}">
-              </video>
-            `;
-          }
-        }
-
-        // Requirements
-        if (response.requisitos) {
-          try {
-            const reqs = typeof response.requisitos === 'string' 
-              ? JSON.parse(response.requisitos) 
-              : response.requisitos;
-            
-            // Minimum requirements
-            const minReqsList = document.getElementById('minRequirements');
-            minReqsList.innerHTML = `
-              <li><strong>SO:</strong> ${reqs.minimos?.os || 'Windows 7/8/10'}</li>
-              <li><strong>Procesador:</strong> ${reqs.minimos?.cpu || 'Intel Core i3'}</li>
-              <li><strong>Memoria:</strong> ${reqs.minimos?.ram || '4 GB RAM'}</li>
-              <li><strong>Gráficos:</strong> ${reqs.minimos?.gpu || 'Intel HD 4000'}</li>
-              <li><strong>Almacenamiento:</strong> ${reqs.minimos?.storage || '500 MB'}</li>
-            `;
-
-            // Recommended requirements
-            const recReqsList = document.getElementById('recRequirements');
-            recReqsList.innerHTML = `
-              <li><strong>SO:</strong> ${reqs.recomendados?.os || 'Windows 10/11'}</li>
-              <li><strong>Procesador:</strong> ${reqs.recomendados?.cpu || 'Intel Core i5'}</li>
-              <li><strong>Memoria:</strong> ${reqs.recomendados?.ram || '8 GB RAM'}</li>
-              <li><strong>Gráficos:</strong> ${reqs.recomendados?.gpu || 'NVIDIA GTX 1050'}</li>
-              <li><strong>Almacenamiento:</strong> ${reqs.recomendados?.storage || '1 GB'}</li>
-            `;
-
-            // Platforms
-            if (reqs.plataformas && Array.isArray(reqs.plataformas)) {
-              const platformsDiv = document.getElementById('platformsList');
-              const platformIcons = {
-                'windows': '🪟 Windows',
-                'mac': '🍎 MacOS',
-                'linux': '🐧 Linux',
-                'web': '🌐 Navegador'
-              };
-              
-              platformsDiv.innerHTML = reqs.plataformas.map(platform => `
-                <div style="padding:8px 16px;background:var(--glass);border-radius:8px;">
-                  ${platformIcons[platform] || platform}
-                </div>
-              `).join('');
-            }
-          } catch (e) {
-            console.error('Error parsing requirements:', e);
-          }
-        }
-
-        // Load reviews
+        currentGame = game;
+        renderGame(game);
         await loadReviews();
-
-        // Similar games
-        loadSimilarGames(response.genero, response.id);
-
-        // Add to cart button
-        document.getElementById('addToCartBtn').onclick = () => {
-          if (response.precio === 0) {
-            handleFreeGame(response.id);
-          } else {
-            addToCart(response.id, response.titulo, response.precio, response.portada_url);
-          }
-        };
-
-        // Check if user is logged in for reviews
-        const user = JSON.parse(localStorage.getItem('current_user') || '{}');
-        const token = localStorage.getItem('auth_token');
         
-        if (user && token) {
-          document.getElementById('addReviewSection').style.display = 'block';
-          document.getElementById('loginPrompt').style.display = 'none';
-        } else {
-          document.getElementById('addReviewSection').style.display = 'none';
-          document.getElementById('loginPrompt').style.display = 'block';
-        }
-
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('gameContent').style.display = 'block';
+        
       } catch (error) {
         console.error('Error loading game:', error);
         showError();
       }
     }
 
-    // Select image for main display
-    function selectImage(imageUrl, index) {
-      const mainImg = document.getElementById('mainImage');
-      if (imageUrl) {
-        mainImg.innerHTML = `<img src="${imageUrl}" alt="Screenshot">`;
-      }
-      
-      // Update active thumbnail
-      const thumbs = document.querySelectorAll('.thumbnail');
-      thumbs.forEach((thumb, i) => {
-        thumb.classList.toggle('active', i === index);
-      });
+    function showError() {
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('errorState').style.display = 'block';
     }
 
-    // Switch tabs
-    function switchTab(tabName) {
-      // Update tab buttons
-      document.querySelectorAll('.tab').forEach(tab => {
-        tab.classList.remove('active');
-      });
-      event.target.classList.add('active');
-
-      // Update tab content
-      document.querySelectorAll('.tab-content').forEach(content => {
-        content.classList.remove('active');
-      });
-      document.getElementById(`${tabName}Tab`).classList.add('active');
-    }
-
-    // Star rating system
-    document.querySelectorAll('#starRating button').forEach(button => {
-      button.addEventListener('click', function() {
-        selectedRating = parseInt(this.dataset.rating);
-        
-        // Update visual state
-        document.querySelectorAll('#starRating button').forEach((btn, index) => {
-          btn.classList.toggle('active', index < selectedRating);
-        });
-      });
-    });
-
-    // Character count for review
-    document.getElementById('reviewText')?.addEventListener('input', function() {
-      document.getElementById('charCount').textContent = this.value.length;
-    });
-
-    // Submit review
-    document.getElementById('submitReviewBtn')?.addEventListener('click', async function() {
-      const reviewText = document.getElementById('reviewText').value.trim();
-      
-      if (selectedRating === 0) {
-        alert('Por favor selecciona una calificación');
-        return;
-      }
-      
-      if (reviewText.length < 10) {
-        alert('La reseña debe tener al menos 10 caracteres');
-        return;
-      }
-      
-      try {
-        // TODO: Implement API call to submit review
-        // For now, we'll just show a success message
-        const token = localStorage.getItem('auth_token');
-        
-        // This is a placeholder - you need to implement the backend endpoint
-        const response = await fetch(`${window.API_URL || 'https://pyxolotl-production.up.railway.app'}/api/resenas`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            juego_id: parseInt(gameId),
-            calificacion: selectedRating,
-            texto: reviewText
-          })
-        });
-        
-        if (response.ok) {
-          alert('✅ ¡Reseña publicada con éxito!');
-          
-          // Reset form
-          selectedRating = 0;
-          document.getElementById('reviewText').value = '';
-          document.getElementById('charCount').textContent = '0';
-          document.querySelectorAll('#starRating button').forEach(btn => {
-            btn.classList.remove('active');
-          });
-          
-          // Reload reviews
-          await loadReviews();
-          
-          // Update game stats
-          currentGame.total_resenas = (currentGame.total_resenas || 0) + 1;
-          document.getElementById('totalReviews').textContent = currentGame.total_resenas;
-          document.getElementById('reviewCount').textContent = currentGame.total_resenas;
-          document.getElementById('totalReviewsCount').textContent = currentGame.total_resenas;
-        } else {
-          const error = await response.json();
-          alert('❌ Error: ' + (error.detail || 'No se pudo publicar la reseña'));
-        }
-      } catch (error) {
-        console.error('Error submitting review:', error);
-        alert('❌ Error al publicar la reseña. Por favor intenta de nuevo.');
-      }
-    });
-
-    // Load reviews
-    async function loadReviews() {
-      try {
-        // TODO: Replace with actual API call
-        // const response = await fetch(`${API_URL}/api/resenas/juego/${gameId}`);
-        // const reviews = await response.json();
-        
-        // For now, using static data
-        const reviews = [];
-        
-        // Update review count
-        document.getElementById('reviewCount').textContent = reviews.length;
-        document.getElementById('totalReviewsCount').textContent = reviews.length;
-        
-        // Calculate rating distribution
-        const distribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-        let totalRating = 0;
-        
-        reviews.forEach(review => {
-          distribution[review.calificacion]++;
-          totalRating += review.calificacion;
-        });
-        
-        // Update rating bars
-        const total = reviews.length || 1;
-        for (let i = 1; i <= 5; i++) {
-          document.getElementById(`count${i}`).textContent = distribution[i];
-          document.getElementById(`bar${i}`).style.width = `${(distribution[i] / total) * 100}%`;
-        }
-        
-        // Update average
-        const avg = reviews.length > 0 ? (totalRating / reviews.length) : 0;
-        document.getElementById('avgRating').textContent = avg.toFixed(1);
-        
-        // Update stars
-        const stars = Math.round(avg);
-        document.getElementById('avgStars').textContent = '⭐'.repeat(stars) + '☆'.repeat(5 - stars);
-        
-        // Display reviews
-        const reviewsList = document.getElementById('reviewsList');
-        if (reviews.length === 0) {
-          reviewsList.innerHTML = `
-            <div style="text-align:center;padding:40px;color:var(--muted);">
-              <div style="font-size:48px;margin-bottom:16px;">💬</div>
-              <p>Aún no hay reseñas para este juego.</p>
-              <p style="margin-top:8px;">¡Sé el primero en dejar tu opinión!</p>
-            </div>
-          `;
-        } else {
-          reviewsList.innerHTML = reviews.map(review => {
-            const date = new Date(review.fecha_creacion);
-            const timeAgo = getTimeAgo(date);
-            
-            return `
-              <div class="review-card">
-                <div class="review-header">
-                  <div>
-                    <div class="review-author">${review.usuario?.nombre || 'Usuario'}</div>
-                    <div class="review-date">${timeAgo}</div>
-                  </div>
-                  <div class="review-stars">
-                    ${'⭐'.repeat(review.calificacion)}${'☆'.repeat(5 - review.calificacion)}
-                  </div>
-                </div>
-                <p style="margin:0;color:var(--muted)">${review.texto}</p>
-              </div>
-            `;
-          }).join('');
-        }
-        
-      } catch (error) {
-        console.error('Error loading reviews:', error);
+    // ========== HEADER ==========
+    function updateHeader() {
+      const user = getCurrentUser();
+      if (user && user.nombre) {
+        document.getElementById('loginBtn').style.display = 'none';
+        document.getElementById('userProfile').style.display = 'flex';
+        document.getElementById('userName').textContent = user.nombre;
+        document.getElementById('userInitials').textContent = getInitials(user.nombre);
       }
     }
 
-    // Get time ago string
-    function getTimeAgo(date) {
-      const seconds = Math.floor((new Date() - date) / 1000);
-      
-      let interval = seconds / 31536000;
-      if (interval > 1) return `Hace ${Math.floor(interval)} año${Math.floor(interval) > 1 ? 's' : ''}`;
-      
-      interval = seconds / 2592000;
-      if (interval > 1) return `Hace ${Math.floor(interval)} mes${Math.floor(interval) > 1 ? 'es' : ''}`;
-      
-      interval = seconds / 86400;
-      if (interval > 1) return `Hace ${Math.floor(interval)} día${Math.floor(interval) > 1 ? 's' : ''}`;
-      
-      interval = seconds / 3600;
-      if (interval > 1) return `Hace ${Math.floor(interval)} hora${Math.floor(interval) > 1 ? 's' : ''}`;
-      
-      interval = seconds / 60;
-      if (interval > 1) return `Hace ${Math.floor(interval)} minuto${Math.floor(interval) > 1 ? 's' : ''}`;
-      
-      return 'Hace un momento';
-    }
-
-    // Load similar games
-    async function loadSimilarGames(genre, currentGameId) {
-      try {
-        const response = await apiGetJuegos({ genero: genre });
-        const similarGames = response
-          .filter(game => game.id !== parseInt(currentGameId))
-          .slice(0, 3);
-
-        const container = document.getElementById('similarGames');
-        
-        if (similarGames.length === 0) {
-          container.innerHTML = `
-            <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted);">
-              <p>No hay juegos similares disponibles en este momento.</p>
-            </div>
-          `;
-        } else {
-          container.innerHTML = similarGames.map(game => `
-            <div class="game-card" onclick="window.location.href='producto-detalle.html?id=${game.id}'">
-              <div class="thumb">
-                ${game.portada_url 
-                  ? `<img src="${game.portada_url}" alt="${game.titulo}">` 
-                  : `<span>${game.titulo ? game.titulo.substring(0, 2).toUpperCase() : '?'}</span>`}
-              </div>
-              <div class="game-card-info">
-                <h4>${game.titulo || 'Sin título'}</h4>
-                <p style="color:var(--muted);font-size:14px">
-                  ${game.genero || 'Indie'} · 
-                  ${game.fecha_creacion ? new Date(game.fecha_creacion).getFullYear() : '2025'} · 
-                  ${game.desarrollador?.nombre || 'Indie'}
-                </p>
-                <p style="color:var(--accent-1);font-weight:700;margin-top:8px">
-                  ${game.precio === 0 || game.precio === null ? 'GRATIS' : `$${parseFloat(game.precio).toFixed(2)}`}
-                </p>
-              </div>
-            </div>
-          `).join('');
-        }
-      } catch (error) {
-        console.error('Error loading similar games:', error);
-      }
-    }
-
-    // Add to cart
-    function addToCart(gameId, title, price, image) {
-      // Check if user is logged in
-      if (!localStorage.getItem('auth_token')) {
-        alert('Debes iniciar sesión para agregar juegos al carrito');
-        window.location.href = 'inicio.html';
-        return;
-      }
-
-      // Get current cart from localStorage
-      let cart = JSON.parse(localStorage.getItem('pyxolotl_cart') || '[]');
-      
-      // Check if already in cart
-      if (cart.find(item => item.id === gameId)) {
-        alert('Este juego ya está en tu carrito');
-        return;
-      }
-
-      // Add to cart
-      cart.push({
-        id: gameId,
-        titulo: title,
-        precio: price,
-        imagen: image
-      });
-
-      localStorage.setItem('pyxolotl_cart', JSON.stringify(cart));
-
-      // Update cart count
-      updateCartCount();
-      
-      alert('✅ Juego agregado al carrito');
-    }
-
-    // Handle free game
-    async function handleFreeGame(gameId) {
-      if (!localStorage.getItem('auth_token')) {
-        alert('Debes iniciar sesión para obtener juegos gratis');
-        window.location.href = 'inicio.html';
-        return;
-      }
-
-      try {
-        const response = await apiGetJuegoGratis(gameId);
-        if (response.success) {
-          alert('✅ ¡Juego agregado a tu biblioteca! Ya puedes descargarlo.');
-          window.location.href = 'biblioteca.html';
-        } else {
-          alert('❌ ' + (response.message || 'Error al obtener el juego'));
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        alert('❌ Error al procesar la solicitud');
-      }
-    }
-
-    // Update cart count
     function updateCartCount() {
       const cart = JSON.parse(localStorage.getItem('pyxolotl_cart') || '[]');
-      const countElement = document.getElementById('cartCount');
-      if (cart.length > 0) {
-        countElement.textContent = cart.length;
-        countElement.style.display = 'inline-block';
+      const el = document.getElementById('cartCount');
+      el.textContent = cart.length;
+      el.style.display = cart.length > 0 ? 'inline-block' : 'none';
+    }
+
+    // ========== RENDER GAME ==========
+    function renderGame(game) {
+      document.title = `${game.titulo} – Pyxolotl`;
+      
+      // Básico
+      document.getElementById('gameTitle').textContent = game.titulo;
+      document.getElementById('gameGenre').textContent = `${game.genero} · Indie`;
+      document.getElementById('gameShortDesc').textContent = game.descripcion.substring(0, 200) + (game.descripcion.length > 200 ? '...' : '');
+      document.getElementById('gameFullDesc').innerHTML = `<p>${game.descripcion.replace(/\n/g, '</p><p>')}</p>`;
+      
+      // Imagen principal
+      const mainImg = document.getElementById('mainImage');
+      if (game.portada_url && !game.portada_url.includes('temp')) {
+        mainImg.innerHTML = `<img src="${getImageUrl(game.portada_url)}" alt="${game.titulo}" onerror="this.parentElement.innerHTML='<span>${getInitials(game.titulo)}</span>'">`;
       } else {
-        countElement.style.display = 'none';
+        document.getElementById('mainImageText').textContent = getInitials(game.titulo);
+      }
+      
+      // Thumbnails
+      renderThumbnails(game);
+      
+      // Precio
+      if (game.precio === 0 || game.precio === null) {
+        document.getElementById('priceDisplay').innerHTML = '<span class="free-badge">✨ GRATIS</span>';
+        document.getElementById('addToCartBtn').style.display = 'none';
+        document.getElementById('getFreeBtn').style.display = 'block';
+      } else {
+        document.getElementById('priceDisplay').innerHTML = `<span class="current-price">$${parseFloat(game.precio).toFixed(2)} MXN</span>`;
+      }
+      
+      // Rating
+      const rating = game.calificacion_promedio || 0;
+      document.getElementById('headerStars').textContent = getStars(rating);
+      document.getElementById('headerRating').textContent = `${rating.toFixed(1)} (${game.total_resenas || 0} reseñas)`;
+      
+      // Developer
+      document.getElementById('devName').textContent = game.desarrollador?.nombre || 'Desarrollador indie';
+      if (game.tamano_mb) {
+        document.getElementById('gameSize').textContent = `📦 Tamaño: ${game.tamano_mb.toFixed(1)} MB`;
+      }
+      
+      // Requisitos
+      renderRequirements(game.requisitos);
+    }
+
+    function renderThumbnails(game) {
+      const grid = document.getElementById('thumbnailGrid');
+      grid.innerHTML = '';
+      
+      // Portada
+      if (game.portada_url) {
+        const thumb = createThumb(game.portada_url, true);
+        grid.appendChild(thumb);
+      }
+      
+      // Screenshots
+      if (game.screenshots_urls) {
+        try {
+          const urls = JSON.parse(game.screenshots_urls);
+          urls.forEach(url => grid.appendChild(createThumb(url, false)));
+        } catch(e) {}
       }
     }
 
-    // Load on page ready
-    document.addEventListener('DOMContentLoaded', () => {
-      updateCartCount();
-      
-      // Check if user is logged in
-      const user = JSON.parse(localStorage.getItem('current_user') || '{}');
-      if (user && user.nombre) {
-        const profileBtn = document.getElementById('userProfileBtn');
-        profileBtn.textContent = `👤 ${user.nombre}`;
-        profileBtn.style.display = 'inline-block';
+    function createThumb(url, active) {
+      const div = document.createElement('div');
+      div.className = 'thumbnail' + (active ? ' active' : '');
+      const imgUrl = getImageUrl(url);
+      div.innerHTML = `<img src="${imgUrl}" alt="Screenshot" onerror="this.style.display='none'">`;
+      div.onclick = () => {
+        document.getElementById('mainImage').innerHTML = `<img src="${imgUrl}" alt="Screenshot">`;
+        document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+        div.classList.add('active');
+      };
+      return div;
+    }
+
+    function renderRequirements(reqs) {
+      if (!reqs) return;
+      try {
+        const r = JSON.parse(reqs);
+        if (r.minimos) document.getElementById('minReqs').innerHTML = formatReqs(r.minimos);
+        if (r.recomendados) document.getElementById('recReqs').innerHTML = formatReqs(r.recomendados);
+      } catch(e) {
+        document.getElementById('minReqs').innerHTML = `<p style="color:var(--muted)">${reqs}</p>`;
       }
+    }
+
+    function formatReqs(r) {
+      let html = '<ul>';
+      if (r.os) html += `<li><strong>SO:</strong> ${r.os}</li>`;
+      if (r.cpu) html += `<li><strong>CPU:</strong> ${r.cpu}</li>`;
+      if (r.ram) html += `<li><strong>RAM:</strong> ${r.ram}</li>`;
+      if (r.gpu) html += `<li><strong>GPU:</strong> ${r.gpu}</li>`;
+      if (r.storage) html += `<li><strong>Disco:</strong> ${r.storage}</li>`;
+      return html + '</ul>';
+    }
+
+    // ========== REVIEWS ==========
+    async function loadReviews() {
+      try {
+        const reviews = await apiGetResenas(gameId);
+        console.log('Reviews:', reviews);
+        renderReviews(reviews);
+      } catch(e) {
+        console.error('Error loading reviews:', e);
+        renderReviews([]);
+      }
+    }
+
+    function renderReviews(reviews) {
+      const total = reviews.length;
+      const avg = total > 0 ? reviews.reduce((s, r) => s + r.calificacion, 0) / total : 0;
+      
+      // Summary
+      document.getElementById('avgScore').textContent = avg.toFixed(1);
+      document.getElementById('avgStars').textContent = getStars(avg);
+      document.getElementById('totalReviewsText').textContent = `${total} reseña${total !== 1 ? 's' : ''}`;
+      
+      // Bars
+      const dist = [0,0,0,0,0];
+      reviews.forEach(r => dist[r.calificacion - 1]++);
+      
+      let barsHtml = '';
+      for (let i = 5; i >= 1; i--) {
+        const pct = total > 0 ? (dist[i-1] / total) * 100 : 0;
+        barsHtml += `
+          <div class="rating-bar">
+            <span style="color:var(--muted);width:30px">${i}★</span>
+            <div class="rating-bar-fill"><div style="width:${pct}%"></div></div>
+            <span style="color:var(--muted);width:30px;text-align:right">${dist[i-1]}</span>
+          </div>
+        `;
+      }
+      document.getElementById('ratingBars').innerHTML = barsHtml;
+      
+      // List
+      const list = document.getElementById('reviewsList');
+      if (total === 0) {
+        list.innerHTML = `
+          <div style="text-align:center;padding:40px;color:var(--muted)">
+            <div style="font-size:48px;margin-bottom:16px">💬</div>
+            <p>Aún no hay reseñas para este juego.</p>
+            <p>¡Sé el primero en opinar!</p>
+          </div>
+        `;
+      } else {
+        list.innerHTML = reviews.map(r => `
+          <div class="review-card">
+            <div class="review-header">
+              <div class="review-user">
+                <div class="review-avatar">${getInitials(r.usuario?.nombre || 'U')}</div>
+                <div>
+                  <strong>${r.usuario?.nombre || 'Usuario'}</strong>
+                  <div style="color:var(--muted);font-size:13px">${timeAgo(r.fecha_creacion)}</div>
+                </div>
+              </div>
+              <div class="review-stars">${getStars(r.calificacion)}</div>
+            </div>
+            <p style="color:var(--muted);margin:0">${r.texto}</p>
+          </div>
+        `).join('');
+      }
+    }
+
+    // ========== TABS ==========
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.onclick = () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+      };
     });
+
+    // ========== REVIEW FORM ==========
+    document.getElementById('writeReviewBtn').onclick = () => {
+      if (!isAuthenticated()) {
+        alert('⚠️ Debes iniciar sesión para escribir una reseña');
+        window.location.href = 'inicio.html';
+        return;
+      }
+      document.getElementById('reviewForm').classList.add('active');
+      document.getElementById('writeReviewBtn').style.display = 'none';
+    };
+
+    document.getElementById('cancelReviewBtn').onclick = () => {
+      document.getElementById('reviewForm').classList.remove('active');
+      document.getElementById('writeReviewBtn').style.display = 'block';
+      resetReviewForm();
+    };
+
+    // Stars
+    document.querySelectorAll('#starSelect button').forEach(btn => {
+      btn.onclick = () => {
+        selectedRating = parseInt(btn.dataset.value);
+        updateStarSelect();
+      };
+      btn.onmouseenter = () => {
+        const val = parseInt(btn.dataset.value);
+        document.querySelectorAll('#starSelect button').forEach((b, i) => {
+          b.textContent = i < val ? '★' : '☆';
+        });
+      };
+    });
+
+    document.getElementById('starSelect').onmouseleave = updateStarSelect;
+
+    function updateStarSelect() {
+      document.querySelectorAll('#starSelect button').forEach((b, i) => {
+        b.textContent = i < selectedRating ? '★' : '☆';
+        b.classList.toggle('active', i < selectedRating);
+      });
+    }
+
+    // Submit
+    document.getElementById('submitReviewBtn').onclick = async () => {
+      const texto = document.getElementById('reviewText').value.trim();
+      
+      if (selectedRating === 0) {
+        alert('⚠️ Selecciona una calificación');
+        return;
+      }
+      if (texto.length < 10) {
+        alert('⚠️ La reseña debe tener al menos 10 caracteres');
+        return;
+      }
+      
+      try {
+        const result = await apiCrearResena(gameId, selectedRating, texto);
+        console.log('Review result:', result);
+        
+        if (result.id) {
+          alert('✅ ¡Reseña publicada!');
+          document.getElementById('reviewForm').classList.remove('active');
+          document.getElementById('writeReviewBtn').style.display = 'block';
+          resetReviewForm();
+          await loadReviews();
+        } else {
+          alert('❌ ' + (result.detail || 'Error al publicar'));
+        }
+      } catch(e) {
+        console.error('Error:', e);
+        alert('❌ Error al publicar la reseña');
+      }
+    };
+
+    function resetReviewForm() {
+      selectedRating = 0;
+      document.getElementById('reviewText').value = '';
+      updateStarSelect();
+    }
+
+    // ========== CART & FREE ==========
+    document.getElementById('addToCartBtn').onclick = () => {
+      if (!currentGame) return;
+      
+      let cart = JSON.parse(localStorage.getItem('pyxolotl_cart') || '[]');
+      if (cart.find(i => i.id === currentGame.id)) {
+        alert('⚠️ Este juego ya está en tu carrito');
+        return;
+      }
+      
+      cart.push({
+        id: currentGame.id,
+        titulo: currentGame.titulo,
+        precio: currentGame.precio,
+        imagen: currentGame.portada_url
+      });
+      localStorage.setItem('pyxolotl_cart', JSON.stringify(cart));
+      alert('✅ Juego agregado al carrito');
+      updateCartCount();
+    };
+
+    document.getElementById('getFreeBtn').onclick = async () => {
+      if (!isAuthenticated()) {
+        alert('⚠️ Debes iniciar sesión');
+        window.location.href = 'inicio.html';
+        return;
+      }
+      
+      try {
+        const result = await apiGetJuegoGratis(gameId);
+        if (result.success) {
+          alert('✅ ' + result.message);
+          window.location.href = 'biblioteca.html';
+        } else {
+          alert('❌ ' + (result.detail || result.message));
+        }
+      } catch(e) {
+        alert('❌ Error al obtener el juego');
+      }
+    };
+
+    // ========== UTILS ==========
+    function getInitials(str) {
+      if (!str) return '?';
+      const words = str.split(' ');
+      return words.length >= 2 
+        ? (words[0][0] + words[1][0]).toUpperCase()
+        : str.substring(0, 2).toUpperCase();
+    }
+
+    function getStars(rating) {
+      const full = Math.round(rating);
+      return '★'.repeat(full) + '☆'.repeat(5 - full);
+    }
+
+    function getImageUrl(url) {
+      if (!url) return '';
+      if (url.startsWith('http')) return url;
+      return `${API_URL}${url}`;
+    }
+
+    function timeAgo(dateStr) {
+      const date = new Date(dateStr);
+      const now = new Date();
+      const diff = Math.floor((now - date) / 1000);
+      
+      if (diff < 60) return 'Hace un momento';
+      if (diff < 3600) return `Hace ${Math.floor(diff/60)} min`;
+      if (diff < 86400) return `Hace ${Math.floor(diff/3600)} h`;
+      if (diff < 604800) return `Hace ${Math.floor(diff/86400)} días`;
+      return date.toLocaleDateString('es-MX');
+    }
+
+    function logout() {
+      clearAuthToken();
+      localStorage.removeItem('current_user');
+      window.location.href = 'inicio.html';
+    }
+
+    // ========== START ==========
+    init();
   </script>
 </body>
 </html>
