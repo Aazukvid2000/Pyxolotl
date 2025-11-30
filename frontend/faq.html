@@ -548,8 +548,18 @@
         <h3 class="footer-title">PYXOLOTL</h3>
         <p class="footer-description">Plataforma mexicana de videojuegos indie. Conectando desarrolladores con jugadores apasionados.</p>
         <div class="footer-social">
-          <a href="https://www.instagram.com/pyxo.lotl" target="_blank" class="social-link">📷</a>
-          <a href="https://www.facebook.com/profile.php?id=61584296583769" target="_blank" class="social-link">👤</a>
+          <a href="https://www.instagram.com/pyxo.lotl?igsh=OHRybW00NHA4Nnc4" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="social-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+              <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" fill="none" stroke="#07102a" stroke-width="2"/>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="#07102a" stroke-width="2"/>
+            </svg>
+          </a>
+          <a href="https://www.facebook.com/profile.php?id=61584296583769" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="social-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            </svg>
+          </a>
         </div>
       </div>
       <div class="footer-column">
@@ -564,12 +574,15 @@
         <ul class="footer-links">
           <li><a href="faq.html">Preguntas frecuentes</a></li>
           <li><a href="mailto:soporte@pyxolotl.com">Soporte</a></li>
+          <li><a href="#" onclick="openTermsModal(event)">Términos y condiciones</a></li>
+          <li><a href="#" onclick="openPrivacyModal(event)">Privacidad</a></li>
         </ul>
       </div>
       <div class="footer-column">
         <h4 class="footer-heading">PYXOLOTL</h4>
         <ul class="footer-links">
           <li><a href="biblioteca.html">Mi biblioteca</a></li>
+          <li><a href="inicio.html#registro">Registrarse</a></li>
           <li><a href="inicio.html">Iniciar sesión</a></li>
         </ul>
       </div>
@@ -578,34 +591,63 @@
       <div class="footer-container">
         <p class="footer-copyright">© 2025 Pyxolotl. Todos los derechos reservados.</p>
         <div class="footer-legal">
+          <a href="#" onclick="openPrivacyModal(event)">Privacidad</a>
+          <span class="separator">·</span>
+          <a href="#" onclick="openTermsModal(event)">Términos</a>
+          <span class="separator">·</span>
           <a href="faq.html">FAQ</a>
         </div>
       </div>
     </div>
   </footer>
 
+  <!-- Modales -->
+  <div id="termsModal" class="modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);z-index:10000;align-items:center;justify-content:center">
+    <div style="background:var(--card);padding:40px;border-radius:20px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto">
+      <h2 style="margin-top:0">Términos y Condiciones</h2>
+      <p style="color:var(--muted);line-height:1.8">Al usar Pyxolotl, aceptas nuestros términos de servicio.</p>
+      <button onclick="closeTermsModal()" class="btn" style="margin-top:20px;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a">Cerrar</button>
+    </div>
+  </div>
+  <div id="privacyModal" class="modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);z-index:10000;align-items:center;justify-content:center">
+    <div style="background:var(--card);padding:40px;border-radius:20px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto">
+      <h2 style="margin-top:0">Política de Privacidad</h2>
+      <p style="color:var(--muted);line-height:1.8">Pyxolotl respeta tu privacidad.</p>
+      <button onclick="closePrivacyModal()" class="btn" style="margin-top:20px;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a">Cerrar</button>
+    </div>
+  </div>
+
   <style>
     .pyxolotl-footer { background: linear-gradient(180deg, #0a0e1a 0%, #07102a 100%); border-top: 1px solid rgba(123, 97, 255, 0.1); padding: 60px 0 0 0; margin-top: 100px; color: #e0e0e0; }
     .footer-container { max-width: 1400px; margin: 0 auto; padding: 0 40px; display: grid; grid-template-columns: 1.5fr repeat(3, 1fr); gap: 50px; }
     .footer-column { display: flex; flex-direction: column; gap: 20px; }
-    .footer-title { font-size: 24px; font-weight: 700; background: linear-gradient(90deg, var(--accent-1), var(--accent-2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .footer-description { color: #b0b0b0; font-size: 14px; line-height: 1.6; }
-    .footer-social { display: flex; gap: 12px; }
-    .social-link { width: 40px; height: 40px; border-radius: 50%; background: rgba(123, 97, 255, 0.1); display: flex; align-items: center; justify-content: center; color: var(--accent-1); transition: all 0.3s ease; text-decoration: none; }
-    .social-link:hover { background: linear-gradient(135deg, var(--accent-1), var(--accent-2)); color: #07102a; }
-    .footer-heading { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; color: #808080; }
+    .footer-title { font-size: 24px; font-weight: 700; background: linear-gradient(90deg, var(--accent-1), var(--accent-2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; letter-spacing: 1px; }
+    .footer-description { color: #b0b0b0; font-size: 14px; line-height: 1.6; margin-bottom: 10px; }
+    .footer-social { display: flex; gap: 12px; margin-top: 8px; }
+    .social-link { width: 40px; height: 40px; border-radius: 50%; background: rgba(123, 97, 255, 0.1); display: flex; align-items: center; justify-content: center; color: var(--accent-1); transition: all 0.3s ease; border: 1px solid rgba(123, 97, 255, 0.2); text-decoration: none; }
+    .social-link:hover { background: linear-gradient(135deg, var(--accent-1), var(--accent-2)); color: #07102a; transform: translateY(-3px); box-shadow: 0 4px 12px rgba(123, 97, 255, 0.4); }
+    .footer-heading { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; color: #808080; text-transform: uppercase; margin-bottom: 4px; }
     .footer-links { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
-    .footer-links li a { color: #b0b0b0; font-size: 14px; text-decoration: none; }
-    .footer-links li a:hover { color: var(--accent-1); }
+    .footer-links li a { color: #b0b0b0; font-size: 14px; text-decoration: none; transition: all 0.2s ease; display: inline-block; }
+    .footer-links li a:hover { color: var(--accent-1); transform: translateX(4px); }
     .footer-bottom { background: #060a16; border-top: 1px solid rgba(123, 97, 255, 0.1); padding: 24px 0; margin-top: 50px; }
     .footer-bottom .footer-container { display: flex; justify-content: space-between; align-items: center; }
     .footer-copyright { color: #808080; font-size: 13px; margin: 0; }
-    .footer-legal { display: flex; gap: 16px; }
+    .footer-legal { display: flex; gap: 16px; align-items: center; }
     .footer-legal a { color: #808080; font-size: 13px; text-decoration: none; }
-    @media (max-width: 768px) { .footer-container { grid-template-columns: 1fr; gap: 30px; padding: 0 20px; } .footer-bottom .footer-container { flex-direction: column; gap: 16px; } }
+    .footer-legal a:hover { color: var(--accent-1); }
+    .footer-legal .separator { color: #404040; }
+    @media (max-width: 1024px) { .footer-container { grid-template-columns: repeat(2, 1fr); gap: 40px; } .footer-column:first-child { grid-column: 1 / -1; text-align: center; } .footer-social { justify-content: center; } }
+    @media (max-width: 768px) { .pyxolotl-footer { padding: 40px 0 0 0; margin-top: 60px; } .footer-container { grid-template-columns: 1fr; gap: 30px; padding: 0 20px; } .footer-bottom .footer-container { flex-direction: column; gap: 16px; text-align: center; } .footer-legal { flex-wrap: wrap; justify-content: center; } }
   </style>
 
   <script src="api.js"></script>
+  <script>
+    function openTermsModal(e) { if(e) e.preventDefault(); document.getElementById('termsModal').style.display = 'flex'; }
+    function closeTermsModal() { document.getElementById('termsModal').style.display = 'none'; }
+    function openPrivacyModal(e) { if(e) e.preventDefault(); document.getElementById('privacyModal').style.display = 'flex'; }
+    function closePrivacyModal() { document.getElementById('privacyModal').style.display = 'none'; }
+  </script>
   <script>
     // ========================================
     // FUNCIONALIDAD DEL ACORDEÓN

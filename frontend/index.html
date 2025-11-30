@@ -1733,7 +1733,10 @@
         downloadBtn.className = 'btn';
         downloadBtn.style.cssText = 'width:100%;margin-top:12px;background:linear-gradient(90deg,#4CAF50,#45a049);color:#fff;font-weight:600';
         downloadBtn.textContent = '⬇️ Obtener gratis';
-        downloadBtn.onclick = () => handleFreeGame(game.id);
+        downloadBtn.onclick = (e) => {
+          e.stopPropagation();
+          handleFreeGame(game.id);
+        };
         article.appendChild(downloadBtn);
       } else {
         const priceRow = document.createElement('div');
@@ -1758,7 +1761,14 @@
       }
 
       article.onclick = () => {
-        window.location.href = `producto-detalle.html?id=${game.id}`;
+        console.log('Card clicked, game:', game);
+        console.log('Game ID:', game.id);
+        if (game.id) {
+          window.location.href = `producto-detalle.html?id=${game.id}`;
+        } else {
+          console.error('Game ID is undefined!');
+          alert('Error: No se pudo obtener el ID del juego');
+        }
       };
 
       return article;
