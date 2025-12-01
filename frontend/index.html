@@ -1193,6 +1193,29 @@
           <p id="gameDetailDesc">Descripción del juego...</p>
         </div>
         
+        <!-- Requisitos del Sistema -->
+        <div id="gameDetailRequirements" class="game-detail-requirements" style="display:none;">
+          <h3>🖥️ Requisitos del Sistema</h3>
+          <div class="requirements-container">
+            <div class="requirements-column">
+              <h4>MÍNIMO</h4>
+              <div id="gameDetailReqMin" class="requirements-list"></div>
+            </div>
+            <div class="requirements-column">
+              <h4>RECOMENDADO</h4>
+              <div id="gameDetailReqRec" class="requirements-list"></div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Reseñas -->
+        <div class="game-detail-reviews-section">
+          <h3>💬 Reseñas de usuarios</h3>
+          <div id="gameDetailReviewsList" class="reviews-list">
+            <div class="reviews-loading">Cargando reseñas...</div>
+          </div>
+        </div>
+        
         <!-- Acciones -->
         <div class="game-detail-actions">
           <button id="gameDetailActionBtn" class="btn game-detail-btn-primary" onclick="handleGameDetailAction()">
@@ -1782,6 +1805,199 @@
         min-width: 100%;
       }
     }
+
+    /* ========== REQUISITOS DEL SISTEMA ========== */
+    .game-detail-requirements {
+      margin-bottom: 30px;
+      padding: 24px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 16px;
+      border: 1px solid rgba(123, 97, 255, 0.15);
+    }
+
+    .game-detail-requirements h3 {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+
+    .requirements-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+    }
+
+    .requirements-column h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent-1);
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(123, 97, 255, 0.2);
+    }
+
+    .requirements-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .requirement-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .requirement-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .requirement-value {
+      font-size: 14px;
+      color: #e0e0e0;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 768px) {
+      .requirements-container {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+    }
+
+    /* ========== RESEÑAS ========== */
+    .game-detail-reviews-section {
+      margin-bottom: 30px;
+    }
+
+    .game-detail-reviews-section h3 {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+
+    .reviews-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+
+    .reviews-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .reviews-list::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 3px;
+    }
+
+    .reviews-list::-webkit-scrollbar-thumb {
+      background: var(--accent-1);
+      border-radius: 3px;
+    }
+
+    .reviews-loading,
+    .reviews-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+    }
+
+    .review-card {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .review-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(123, 97, 255, 0.2);
+    }
+
+    .review-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .review-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #07102a;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .review-user-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .review-user-name {
+      font-weight: 600;
+      color: #fff;
+      font-size: 15px;
+      margin-bottom: 2px;
+    }
+
+    .review-date {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .review-rating-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .review-rating-badge.positive {
+      background: rgba(76, 175, 80, 0.15);
+      color: #4CAF50;
+    }
+
+    .review-rating-badge.negative {
+      background: rgba(255, 71, 87, 0.15);
+      color: #ff4757;
+    }
+
+    .review-rating-badge.neutral {
+      background: rgba(255, 193, 7, 0.15);
+      color: #ffc107;
+    }
+
+    .review-content {
+      color: #c0c0c0;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .review-stars {
+      color: #ffc107;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
   </style>
 
   <script>
@@ -1851,6 +2067,9 @@
         // Llenar el modal con los datos del juego
         renderGameDetailModal(game);
         
+        // Cargar reseñas
+        loadGameReviews(gameId);
+        
       } catch (error) {
         console.error('Error cargando juego:', error);
         showToast('❌ Error al cargar los detalles', 'error');
@@ -1917,6 +2136,9 @@
       // Descripción
       document.getElementById('gameDetailDesc').textContent = game.descripcion || 'Sin descripción disponible.';
       
+      // Requisitos del Sistema
+      renderRequirements(game.requisitos);
+      
       // Botón de acción
       const actionBtn = document.getElementById('gameDetailActionBtn');
       if (game.precio === 0 || game.precio === null) {
@@ -1926,6 +2148,154 @@
         actionBtn.textContent = '🛒 Agregar al carrito';
         actionBtn.className = 'btn game-detail-btn-primary';
       }
+    }
+    
+    function renderRequirements(requisitos) {
+      const reqSection = document.getElementById('gameDetailRequirements');
+      const reqMin = document.getElementById('gameDetailReqMin');
+      const reqRec = document.getElementById('gameDetailReqRec');
+      
+      if (!requisitos || requisitos.trim() === '') {
+        reqSection.style.display = 'none';
+        return;
+      }
+      
+      reqSection.style.display = 'block';
+      
+      // Intentar parsear como JSON
+      try {
+        const reqData = JSON.parse(requisitos);
+        
+        // Renderizar mínimos
+        if (reqData.minimo) {
+          reqMin.innerHTML = renderRequirementsList(reqData.minimo);
+        } else {
+          reqMin.innerHTML = '<p style="color:var(--muted)">No especificado</p>';
+        }
+        
+        // Renderizar recomendados
+        if (reqData.recomendado) {
+          reqRec.innerHTML = renderRequirementsList(reqData.recomendado);
+        } else {
+          reqRec.innerHTML = '<p style="color:var(--muted)">No especificado</p>';
+        }
+        
+      } catch (e) {
+        // Si no es JSON, mostrar como texto plano
+        reqMin.innerHTML = `<p style="color:#e0e0e0;white-space:pre-wrap">${requisitos}</p>`;
+        reqRec.innerHTML = '<p style="color:var(--muted)">No especificado</p>';
+      }
+    }
+    
+    function renderRequirementsList(reqs) {
+      const labels = {
+        so: 'SO',
+        procesador: 'PROCESADOR',
+        memoria: 'MEMORIA',
+        graficos: 'GRÁFICOS',
+        directx: 'DIRECTX',
+        red: 'RED',
+        almacenamiento: 'ALMACENAMIENTO',
+        notas: 'NOTAS'
+      };
+      
+      let html = '';
+      for (const [key, value] of Object.entries(reqs)) {
+        if (value) {
+          const label = labels[key] || key.toUpperCase();
+          html += `
+            <div class="requirement-item">
+              <span class="requirement-label">${label}</span>
+              <span class="requirement-value">${value}</span>
+            </div>
+          `;
+        }
+      }
+      return html || '<p style="color:var(--muted)">No especificado</p>';
+    }
+    
+    async function loadGameReviews(gameId) {
+      const reviewsList = document.getElementById('gameDetailReviewsList');
+      reviewsList.innerHTML = '<div class="reviews-loading">Cargando reseñas...</div>';
+      
+      try {
+        const reviews = await apiGetResenas(gameId);
+        
+        if (!reviews || reviews.length === 0 || reviews.detail) {
+          reviewsList.innerHTML = `
+            <div class="reviews-empty">
+              <div style="font-size:48px;margin-bottom:12px">💬</div>
+              <p>Aún no hay reseñas para este juego</p>
+              <p style="font-size:13px;margin-top:8px">¡Sé el primero en dejar una reseña!</p>
+            </div>
+          `;
+          return;
+        }
+        
+        // Ordenar por fecha más reciente
+        const sortedReviews = reviews.sort((a, b) => 
+          new Date(b.fecha_creacion) - new Date(a.fecha_creacion)
+        );
+        
+        reviewsList.innerHTML = sortedReviews.map(review => renderReviewCard(review)).join('');
+        
+      } catch (error) {
+        console.error('Error cargando reseñas:', error);
+        reviewsList.innerHTML = `
+          <div class="reviews-empty">
+            <p>Error al cargar las reseñas</p>
+          </div>
+        `;
+      }
+    }
+    
+    function renderReviewCard(review) {
+      const userName = review.usuario?.nombre || 'Usuario';
+      const userInitials = userName.split(' ').map(w => w[0]).join('').substring(0,2).toUpperCase();
+      
+      // Determinar si es positiva, negativa o neutral
+      const rating = review.calificacion || 0;
+      let badgeClass = 'neutral';
+      let badgeIcon = '😐';
+      let badgeText = 'Neutral';
+      
+      if (rating >= 4) {
+        badgeClass = 'positive';
+        badgeIcon = '👍';
+        badgeText = 'Recomendado';
+      } else if (rating <= 2) {
+        badgeClass = 'negative';
+        badgeIcon = '👎';
+        badgeText = 'No recomendado';
+      }
+      
+      // Formatear fecha
+      const fecha = new Date(review.fecha_creacion);
+      const fechaStr = fecha.toLocaleDateString('es-MX', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+      
+      // Generar estrellas
+      const stars = '★'.repeat(rating) + '☆'.repeat(5 - rating);
+      
+      return `
+        <div class="review-card">
+          <div class="review-header">
+            <div class="review-avatar">${userInitials}</div>
+            <div class="review-user-info">
+              <div class="review-user-name">${userName}</div>
+              <div class="review-date">Publicada el ${fechaStr}</div>
+            </div>
+            <div class="review-rating-badge ${badgeClass}">
+              ${badgeIcon} ${badgeText}
+            </div>
+          </div>
+          <div class="review-stars">${stars}</div>
+          <div class="review-content">${review.texto || 'Sin comentario'}</div>
+        </div>
+      `;
     }
     
     function closeGameDetailModal() {
