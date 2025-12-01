@@ -1263,6 +1263,22 @@
   </div>
 
   <!-- ============================================ -->
+  <!-- MODAL DE CONFIRMACIÓN CERRAR SESIÓN -->
+  <!-- ============================================ -->
+  <div id="logoutModal" class="logout-modal">
+    <div class="logout-modal-overlay" onclick="closeLogoutModal()"></div>
+    <div class="logout-modal-content">
+      <div class="logout-modal-icon">👋</div>
+      <h2>¿Cerrar sesión?</h2>
+      <p>¿Estás seguro de que deseas cerrar tu sesión en Pyxolotl?</p>
+      <div class="logout-modal-actions">
+        <button class="btn logout-btn-cancel" onclick="closeLogoutModal()">Cancelar</button>
+        <button class="btn logout-btn-confirm" onclick="confirmLogout()">Sí, cerrar sesión</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
   <!-- ESTILOS DE LOS MODALES LEGALES -->
   <!-- ============================================ -->
   <style>
@@ -2165,6 +2181,119 @@
       color: #07102a;
       border-radius: 6px;
       text-decoration: none;
+    }
+
+    /* ========== MODAL DE LOGOUT ========== */
+    .logout-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 15000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logout-modal.active {
+      display: flex;
+    }
+
+    .logout-modal-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(4px);
+    }
+
+    .logout-modal-content {
+      position: relative;
+      background: linear-gradient(180deg, #151c2c 0%, #0d1526 100%);
+      border: 1px solid rgba(123, 97, 255, 0.3);
+      border-radius: 24px;
+      padding: 40px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      animation: logoutModalIn 0.3s ease;
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+    }
+
+    @keyframes logoutModalIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .logout-modal-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+      animation: wave 1s ease-in-out infinite;
+    }
+
+    @keyframes wave {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(20deg); }
+      75% { transform: rotate(-20deg); }
+    }
+
+    .logout-modal-content h2 {
+      font-size: 24px;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+
+    .logout-modal-content p {
+      color: var(--muted);
+      font-size: 15px;
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .logout-modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .logout-btn-cancel {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .logout-btn-cancel:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .logout-btn-confirm {
+      background: linear-gradient(90deg, #ff4757, #ff6b7a);
+      border: none;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .logout-btn-confirm:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 71, 87, 0.4);
     }
   </style>
 
@@ -3073,9 +3202,25 @@
             : 'https://pyxolotl-production.up.railway.app';
           imgUrl = `${backendUrl}${imgUrl}`;
         }
-        thumbnailDiv.style.backgroundImage = `url(${imgUrl})`;
-        thumbnailDiv.style.backgroundSize = 'cover';
-        thumbnailDiv.style.backgroundPosition = 'center';
+        
+        // Usar img tag para mejor control
+        const img = document.createElement('img');
+        img.src = imgUrl;
+        img.alt = game.titulo;
+        img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:8px';
+        img.onerror = function() {
+          this.style.display = 'none';
+          thumbnailDiv.textContent = game.titulo.substring(0, 2).toUpperCase();
+          thumbnailDiv.style.background = 'linear-gradient(135deg, var(--accent-1), var(--accent-2))';
+          thumbnailDiv.style.display = 'flex';
+          thumbnailDiv.style.alignItems = 'center';
+          thumbnailDiv.style.justifyContent = 'center';
+          thumbnailDiv.style.fontSize = '32px';
+          thumbnailDiv.style.fontWeight = 'bold';
+          thumbnailDiv.style.color = '#07102a';
+        };
+        thumbnailDiv.appendChild(img);
+        thumbnailDiv.style.overflow = 'hidden';
       } else {
         thumbnailDiv.textContent = game.titulo.substring(0, 2).toUpperCase();
       }
@@ -3320,12 +3465,28 @@
       }
     }
 
-    // Cerrar sesión
+    // Cerrar sesión - Mostrar modal bonito
     document.getElementById('logoutBtn').addEventListener('click', () => {
-      if (confirm('¿Seguro que deseas cerrar sesión?')) {
-        logout();
-      }
+      openLogoutModal();
     });
+    
+    function openLogoutModal() {
+      document.getElementById('logoutModal').classList.add('active');
+      document.body.classList.add('modal-open');
+    }
+    
+    function closeLogoutModal() {
+      document.getElementById('logoutModal').classList.remove('active');
+      document.body.classList.remove('modal-open');
+    }
+    
+    function confirmLogout() {
+      closeLogoutModal();
+      showToast('👋 ¡Hasta pronto!', 'info');
+      setTimeout(() => {
+        logout();
+      }, 500);
+    }
 
     // ============================================
     // GESTIÓN DE SESIÓN Y PERFIL DE USUARIO

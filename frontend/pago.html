@@ -639,12 +639,22 @@
       document.getElementById('downloadBtn').addEventListener('click', downloadPurchasedGame);
 
       // Procesar pago
-      document.getElementById('paymentForm').addEventListener('submit', (e) => {
+      document.getElementById('paymentForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         
         // Validar formulario
         if (!validateForm()) {
           showPaymentToast('Por favor corrige los errores en el formulario', 'error');
+          return;
+        }
+        
+        // Verificar autenticación
+        const token = localStorage.getItem('auth_token');
+        if (!token) {
+          showPaymentToast('Debes iniciar sesión para comprar', 'error');
+          setTimeout(() => {
+            window.location.href = 'inicio.html';
+          }, 1500);
           return;
         }
         
@@ -654,25 +664,61 @@
         btn.disabled = true;
         btn.style.opacity = '0.7';
 
-        setTimeout(() => {
-          // Mostrar mensaje de éxito
-          document.getElementById('paymentSection').style.display = 'none';
-          const successMsg = document.getElementById('successMessage');
-          successMsg.classList.add('show');
+        try {
+          // Obtener IDs de juegos del carrito
+          const juegosIds = checkoutCart.map(item => item.id);
           
-          // Actualizar datos de éxito
-          document.getElementById('orderNumber').textContent = `#PX-${Math.floor(Math.random() * 999999).toString().padStart(6, '0')}`;
-          document.getElementById('successGameTitle').textContent = checkoutCart.length === 1 ? checkoutCart[0].title : `${checkoutCart.length} juegos`;
-          document.getElementById('successTotal').textContent = `$${totalAmount.toFixed(2)} MXN`;
-
-          // Limpiar carrito de localStorage pero mantener sessionStorage para descarga
-          localStorage.removeItem('cart');
-
-          // Scroll to top
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          // Llamar a la API real para procesar la compra
+          const API_URL = window.location.hostname === 'localhost' 
+            ? 'http://localhost:8000'
+            : 'https://pyxolotl-production.up.railway.app';
           
-          showPaymentToast('¡Pago procesado exitosamente!', 'success');
-        }, 2000);
+          const response = await fetch(`${API_URL}/api/compras/procesar`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              juegos_ids: juegosIds,
+              metodo_pago: 'tarjeta'
+            })
+          });
+          
+          const result = await response.json();
+          
+          if (response.ok && result.numero_orden) {
+            // Éxito - mostrar mensaje
+            document.getElementById('paymentSection').style.display = 'none';
+            const successMsg = document.getElementById('successMessage');
+            successMsg.classList.add('show');
+            
+            // Actualizar datos de éxito con el número de orden real
+            document.getElementById('orderNumber').textContent = `#${result.numero_orden}`;
+            document.getElementById('successGameTitle').textContent = checkoutCart.length === 1 ? checkoutCart[0].title : `${checkoutCart.length} juegos`;
+            document.getElementById('successTotal').textContent = `$${totalAmount.toFixed(2)} MXN`;
+
+            // Limpiar carrito de localStorage
+            localStorage.removeItem('pyxolotl_cart');
+            localStorage.removeItem('cart');
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            showPaymentToast('✅ ¡Compra realizada exitosamente!', 'success');
+          } else {
+            throw new Error(result.detail || 'Error al procesar la compra');
+          }
+          
+        } catch (error) {
+          console.error('Error en compra:', error);
+          showPaymentToast('❌ ' + (error.message || 'Error al procesar el pago'), 'error');
+          
+          // Restaurar botón
+          btn.textContent = '💳 Pagar ahora';
+          btn.disabled = false;
+          btn.style.opacity = '1';
+        }
       });
     });
   </script>
