@@ -1707,8 +1707,16 @@
       const thumbnailDiv = document.createElement('div');
       thumbnailDiv.className = 'thumb';
       
-      if (game.imagen_portada) {
-        thumbnailDiv.style.backgroundImage = `url(${game.imagen_portada})`;
+      if (game.portada_url) {
+        // Construir URL completa si es ruta relativa
+        let imgUrl = game.portada_url;
+        if (!imgUrl.startsWith('http')) {
+          const backendUrl = window.location.hostname === 'localhost' 
+            ? 'http://localhost:8000'
+            : 'https://pyxolotl-production.up.railway.app';
+          imgUrl = `${backendUrl}${imgUrl}`;
+        }
+        thumbnailDiv.style.backgroundImage = `url(${imgUrl})`;
         thumbnailDiv.style.backgroundSize = 'cover';
         thumbnailDiv.style.backgroundPosition = 'center';
       } else {
@@ -1917,7 +1925,7 @@
       }
 
       if (typeof window.addToCart === 'function') {
-        window.addToCart(game.id, game.titulo, game.precio, game.imagen_portada, game.archivo_juego_url);
+        window.addToCart(game.id, game.titulo, game.precio, game.portada_url, game.archivo_juego_url);
       }
     }
 
