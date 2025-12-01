@@ -1211,6 +1211,39 @@
         <!-- Reseñas -->
         <div class="game-detail-reviews-section">
           <h3>💬 Reseñas de usuarios</h3>
+          
+          <!-- Formulario para escribir reseña -->
+          <div id="gameDetailReviewForm" class="review-form-container" style="display:none;">
+            <h4>✍️ Escribe tu reseña</h4>
+            <div class="review-form">
+              <div class="review-rating-select">
+                <span>Tu calificación:</span>
+                <div class="star-rating" id="gameDetailStarRating">
+                  <span class="star" data-rating="1">☆</span>
+                  <span class="star" data-rating="2">☆</span>
+                  <span class="star" data-rating="3">☆</span>
+                  <span class="star" data-rating="4">☆</span>
+                  <span class="star" data-rating="5">☆</span>
+                </div>
+                <span id="gameDetailRatingText" class="rating-text">Selecciona una calificación</span>
+              </div>
+              <textarea id="gameDetailReviewText" class="review-textarea" placeholder="¿Qué te pareció este juego? Comparte tu experiencia..." maxlength="1000"></textarea>
+              <div class="review-form-actions">
+                <span id="gameDetailCharCount" class="char-count">0/1000</span>
+                <button class="btn review-submit-btn" onclick="submitGameReview()">
+                  📤 Publicar reseña
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Mensaje para usuarios no autenticados -->
+          <div id="gameDetailReviewLoginPrompt" class="review-login-prompt" style="display:none;">
+            <p>🔒 Inicia sesión para dejar una reseña</p>
+            <a href="inicio.html" class="btn btn-small">Iniciar sesión</a>
+          </div>
+          
+          <!-- Lista de reseñas -->
           <div id="gameDetailReviewsList" class="reviews-list">
             <div class="reviews-loading">Cargando reseñas...</div>
           </div>
@@ -1998,6 +2031,141 @@
       font-size: 14px;
       margin-bottom: 8px;
     }
+
+    /* ========== FORMULARIO DE RESEÑAS ========== */
+    .review-form-container {
+      background: rgba(123, 97, 255, 0.05);
+      border: 1px solid rgba(123, 97, 255, 0.2);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    .review-form-container h4 {
+      margin: 0 0 16px 0;
+      font-size: 16px;
+      color: #fff;
+    }
+
+    .review-rating-select {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .review-rating-select > span:first-child {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .star-rating {
+      display: flex;
+      gap: 4px;
+    }
+
+    .star-rating .star {
+      font-size: 28px;
+      cursor: pointer;
+      color: #444;
+      transition: all 0.2s ease;
+    }
+
+    .star-rating .star:hover,
+    .star-rating .star.active {
+      color: #ffc107;
+      transform: scale(1.1);
+    }
+
+    .star-rating .star.hovered {
+      color: #ffc107;
+    }
+
+    .rating-text {
+      font-size: 13px;
+      color: var(--accent-1);
+      font-weight: 500;
+    }
+
+    .review-textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.3);
+      color: #fff;
+      font-size: 14px;
+      resize: vertical;
+      font-family: inherit;
+      transition: border-color 0.3s ease;
+    }
+
+    .review-textarea:focus {
+      outline: none;
+      border-color: var(--accent-1);
+    }
+
+    .review-textarea::placeholder {
+      color: #666;
+    }
+
+    .review-form-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+    }
+
+    .char-count {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .review-submit-btn {
+      background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+      color: #07102a;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .review-submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(123, 97, 255, 0.4);
+    }
+
+    .review-submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .review-login-prompt {
+      text-align: center;
+      padding: 24px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    .review-login-prompt p {
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .review-login-prompt .btn-small {
+      padding: 8px 16px;
+      font-size: 13px;
+      background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+      color: #07102a;
+      border-radius: 6px;
+      text-decoration: none;
+    }
   </style>
 
   <script>
@@ -2160,48 +2328,74 @@
         return;
       }
       
-      reqSection.style.display = 'block';
-      
       // Intentar parsear como JSON
       try {
         const reqData = JSON.parse(requisitos);
         
-        // Renderizar mínimos
-        if (reqData.minimo) {
-          reqMin.innerHTML = renderRequirementsList(reqData.minimo);
+        // Verificar si hay datos válidos
+        const hasMinimos = reqData.minimos && Object.values(reqData.minimos).some(v => v && v.trim() !== '');
+        const hasRecomendados = reqData.recomendados && Object.values(reqData.recomendados).some(v => v && v.trim() !== '');
+        
+        if (!hasMinimos && !hasRecomendados) {
+          reqSection.style.display = 'none';
+          return;
+        }
+        
+        reqSection.style.display = 'block';
+        
+        // Renderizar mínimos (con 's' como viene de la BD)
+        if (hasMinimos) {
+          reqMin.innerHTML = renderRequirementsList(reqData.minimos);
         } else {
           reqMin.innerHTML = '<p style="color:var(--muted)">No especificado</p>';
         }
         
-        // Renderizar recomendados
-        if (reqData.recomendado) {
-          reqRec.innerHTML = renderRequirementsList(reqData.recomendado);
+        // Renderizar recomendados (con 's' como viene de la BD)
+        if (hasRecomendados) {
+          reqRec.innerHTML = renderRequirementsList(reqData.recomendados);
         } else {
           reqRec.innerHTML = '<p style="color:var(--muted)">No especificado</p>';
         }
         
+        // Mostrar plataformas si existen
+        if (reqData.plataformas && reqData.plataformas.length > 0) {
+          const platformsHtml = `
+            <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(123,97,255,0.2)">
+              <span class="requirement-label">PLATAFORMAS</span>
+              <span class="requirement-value">${reqData.plataformas.join(', ')}</span>
+            </div>
+          `;
+          reqMin.innerHTML += platformsHtml;
+        }
+        
       } catch (e) {
-        // Si no es JSON, mostrar como texto plano
-        reqMin.innerHTML = `<p style="color:#e0e0e0;white-space:pre-wrap">${requisitos}</p>`;
-        reqRec.innerHTML = '<p style="color:var(--muted)">No especificado</p>';
+        console.error('Error parseando requisitos:', e);
+        reqSection.style.display = 'none';
       }
     }
     
     function renderRequirementsList(reqs) {
+      // Labels que coinciden con los campos de la BD
       const labels = {
+        os: 'SO',
+        cpu: 'PROCESADOR',
+        ram: 'MEMORIA',
+        gpu: 'GRÁFICOS',
+        storage: 'ALMACENAMIENTO',
+        // Campos alternativos por si acaso
         so: 'SO',
         procesador: 'PROCESADOR',
         memoria: 'MEMORIA',
         graficos: 'GRÁFICOS',
+        almacenamiento: 'ALMACENAMIENTO',
         directx: 'DIRECTX',
         red: 'RED',
-        almacenamiento: 'ALMACENAMIENTO',
         notas: 'NOTAS'
       };
       
       let html = '';
       for (const [key, value] of Object.entries(reqs)) {
-        if (value) {
+        if (value && value.trim() !== '') {
           const label = labels[key] || key.toUpperCase();
           html += `
             <div class="requirement-item">
@@ -2217,6 +2411,9 @@
     async function loadGameReviews(gameId) {
       const reviewsList = document.getElementById('gameDetailReviewsList');
       reviewsList.innerHTML = '<div class="reviews-loading">Cargando reseñas...</div>';
+      
+      // Configurar formulario de reseñas
+      setupReviewForm();
       
       try {
         const reviews = await apiGetResenas(gameId);
@@ -2298,11 +2495,153 @@
       `;
     }
     
+    // ========== FORMULARIO DE RESEÑAS ==========
+    let selectedReviewRating = 0;
+    
+    function setupReviewForm() {
+      // Verificar si el usuario está autenticado
+      const reviewForm = document.getElementById('gameDetailReviewForm');
+      const loginPrompt = document.getElementById('gameDetailReviewLoginPrompt');
+      
+      if (isAuthenticated()) {
+        reviewForm.style.display = 'block';
+        loginPrompt.style.display = 'none';
+        
+        // Configurar estrellas
+        setupStarRating();
+        
+        // Configurar contador de caracteres
+        setupCharCounter();
+      } else {
+        reviewForm.style.display = 'none';
+        loginPrompt.style.display = 'block';
+      }
+      
+      // Resetear formulario
+      selectedReviewRating = 0;
+      updateStarDisplay(0);
+      document.getElementById('gameDetailReviewText').value = '';
+      document.getElementById('gameDetailCharCount').textContent = '0/1000';
+    }
+    
+    function setupStarRating() {
+      const starContainer = document.getElementById('gameDetailStarRating');
+      const stars = starContainer.querySelectorAll('.star');
+      
+      stars.forEach(star => {
+        // Hover effect
+        star.addEventListener('mouseenter', () => {
+          const rating = parseInt(star.dataset.rating);
+          highlightStars(rating);
+        });
+        
+        // Click to select
+        star.addEventListener('click', () => {
+          selectedReviewRating = parseInt(star.dataset.rating);
+          updateStarDisplay(selectedReviewRating);
+          updateRatingText(selectedReviewRating);
+        });
+      });
+      
+      // Mouse leave container - restore selected
+      starContainer.addEventListener('mouseleave', () => {
+        updateStarDisplay(selectedReviewRating);
+      });
+    }
+    
+    function highlightStars(rating) {
+      const stars = document.querySelectorAll('#gameDetailStarRating .star');
+      stars.forEach(star => {
+        const starRating = parseInt(star.dataset.rating);
+        star.classList.toggle('hovered', starRating <= rating);
+        star.textContent = starRating <= rating ? '★' : '☆';
+      });
+    }
+    
+    function updateStarDisplay(rating) {
+      const stars = document.querySelectorAll('#gameDetailStarRating .star');
+      stars.forEach(star => {
+        const starRating = parseInt(star.dataset.rating);
+        star.classList.remove('hovered');
+        star.classList.toggle('active', starRating <= rating);
+        star.textContent = starRating <= rating ? '★' : '☆';
+      });
+    }
+    
+    function updateRatingText(rating) {
+      const ratingText = document.getElementById('gameDetailRatingText');
+      const texts = {
+        0: 'Selecciona una calificación',
+        1: '😞 Muy malo',
+        2: '😕 Malo',
+        3: '😐 Regular',
+        4: '😊 Bueno',
+        5: '😍 ¡Excelente!'
+      };
+      ratingText.textContent = texts[rating] || '';
+    }
+    
+    function setupCharCounter() {
+      const textarea = document.getElementById('gameDetailReviewText');
+      const counter = document.getElementById('gameDetailCharCount');
+      
+      textarea.addEventListener('input', () => {
+        const length = textarea.value.length;
+        counter.textContent = `${length}/1000`;
+        counter.style.color = length > 900 ? '#ff4757' : 'var(--muted)';
+      });
+    }
+    
+    async function submitGameReview() {
+      if (!currentGameDetail) return;
+      
+      // Validaciones
+      if (selectedReviewRating === 0) {
+        showToast('⭐ Por favor selecciona una calificación', 'error');
+        return;
+      }
+      
+      const texto = document.getElementById('gameDetailReviewText').value.trim();
+      if (texto.length < 10) {
+        showToast('✍️ Tu reseña debe tener al menos 10 caracteres', 'error');
+        return;
+      }
+      
+      try {
+        const result = await apiCrearResena(currentGameDetail.id, selectedReviewRating, texto);
+        
+        if (result.id) {
+          showToast('✅ ¡Reseña publicada exitosamente!', 'success');
+          
+          // Resetear formulario
+          selectedReviewRating = 0;
+          updateStarDisplay(0);
+          updateRatingText(0);
+          document.getElementById('gameDetailReviewText').value = '';
+          document.getElementById('gameDetailCharCount').textContent = '0/1000';
+          
+          // Recargar reseñas
+          loadGameReviews(currentGameDetail.id);
+          
+          // Actualizar contador de reseñas en el modal
+          const reviewCount = document.getElementById('gameDetailReviews');
+          reviewCount.textContent = parseInt(reviewCount.textContent) + 1;
+          
+        } else {
+          showToast('❌ ' + (result.detail || 'Error al publicar reseña'), 'error');
+        }
+      } catch (error) {
+        console.error('Error al publicar reseña:', error);
+        showToast('❌ Error al publicar la reseña', 'error');
+      }
+    }
+    
     function closeGameDetailModal() {
       const modal = document.getElementById('gameDetailModal');
       modal.classList.remove('active');
       document.body.classList.remove('modal-open');
       currentGameDetail = null;
+      selectedReviewRating = 0;
     }
     
     // Cerrar modal al hacer click fuera del contenido
