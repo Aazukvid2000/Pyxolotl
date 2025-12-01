@@ -246,9 +246,72 @@
       }
     }
 
-    function descargarJuego(juegoId) {
-      apiDescargarJuego(juegoId);
-      alert('✅ Descarga iniciada');
+    async function descargarJuego(juegoId) {
+      try {
+        showToast('📥 Preparando descarga...', 'info');
+        
+        // Obtener info del juego primero
+        const juego = await apiGetJuego(juegoId);
+        
+        if (!juego || juego.detail) {
+          showToast('❌ No se encontró el juego', 'error');
+          return;
+        }
+        
+        // Construir URL de descarga
+        let downloadUrl = juego.archivo_juego_url;
+        
+        if (!downloadUrl) {
+          showToast('❌ Este juego no tiene archivo de descarga', 'error');
+          return;
+        }
+        
+        // Si es ruta relativa, construir URL completa del backend
+        if (!downloadUrl.startsWith('http')) {
+          const backendUrl = window.location.hostname === 'localhost' 
+            ? 'http://localhost:8000'
+            : 'https://pyxolotl-production.up.railway.app';
+          downloadUrl = `${backendUrl}${downloadUrl}`;
+        }
+        
+        showToast('📥 Iniciando descarga...', 'success');
+        
+        // Crear link de descarga
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = `${juego.titulo.replace(/[^a-z0-9]/gi, '_')}.zip`;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+      } catch (error) {
+        console.error('Error:', error);
+        showToast('❌ Error al descargar: ' + error.message, 'error');
+      }
+    }
+    
+    function showToast(message, type = 'info') {
+      const existing = document.querySelector('.biblioteca-toast');
+      if (existing) existing.remove();
+      
+      const toast = document.createElement('div');
+      toast.className = 'biblioteca-toast';
+      toast.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 16px 24px;
+        border-radius: 12px;
+        color: white;
+        font-weight: 500;
+        z-index: 10000;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        background: ${type === 'error' ? '#ff4757' : type === 'success' ? '#4CAF50' : '#7b61ff'};
+      `;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
     }
 
     function updateUserInfo() {

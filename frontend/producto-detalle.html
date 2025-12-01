@@ -991,23 +991,89 @@
 
     document.getElementById('getFreeBtn').onclick = async () => {
       if (!isAuthenticated()) {
-        alert('⚠️ Debes iniciar sesión');
-        window.location.href = 'inicio.html';
+        showProductToast('Debes iniciar sesión para obtener juegos gratis', 'error');
+        setTimeout(() => {
+          window.location.href = 'inicio.html';
+        }, 1500);
         return;
       }
       
       try {
         const result = await apiGetJuegoGratis(gameId);
-        if (result.success) {
-          alert('✅ ' + result.message);
-          window.location.href = 'biblioteca.html';
+        if (result.success || result.id) {
+          showProductToast('✅ ¡Juego agregado a tu biblioteca! Iniciando descarga...', 'success');
+          
+          // Descargar directamente
+          setTimeout(() => {
+            downloadGame(currentGame);
+          }, 1000);
+        } else if (result.detail && result.detail.includes('ya')) {
+          // Ya lo tiene, solo descargar
+          showProductToast('📥 Iniciando descarga...', 'info');
+          downloadGame(currentGame);
         } else {
-          alert('❌ ' + (result.detail || result.message));
+          showProductToast('❌ ' + (result.detail || result.message || 'Error al obtener el juego'), 'error');
         }
       } catch(e) {
-        alert('❌ Error al obtener el juego');
+        console.error('Error:', e);
+        // Si el error indica que ya lo tiene, descargar igual
+        if (e.message && e.message.includes('ya')) {
+          showProductToast('📥 Iniciando descarga...', 'info');
+          downloadGame(currentGame);
+        } else {
+          showProductToast('❌ Error al obtener el juego', 'error');
+        }
       }
     };
+    
+    // Función para descargar juego
+    function downloadGame(game) {
+      if (!game || !game.archivo_juego_url) {
+        showProductToast('❌ URL de descarga no disponible', 'error');
+        return;
+      }
+      
+      let downloadUrl = game.archivo_juego_url;
+      
+      if (!downloadUrl.startsWith('http')) {
+        downloadUrl = `${API_URL}${downloadUrl}`;
+      }
+      
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = `${game.titulo.replace(/[^a-z0-9]/gi, '_')}.zip`;
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      showProductToast('✅ Descarga iniciada', 'success');
+    }
+    
+    // Toast para producto
+    function showProductToast(message, type = 'info') {
+      const existing = document.querySelector('.product-toast');
+      if (existing) existing.remove();
+      
+      const toast = document.createElement('div');
+      toast.className = 'product-toast';
+      toast.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 16px 24px;
+        border-radius: 12px;
+        color: white;
+        font-weight: 500;
+        z-index: 10000;
+        max-width: 350px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        background: ${type === 'error' ? '#ff4757' : type === 'success' ? '#4CAF50' : '#7b61ff'};
+      `;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
 
     // ========== UTILS ==========
     function getInitials(str) {
