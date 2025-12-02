@@ -862,6 +862,199 @@
         display: none !important;
       }
     }
+    
+    /* ============================================ */
+    /* RESPONSIVE PARA PANTALLAS GRANDES (1400px+) */
+    /* ============================================ */
+    @media (min-width: 1400px) {
+      .container {
+        max-width: 1400px;
+      }
+      
+      /* Tarjetas de categoría más grandes */
+      .scroll-card {
+        flex: 0 0 240px;
+      }
+      .scroll-card-img {
+        height: 120px;
+      }
+      .scroll-card-title {
+        font-size: 16px;
+      }
+      .scroll-card-price {
+        font-size: 16px;
+      }
+      
+      /* Featured section más grande */
+      .featured-container {
+        padding: 28px;
+      }
+      .featured-content {
+        height: 280px;
+      }
+      .featured-title {
+        font-size: 22px;
+      }
+      .featured-desc {
+        font-size: 15px;
+      }
+      
+      /* Lista de juegos mejorada */
+      .game-list-item {
+        padding: 14px 20px;
+        gap: 20px;
+      }
+      .game-list-img {
+        width: 160px;
+        height: 60px;
+      }
+      .game-list-title-text {
+        font-size: 16px;
+      }
+      .game-list-tag {
+        font-size: 12px;
+        padding: 3px 10px;
+      }
+      .game-list-price-value {
+        font-size: 17px;
+      }
+      .game-list-date {
+        font-size: 13px;
+        min-width: 110px;
+      }
+      
+      /* Filtros mejor distribuidos */
+      .search-bar {
+        padding: 20px 24px;
+        gap: 16px;
+      }
+      .filter-select {
+        min-width: 170px;
+        font-size: 15px;
+      }
+      .search-input {
+        font-size: 16px;
+      }
+    }
+    
+    /* ============================================ */
+    /* RESPONSIVE PARA PANTALLAS MUY GRANDES (1600px+) */
+    /* ============================================ */
+    @media (min-width: 1600px) {
+      .container {
+        max-width: 1600px;
+      }
+      
+      /* Tarjetas de categoría aún más grandes */
+      .scroll-card {
+        flex: 0 0 280px;
+      }
+      .scroll-card-img {
+        height: 140px;
+      }
+      .scroll-card-info {
+        padding: 16px;
+      }
+      
+      /* Featured más prominente */
+      .featured-content {
+        height: 320px;
+      }
+      .featured-image {
+        font-size: 56px;
+      }
+      .featured-title {
+        font-size: 26px;
+      }
+      .featured-price {
+        font-size: 22px;
+      }
+      
+      /* Lista de juegos expandida */
+      .game-list-item {
+        padding: 16px 24px;
+      }
+      .game-list-img {
+        width: 200px;
+        height: 75px;
+      }
+      .game-list-title-text {
+        font-size: 18px;
+        margin-bottom: 6px;
+      }
+      .game-list-rating {
+        min-width: 100px;
+      }
+      .game-list-stars {
+        font-size: 15px;
+      }
+      .game-list-reviews {
+        font-size: 12px;
+      }
+      
+      /* Títulos de sección */
+      .category-title {
+        font-size: 24px;
+      }
+      .games-list-title {
+        font-size: 26px;
+      }
+    }
+    
+    /* ============================================ */
+    /* RESPONSIVE PARA ULTRA-WIDE (1920px+) */
+    /* ============================================ */
+    @media (min-width: 1920px) {
+      .container {
+        max-width: 1800px;
+      }
+      
+      /* Máximo tamaño para tarjetas */
+      .scroll-card {
+        flex: 0 0 320px;
+      }
+      .scroll-card-img {
+        height: 160px;
+        font-size: 32px;
+      }
+      .scroll-card-title {
+        font-size: 18px;
+      }
+      .scroll-card-price {
+        font-size: 18px;
+      }
+      
+      /* Hero y featured premium */
+      .featured-content {
+        height: 360px;
+      }
+      .featured-info {
+        padding: 24px;
+      }
+      
+      /* Lista expandida al máximo */
+      .game-list-item {
+        padding: 18px 28px;
+        gap: 24px;
+      }
+      .game-list-img {
+        width: 240px;
+        height: 90px;
+      }
+      
+      /* Barra de búsqueda expandida */
+      .search-bar {
+        padding: 24px 30px;
+      }
+      .search-input-wrapper {
+        min-width: 350px;
+      }
+      .filter-select {
+        min-width: 190px;
+        padding: 12px 18px;
+        font-size: 16px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1052,10 +1245,10 @@
             </select>
             <select id="filterRating" class="filter-select">
               <option value="">⭐ Cualquier valoración</option>
-              <option value="4">4+ estrellas</option>
-              <option value="3">3+ estrellas</option>
-              <option value="2">2+ estrellas</option>
-              <option value="1">1+ estrellas</option>
+              <option value="4-5">4+ estrellas</option>
+              <option value="3-4">3 estrellas</option>
+              <option value="2-3">2 estrellas</option>
+              <option value="0-2">0-1 estrellas</option>
             </select>
             <select id="filterGenre" class="filter-select">
               <option value="">🎮 Todos los géneros</option>
@@ -4382,12 +4575,25 @@
           if (priceFilter === '200+' && price < 200) return false;
         }
         
-        // Filtro valoración - comparar con >= para incluir juegos con exactamente esa calificación
+        // Filtro valoración - filtrar por rango exacto
         if (ratingFilter) {
-          const minRating = parseFloat(ratingFilter);
-          if (rating < minRating) {
-            console.log(`Juego "${game.titulo}" excluido: rating ${rating} < ${minRating}`);
-            return false;
+          const [minRating, maxRating] = ratingFilter.split('-').map(Number);
+          // Para "4-5" incluimos juegos con rating >= 4
+          // Para "3-4" incluimos juegos con rating >= 3 y < 4
+          // Para "2-3" incluimos juegos con rating >= 2 y < 3
+          // Para "0-2" incluimos juegos con rating >= 0 y < 2
+          if (maxRating === 5) {
+            // Caso especial para 4+ estrellas (incluye 4 y 5)
+            if (rating < minRating) {
+              console.log(`Juego "${game.titulo}" excluido: rating ${rating} < ${minRating}`);
+              return false;
+            }
+          } else {
+            // Para otros rangos, verificar que esté dentro del rango
+            if (rating < minRating || rating >= maxRating) {
+              console.log(`Juego "${game.titulo}" excluido: rating ${rating} fuera del rango ${minRating}-${maxRating}`);
+              return false;
+            }
           }
         }
         
@@ -4406,7 +4612,14 @@
         if (genreFilter) filterDesc.push(genreFilter.charAt(0).toUpperCase() + genreFilter.slice(1));
         if (priceFilter === 'free') filterDesc.push('Gratis');
         else if (priceFilter) filterDesc.push('Precio: ' + priceFilter);
-        if (ratingFilter) filterDesc.push(ratingFilter + '+ ⭐');
+        if (ratingFilter) {
+          const [minRating, maxRating] = ratingFilter.split('-').map(Number);
+          if (maxRating === 5) {
+            filterDesc.push('4+ ⭐');
+          } else {
+            filterDesc.push(minRating + ' ⭐');
+          }
+        }
         listTitle.textContent = '🔍 Resultados: ' + (filterDesc.join(' · ') || 'Filtrados');
       } else {
         listTitle.textContent = '🕹️ Novedades - Todos los Juegos';

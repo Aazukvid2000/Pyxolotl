@@ -546,3 +546,106 @@ select option[value=""] {
 body.modal-open {
   overflow: hidden;
 }
+
+/* ========================================
+   RESPONSIVE PARA PANTALLAS GRANDES
+   ======================================== */
+
+/* Pantallas grandes (1400px+) */
+@media (min-width: 1400px) {
+  :root {
+    --max-width: 1400px;
+  }
+  
+  .hero h1 {
+    font-size: 48px;
+  }
+  
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  
+  .card {
+    padding: 20px;
+  }
+  
+  .card .thumb {
+    height: 150px;
+    font-size: 38px;
+  }
+  
+  .card h3 {
+    font-size: 18px;
+  }
+  
+  .features {
+    gap: 24px;
+  }
+  
+  .feature {
+    padding: 20px;
+  }
+}
+
+/* Pantallas muy grandes (1600px+) */
+@media (min-width: 1600px) {
+  :root {
+    --max-width: 1600px;
+  }
+  
+  .hero h1 {
+    font-size: 54px;
+  }
+  
+  .hero p {
+    font-size: 18px;
+  }
+  
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  }
+  
+  .card .thumb {
+    height: 170px;
+  }
+}
+
+/* Pantallas ultra-wide (1920px+) */
+@media (min-width: 1920px) {
+  :root {
+    --max-width: 1800px;
+  }
+  
+  .container {
+    padding: 36px;
+  }
+  
+  .hero h1 {
+    font-size: 60px;
+  }
+  
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 28px;
+  }
+  
+  .card .thumb {
+    height: 190px;
+    font-size: 44px;
+  }
+  
+  .card h3 {
+    font-size: 20px;
+    margin: 16px 0 8px;
+  }
+  
+  .card p {
+    font-size: 15px;
+  }
+  
+  .modal .panel {
+    max-width: 900px;
+    padding: 32px;
+  }
+}
