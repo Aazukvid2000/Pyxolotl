@@ -67,6 +67,32 @@
       .admin-table th,.admin-table td{padding:6px 8px}
       .admin-grid{grid-template-columns:repeat(2,1fr)}
     }
+    
+    /* Modal de detalles del juego */
+    .game-modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:10000;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);overflow-y:auto}
+    .game-modal.active{display:flex;justify-content:center;align-items:flex-start;padding:40px 20px}
+    .game-modal-content{background:linear-gradient(180deg,#0d1829,#07102a);border:1px solid rgba(123,97,255,0.3);border-radius:20px;max-width:800px;width:100%;position:relative;animation:modalIn 0.3s ease}
+    @keyframes modalIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    .game-modal-close{position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.1);border:none;color:#fff;font-size:18px;cursor:pointer;z-index:10}
+    .game-modal-close:hover{background:rgba(255,59,48,0.3)}
+    .game-modal-hero{height:180px;background:linear-gradient(135deg,var(--accent-1),var(--accent-2));display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:20px 20px 0 0}
+    .game-modal-hero img{width:100%;height:100%;object-fit:cover}
+    .game-modal-hero span{font-size:64px;font-weight:bold;color:#07102a}
+    .game-modal-body{padding:20px}
+    .game-modal-title{font-size:24px;font-weight:700;margin-bottom:8px}
+    .game-modal-meta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+    .game-modal-badge{padding:4px 12px;border-radius:16px;font-size:12px;font-weight:500}
+    .game-modal-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;background:rgba(255,255,255,0.03);padding:16px;border-radius:10px;margin-bottom:16px}
+    .game-modal-stat{text-align:center}
+    .game-modal-stat-value{font-size:20px;font-weight:700;color:var(--accent-1)}
+    .game-modal-stat-label{font-size:10px;color:var(--muted);text-transform:uppercase}
+    .game-modal-section{margin-bottom:16px}
+    .game-modal-section-title{font-size:14px;font-weight:600;color:#fff;margin-bottom:8px}
+    .game-modal-desc{color:var(--muted);line-height:1.6;font-size:13px}
+    .game-modal-actions{display:flex;gap:10px;padding:16px 20px;border-top:1px solid rgba(255,255,255,0.1);background:rgba(0,0,0,0.2);border-radius:0 0 20px 20px}
+    .game-modal-btn{flex:1;padding:12px;border-radius:8px;font-weight:600;border:none;cursor:pointer;transition:all 0.3s}
+    .game-modal-btn-primary{background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a}
+    .game-modal-btn-secondary{background:rgba(255,255,255,0.1);color:#fff}
   </style>
 </head>
 <body>
@@ -232,7 +258,7 @@
               <button class="btn-sm btn-approve" onclick="aprobarJuego(${j.id})">✅ Aprobar</button>
               <button class="btn-sm btn-reject" onclick="rechazarJuego(${j.id})">❌ Rechazar</button>
               <a href="${getDownloadUrl(j.archivo_juego_url)}" class="btn-sm btn-download" target="_blank">📥 Descargar</a>
-              <a href="producto-detalle.html?id=${j.id}" class="btn-sm btn-secondary" target="_blank">👁️ Ver</a>
+              <button class="btn-sm btn-secondary" onclick="openGameModal(${j.id})">👁️ Ver</button>
             </div>
           </div>
         `).join('');
@@ -417,7 +443,7 @@
                 <td>${j.total_descargas || 0}</td>
                 <td>${j.total_resenas || 0}</td>
                 <td class="actions-cell">
-                  <a href="producto-detalle.html?id=${j.id}" class="btn-sm btn-secondary" target="_blank">👁️</a>
+                  <button class="btn-sm btn-secondary" onclick="openGameModal(${j.id})">👁️</button>
                   <button class="btn-sm btn-danger" onclick="eliminarJuego(${j.id},'${j.titulo.replace(/'/g,"\\'")}')">🗑️</button>
                 </td>
               </tr>
@@ -462,6 +488,140 @@
     }
 
     init();
+  </script>
+  
+  <!-- Modal de Detalles del Juego -->
+  <div id="gameModal" class="game-modal">
+    <div class="game-modal-content">
+      <button class="game-modal-close" onclick="closeGameModal()">&times;</button>
+      <div id="gameModalHero" class="game-modal-hero"><span>--</span></div>
+      <div class="game-modal-body">
+        <h2 id="gameModalTitle" class="game-modal-title">Cargando...</h2>
+        <div class="game-modal-meta">
+          <span id="gameModalGenre" class="game-modal-badge" style="background:rgba(123,97,255,0.15);color:var(--accent-1)">--</span>
+          <span id="gameModalPrice" class="game-modal-badge" style="background:rgba(0,212,170,0.15);color:var(--accent-2)">--</span>
+          <span id="gameModalEstado" class="badge badge-success">--</span>
+        </div>
+        <div class="game-modal-stats">
+          <div class="game-modal-stat"><div id="gameModalDescargas" class="game-modal-stat-value">0</div><div class="game-modal-stat-label">Descargas</div></div>
+          <div class="game-modal-stat"><div id="gameModalVentas" class="game-modal-stat-value">0</div><div class="game-modal-stat-label">Ventas</div></div>
+          <div class="game-modal-stat"><div id="gameModalCalif" class="game-modal-stat-value">0.0</div><div class="game-modal-stat-label">Calificación</div></div>
+          <div class="game-modal-stat"><div id="gameModalSize" class="game-modal-stat-value">--</div><div class="game-modal-stat-label">Tamaño</div></div>
+        </div>
+        <div class="game-modal-section">
+          <div class="game-modal-section-title">👤 Desarrollador</div>
+          <p id="gameModalDev" class="game-modal-desc">--</p>
+        </div>
+        <div class="game-modal-section">
+          <div class="game-modal-section-title">📝 Descripción</div>
+          <p id="gameModalDesc" class="game-modal-desc">Sin descripción</p>
+        </div>
+        <div id="gameModalReqSection" class="game-modal-section" style="display:none">
+          <div class="game-modal-section-title">🖥️ Requisitos</div>
+          <div id="gameModalReq" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:12px"></div>
+        </div>
+      </div>
+      <div class="game-modal-actions">
+        <a id="gameModalDownload" href="#" class="game-modal-btn game-modal-btn-primary" target="_blank">📥 Descargar Archivo</a>
+        <button class="game-modal-btn game-modal-btn-secondary" onclick="closeGameModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    let currentGameData = null;
+    
+    async function openGameModal(gameId) {
+      const modal = document.getElementById('gameModal');
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      
+      try {
+        const game = await apiGetJuego(gameId);
+        if (!game || game.detail) {
+          showToast('❌ No se pudo cargar el juego', 'error');
+          closeGameModal();
+          return;
+        }
+        currentGameData = game;
+        renderGameModal(game);
+      } catch (e) {
+        console.error('Error:', e);
+        showToast('❌ Error al cargar', 'error');
+        closeGameModal();
+      }
+    }
+    
+    function closeGameModal() {
+      document.getElementById('gameModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    
+    function renderGameModal(g) {
+      const hero = document.getElementById('gameModalHero');
+      if (g.portada_url) {
+        const url = g.portada_url.startsWith('http') ? g.portada_url : API_URL + g.portada_url;
+        hero.innerHTML = `<img src="${url}" onerror="this.parentElement.innerHTML='<span>${g.titulo.substring(0,2).toUpperCase()}</span>'">`;
+      } else {
+        hero.innerHTML = `<span>${g.titulo.substring(0,2).toUpperCase()}</span>`;
+      }
+      
+      document.getElementById('gameModalTitle').textContent = g.titulo;
+      document.getElementById('gameModalGenre').textContent = g.genero || 'Indie';
+      document.getElementById('gameModalPrice').textContent = g.precio > 0 ? '$' + g.precio + ' MXN' : '✨ GRATIS';
+      
+      const estadoEl = document.getElementById('gameModalEstado');
+      estadoEl.textContent = g.estado || 'aprobado';
+      estadoEl.className = 'badge ' + (g.estado === 'aprobado' ? 'badge-success' : g.estado === 'rechazado' ? 'badge-danger' : 'badge-warning');
+      
+      document.getElementById('gameModalDescargas').textContent = g.total_descargas || 0;
+      document.getElementById('gameModalVentas').textContent = g.total_ventas || 0;
+      document.getElementById('gameModalCalif').textContent = (g.calificacion_promedio || 0).toFixed(1);
+      document.getElementById('gameModalSize').textContent = g.tamano_mb ? g.tamano_mb.toFixed(1) + ' MB' : '--';
+      
+      const devName = g.desarrollador?.nombre || 'Desarrollador';
+      const devEmail = g.desarrollador?.email || '';
+      document.getElementById('gameModalDev').innerHTML = `<strong>${devName}</strong>${devEmail ? ' (' + devEmail + ')' : ''}`;
+      
+      document.getElementById('gameModalDesc').textContent = g.descripcion || 'Sin descripción disponible.';
+      
+      // Requisitos
+      if (g.requisitos) {
+        let req = g.requisitos;
+        if (typeof req === 'string') try { req = JSON.parse(req); } catch(e) { req = null; }
+        if (req) {
+          document.getElementById('gameModalReqSection').style.display = 'block';
+          const min = req.minimo || {};
+          const rec = req.recomendado || {};
+          document.getElementById('gameModalReq').innerHTML = `
+            <div><strong style="color:var(--accent-1)">Mínimo</strong><br>${min.so || '-'}<br>${min.procesador || '-'}<br>${min.memoria || '-'}</div>
+            <div><strong style="color:var(--accent-2)">Recomendado</strong><br>${rec.so || '-'}<br>${rec.procesador || '-'}<br>${rec.memoria || '-'}</div>
+          `;
+        }
+      } else {
+        document.getElementById('gameModalReqSection').style.display = 'none';
+      }
+      
+      // Botón descarga
+      const dlBtn = document.getElementById('gameModalDownload');
+      if (g.archivo_juego_url) {
+        dlBtn.href = getDownloadUrl(g.archivo_juego_url);
+        dlBtn.style.display = 'block';
+      } else {
+        dlBtn.style.display = 'none';
+      }
+    }
+    
+    // Cerrar con Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && document.getElementById('gameModal').classList.contains('active')) {
+        closeGameModal();
+      }
+    });
+    
+    document.getElementById('gameModal').addEventListener('click', (e) => {
+      if (e.target.classList.contains('game-modal')) closeGameModal();
+    });
   </script>
 </body>
 </html>

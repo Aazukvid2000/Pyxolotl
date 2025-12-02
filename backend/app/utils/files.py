@@ -206,6 +206,7 @@ class FileService:
     async def save_game_file(file: UploadFile, juego_id: int) -> Tuple[str, float]:
         """
         Guarda el archivo del juego (.zip, .rar, etc.)
+        SIEMPRE sube a Cloudinary para evitar pérdida de archivos en Railway
         
         Args:
             file: Archivo del juego
@@ -219,15 +220,16 @@ class FileService:
         if size_mb > settings.MAX_GAME_SIZE_MB:
             raise ValueError(f"Archivo muy grande. Máximo: {settings.MAX_GAME_SIZE_MB}MB")
         
-        # Juegos >50MB a Cloudinary
-        if size_mb > 50:
-            folder = f"pyxolotl/juegos/{juego_id}/archivos"
-            url = await FileService.upload_to_cloudinary(file, folder, "raw")
-            
-            if url:
-                return url, size_mb
+        # SIEMPRE subir a Cloudinary (Railway no persiste archivos locales)
+        folder = f"pyxolotl/juegos/{juego_id}/archivos"
+        url = await FileService.upload_to_cloudinary(file, folder, "raw")
         
-        # Fallback o archivos pequeños: local
+        if url:
+            logger.info(f"Archivo de juego subido a Cloudinary: {url}")
+            return url, size_mb
+        
+        # Solo usar local como último recurso (desarrollo sin Cloudinary)
+        logger.warning("Cloudinary no disponible, usando almacenamiento local (NO RECOMENDADO para producción)")
         subdirectory = f"juegos/{juego_id}/archivos"
         url = await FileService.save_local_file(file, subdirectory, "game")
         

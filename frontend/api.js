@@ -314,6 +314,12 @@ function apiDescargarJuego(juegoId) {
   window.open(`${API_URL}/api/biblioteca/descargar/${juegoId}?token=${token}`, '_blank');
 }
 
+// Descargar juego de biblioteca (alias)
+function apiDescargarBiblioteca(juegoId) {
+  const token = getAuthToken();
+  window.open(`${API_URL}/api/biblioteca/descargar/${juegoId}?token=${token}`, '_blank');
+}
+
 // Obtener juego gratis
 async function apiGetJuegoGratis(juegoId) {
   const response = await fetch(`${API_URL}/api/juegos/${juegoId}/descargar-gratis`, {
