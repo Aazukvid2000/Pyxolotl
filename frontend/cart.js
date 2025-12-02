@@ -3,6 +3,12 @@
 // Manejo del carrito con localStorage y modal
 // ============================================
 
+// Verificar si el usuario está autenticado
+function isUserAuthenticated() {
+  const token = localStorage.getItem('auth_token');
+  return !!token;
+}
+
 // Obtener carrito desde localStorage
 function getCart() {
   const cart = localStorage.getItem('cart');
@@ -15,8 +21,17 @@ function saveCart(cart) {
   updateCartUI();
 }
 
-// Agregar juego al carrito
+// Agregar juego al carrito (REQUIERE AUTENTICACIÓN)
 function addToCart(gameId, gameTitle, gamePrice, gameImage = null, downloadUrl = null) {
+  // Verificar autenticación primero
+  if (!isUserAuthenticated()) {
+    showCartToast('🔒 Debes iniciar sesión para agregar juegos al carrito', 'error');
+    setTimeout(() => {
+      window.location.href = 'inicio.html';
+    }, 1500);
+    return false;
+  }
+  
   let cart = getCart();
   
   // Verificar si el juego ya está en el carrito
@@ -24,7 +39,7 @@ function addToCart(gameId, gameTitle, gamePrice, gameImage = null, downloadUrl =
   
   if (existingItem) {
     showCartToast('Este juego ya está en tu carrito', 'info');
-    return;
+    return false;
   }
   
   // Agregar nuevo item
@@ -38,6 +53,7 @@ function addToCart(gameId, gameTitle, gamePrice, gameImage = null, downloadUrl =
   
   saveCart(cart);
   showCartToast(`✅ "${gameTitle}" agregado al carrito`, 'success');
+  return true;
 }
 
 // Eliminar juego del carrito
@@ -120,16 +136,30 @@ function updateCartUI() {
   document.getElementById('total').textContent = `$${total.toFixed(2)}`;
 }
 
+// Abrir carrito (REQUIERE AUTENTICACIÓN)
+function openCartModal() {
+  if (!isUserAuthenticated()) {
+    showCartToast('🔒 Debes iniciar sesión para ver tu carrito', 'error');
+    setTimeout(() => {
+      window.location.href = 'inicio.html';
+    }, 1500);
+    return;
+  }
+  
+  updateCartUI();
+  const cartModal = document.getElementById('cartModal');
+  if (cartModal) {
+    cartModal.style.display = 'flex';
+  }
+}
+
 // Modal de carrito
 const cartModal = document.getElementById('cartModal');
 const cartBtn = document.getElementById('cartBtn');
 const closeCartBtn = document.querySelector('.close-cart');
 
 if (cartBtn) {
-  cartBtn.addEventListener('click', () => {
-    updateCartUI();
-    cartModal.style.display = 'flex';
-  });
+  cartBtn.addEventListener('click', openCartModal);
 }
 
 if (closeCartBtn) {
@@ -159,7 +189,7 @@ if (checkoutBtn) {
     }
     
     // Verificar autenticación
-    if (typeof isAuthenticated === 'function' && !isAuthenticated()) {
+    if (!isUserAuthenticated()) {
       showCartToast('Debes iniciar sesión para comprar', 'error');
       setTimeout(() => {
         window.location.href = 'inicio.html';
@@ -186,7 +216,12 @@ if (checkoutBtn) {
 
 // Función para mostrar toast en carrito
 function showCartToast(message, type = 'info') {
+  // Remover toast anterior si existe
+  const existing = document.querySelector('.cart-toast');
+  if (existing) existing.remove();
+  
   const toast = document.createElement('div');
+  toast.className = 'cart-toast';
   toast.style.cssText = `
     position: fixed;
     bottom: 20px;
@@ -209,6 +244,7 @@ window.addToCart = addToCart;
 window.removeFromCart = removeFromCart;
 window.clearCart = clearCart;
 window.getCart = getCart;
+window.openCartModal = openCartModal;
 
 // Inicializar contador al cargar la página
 document.addEventListener('DOMContentLoaded', () => {

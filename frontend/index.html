@@ -525,7 +525,7 @@
     <nav class="nav">
       <a href="#gallery">Juegos</a>
       <a href="#about">Acerca</a>
-      <a href="biblioteca.html" id="bibliotecaLink">📚 Biblioteca</a>
+      <a href="#" onclick="openBibliotecaModal(event)" id="bibliotecaLink">📚 Biblioteca</a>
       <a class="cta" href="#" onclick="validarPublicarJuego(event)" id="publicarBtn">Presentar juego</a>
       <a class="btn btn-ghost" href="inicio.html" id="loginBtn">Iniciar sesión</a>
       <a class="btn" href="inicio.html#registro" id="registerBtn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a">Registrarse</a>
@@ -3705,7 +3705,7 @@
         const downloadBtn = document.createElement('button');
         downloadBtn.className = 'btn';
         downloadBtn.style.cssText = 'width:100%;margin-top:12px;background:linear-gradient(90deg,#4CAF50,#45a049);color:#fff;font-weight:600';
-        downloadBtn.textContent = '📥 Descargar';
+        downloadBtn.textContent = '🎮 Obtener gratis';
         downloadBtn.onclick = (e) => {
           e.stopPropagation();
           handleFreeGameDownload(game);
@@ -3722,7 +3722,7 @@
         const addBtn = document.createElement('button');
         addBtn.className = 'btn';
         addBtn.style.cssText = 'background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;padding:8px 16px';
-        addBtn.textContent = 'Agregar';
+        addBtn.textContent = '🛒 Agregar';
         addBtn.onclick = (e) => {
           e.stopPropagation();
           handleAddToCart(game);

@@ -21,6 +21,7 @@
       border-radius: 16px;
       overflow: hidden;
       transition: all 0.3s ease;
+      cursor: pointer;
     }
     
     .biblioteca-card:hover {
@@ -59,14 +60,6 @@
     }
     .btn-download:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 212, 170, 0.4); }
     
-    .btn-info {
-      padding: 10px 16px; border-radius: 8px;
-      background: rgba(255, 255, 255, 0.1); color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      cursor: pointer; transition: all 0.3s;
-    }
-    .btn-info:hover { background: rgba(255, 255, 255, 0.15); }
-    
     /* Empty State */
     .empty-state { text-align: center; padding: 80px 20px; }
     .empty-state-icon { font-size: 80px; margin-bottom: 20px; }
@@ -103,6 +96,205 @@
     }
     .user-avatar span { color: #07102a; font-weight: bold; font-size: 16px; }
     #userName { color: var(--accent-1); font-weight: 600; }
+    
+    /* ========================================= */
+    /* MODAL DE DETALLES DEL JUEGO              */
+    /* ========================================= */
+    .game-detail-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 10000;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      overflow-y: auto;
+    }
+    
+    .game-detail-modal.active { display: flex; justify-content: center; align-items: flex-start; padding: 40px 20px; }
+    
+    .game-detail-container {
+      background: linear-gradient(180deg, #0d1829 0%, #07102a 100%);
+      border: 1px solid rgba(123, 97, 255, 0.3);
+      border-radius: 24px;
+      max-width: 900px;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      animation: modalSlideIn 0.3s ease;
+    }
+    
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .game-detail-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+      z-index: 10;
+      transition: all 0.3s;
+    }
+    .game-detail-close:hover { background: rgba(255, 59, 48, 0.3); }
+    
+    .game-detail-hero {
+      height: 200px;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .game-detail-hero img { width: 100%; height: 100%; object-fit: cover; }
+    .game-detail-hero span { font-size: 80px; font-weight: bold; color: #07102a; }
+    
+    .game-detail-content { padding: 24px; }
+    
+    .game-detail-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap; gap: 16px; }
+    
+    .game-detail-title { font-size: 28px; font-weight: 700; color: #fff; margin: 0; }
+    
+    .game-detail-price { font-size: 28px; font-weight: 700; color: var(--accent-2); }
+    .game-detail-price.owned { color: var(--accent-1); font-size: 20px; }
+    
+    .game-detail-meta { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+    
+    .game-detail-genre {
+      background: rgba(123, 97, 255, 0.15);
+      color: var(--accent-1);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .game-detail-rating { display: flex; align-items: center; gap: 8px; }
+    .game-detail-stars { color: #fbbf24; font-size: 16px; }
+    .game-detail-reviews { color: var(--muted); font-size: 14px; }
+    
+    .game-detail-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+    }
+    
+    .game-detail-stat { text-align: center; }
+    .game-detail-stat-value { font-size: 24px; font-weight: 700; color: var(--accent-1); }
+    .game-detail-stat-label { font-size: 12px; color: var(--muted); text-transform: uppercase; margin-top: 4px; }
+    
+    .game-detail-dev {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 12px;
+      margin-bottom: 24px;
+    }
+    
+    .game-detail-dev-avatar {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: bold; color: #07102a;
+    }
+    
+    .game-detail-dev-name { font-weight: 600; color: #fff; }
+    .game-detail-dev-label { font-size: 12px; color: var(--muted); }
+    
+    .game-detail-section { margin-bottom: 24px; }
+    .game-detail-section-title { font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .game-detail-desc { color: var(--muted); line-height: 1.7; }
+    
+    /* Requisitos */
+    .game-detail-requirements {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    
+    .requirements-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .requirements-column h4 { color: var(--accent-1); font-size: 14px; margin-bottom: 16px; border-bottom: 1px solid rgba(123, 97, 255, 0.3); padding-bottom: 8px; }
+    .requirement-item { margin-bottom: 12px; }
+    .requirement-label { font-size: 11px; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
+    .requirement-value { font-size: 14px; color: #fff; }
+    
+    /* Reseñas */
+    .reviews-section { margin-bottom: 24px; }
+    .review-form { background: rgba(255, 255, 255, 0.03); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+    .review-form h4 { margin-bottom: 12px; color: #fff; }
+    .review-rating { display: flex; gap: 8px; margin-bottom: 12px; align-items: center; }
+    .review-rating label { color: var(--muted); font-size: 14px; }
+    .star-input { font-size: 24px; cursor: pointer; color: #4a5568; transition: color 0.2s; }
+    .star-input:hover, .star-input.active { color: #fbbf24; }
+    .review-textarea { width: 100%; min-height: 100px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 12px; color: #fff; resize: vertical; font-family: inherit; box-sizing: border-box; }
+    .review-textarea:focus { outline: none; border-color: var(--accent-1); }
+    .review-submit { margin-top: 12px; display: flex; justify-content: space-between; align-items: center; }
+    .review-char-count { font-size: 12px; color: var(--muted); }
+    
+    .reviews-list { max-height: 400px; overflow-y: auto; }
+    .review-item { background: rgba(255, 255, 255, 0.03); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+    .review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .review-author { display: flex; align-items: center; gap: 10px; }
+    .review-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-1), var(--accent-2)); display: flex; align-items: center; justify-content: center; font-weight: bold; color: #07102a; font-size: 14px; }
+    .review-name { font-weight: 600; color: #fff; }
+    .review-date { font-size: 12px; color: var(--muted); }
+    .review-badge { background: rgba(16, 185, 129, 0.15); color: #10b981; padding: 4px 12px; border-radius: 20px; font-size: 12px; }
+    .review-stars { color: #fbbf24; margin-bottom: 8px; }
+    .review-text { color: var(--muted); line-height: 1.6; }
+    .reviews-empty { text-align: center; padding: 40px; color: var(--muted); }
+    
+    /* Acciones del modal */
+    .game-detail-actions {
+      display: flex;
+      gap: 12px;
+      padding: 20px 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.2);
+    }
+    
+    .game-detail-btn-download {
+      flex: 1;
+      padding: 16px 24px;
+      border-radius: 12px;
+      background: linear-gradient(90deg, var(--accent-2), var(--accent-1));
+      color: #07102a;
+      font-weight: 600;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .game-detail-btn-download:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0, 212, 170, 0.4); }
+    
+    .game-detail-btn-close {
+      padding: 16px 32px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-weight: 600;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .game-detail-btn-close:hover { background: rgba(255, 255, 255, 0.15); }
+    
+    @media (max-width: 768px) {
+      .game-detail-stats { grid-template-columns: repeat(2, 1fr); }
+      .requirements-grid { grid-template-columns: 1fr; }
+      .game-detail-actions { flex-direction: column; }
+    }
   </style>
 </head>
 <body>
@@ -141,9 +333,122 @@
     </div>
   </main>
 
+  <!-- Modal de Detalles del Juego -->
+  <div id="gameDetailModal" class="game-detail-modal">
+    <div class="game-detail-container">
+      <button class="game-detail-close" onclick="closeGameDetailModal()">&times;</button>
+      
+      <div id="gameDetailHero" class="game-detail-hero">
+        <span id="gameDetailHeroText">--</span>
+      </div>
+      
+      <div class="game-detail-content">
+        <div class="game-detail-header">
+          <h2 id="gameDetailTitle" class="game-detail-title">Cargando...</h2>
+          <div id="gameDetailPrice" class="game-detail-price owned">📚 En tu biblioteca</div>
+        </div>
+        
+        <div class="game-detail-meta">
+          <span id="gameDetailGenre" class="game-detail-genre">--</span>
+          <div class="game-detail-rating">
+            <span id="gameDetailStars" class="game-detail-stars">★★★★★</span>
+            <span>(<span id="gameDetailReviews">0</span> reseñas)</span>
+            <span id="gameDetailRating" style="color:var(--accent-1);font-weight:600">0.0</span>
+          </div>
+        </div>
+        
+        <div class="game-detail-stats">
+          <div class="game-detail-stat">
+            <div id="gameDetailDownloads" class="game-detail-stat-value">0</div>
+            <div class="game-detail-stat-label">Descargas</div>
+          </div>
+          <div class="game-detail-stat">
+            <div id="gameDetailSales" class="game-detail-stat-value">0</div>
+            <div class="game-detail-stat-label">Ventas</div>
+          </div>
+          <div class="game-detail-stat">
+            <div id="gameDetailCalif" class="game-detail-stat-value">0.0</div>
+            <div class="game-detail-stat-label">Calificación</div>
+          </div>
+          <div class="game-detail-stat">
+            <div id="gameDetailSize" class="game-detail-stat-value">--</div>
+            <div class="game-detail-stat-label">Tamaño</div>
+          </div>
+        </div>
+        
+        <div class="game-detail-dev">
+          <div id="gameDetailDevAvatar" class="game-detail-dev-avatar">D</div>
+          <div>
+            <div id="gameDetailDevName" class="game-detail-dev-name">Desarrollador</div>
+            <div class="game-detail-dev-label">Desarrollador Indie</div>
+          </div>
+        </div>
+        
+        <div class="game-detail-section">
+          <h3 class="game-detail-section-title">🎮 Acerca del juego</h3>
+          <p id="gameDetailDesc" class="game-detail-desc">Cargando descripción...</p>
+        </div>
+        
+        <!-- Requisitos del Sistema -->
+        <div id="gameDetailRequirements" class="game-detail-requirements">
+          <h3 class="game-detail-section-title">🖥️ Requisitos del Sistema</h3>
+          <div class="requirements-grid">
+            <div class="requirements-column">
+              <h4>MÍNIMO</h4>
+              <div id="reqMinimo"></div>
+            </div>
+            <div class="requirements-column">
+              <h4>RECOMENDADO</h4>
+              <div id="reqRecomendado"></div>
+            </div>
+          </div>
+          <div id="reqPlataformas" style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.1)"></div>
+        </div>
+        
+        <!-- Reseñas -->
+        <div class="reviews-section">
+          <h3 class="game-detail-section-title">💬 Reseñas de usuarios</h3>
+          
+          <div id="reviewForm" class="review-form">
+            <h4>✍️ Escribe tu reseña</h4>
+            <div class="review-rating">
+              <label>Tu calificación:</label>
+              <span class="star-input" data-rating="1">☆</span>
+              <span class="star-input" data-rating="2">☆</span>
+              <span class="star-input" data-rating="3">☆</span>
+              <span class="star-input" data-rating="4">☆</span>
+              <span class="star-input" data-rating="5">☆</span>
+              <span id="ratingText" style="color:var(--accent-1);margin-left:8px">Selecciona una calificación</span>
+            </div>
+            <textarea id="reviewTextarea" class="review-textarea" placeholder="¿Qué te pareció este juego? Comparte tu experiencia..." maxlength="1000"></textarea>
+            <div class="review-submit">
+              <span id="charCount" class="review-char-count">0/1000</span>
+              <button id="submitReviewBtn" class="btn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;padding:10px 20px;border:none;border-radius:8px;font-weight:600;cursor:pointer">📝 Publicar reseña</button>
+            </div>
+          </div>
+          
+          <div id="reviewsList" class="reviews-list">
+            <div class="reviews-empty">
+              <div style="font-size:48px;margin-bottom:12px">💬</div>
+              <p>Aún no hay reseñas para este juego</p>
+              <p style="font-size:13px">¡Sé el primero en dejar una reseña!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="game-detail-actions">
+        <button id="gameDetailDownloadBtn" class="game-detail-btn-download" onclick="descargarJuegoActual()">📥 Descargar</button>
+        <button class="game-detail-btn-close" onclick="closeGameDetailModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
   <script src="api.js"></script>
   <script>
     let bibliotecaItems = [];
+    let currentGameDetail = null;
+    let selectedRating = 0;
     
     function showToast(message, type = 'info') {
       const existing = document.querySelector('.toast');
@@ -161,10 +466,10 @@
       return API_URL + url;
     }
     
-    async function descargarJuego(juegoId, titulo) {
+    async function descargarJuego(e, juegoId, titulo) {
+      e.stopPropagation();
       showToast('⏳ Preparando descarga...', 'info');
       try {
-        // Usar el endpoint de descarga de biblioteca
         apiDescargarBiblioteca(juegoId);
         showToast('✅ ¡Descarga iniciada!', 'success');
       } catch (error) {
@@ -172,6 +477,247 @@
         showToast('❌ Error al descargar', 'error');
       }
     }
+    
+    function descargarJuegoActual() {
+      if (!currentGameDetail) return;
+      showToast('⏳ Preparando descarga...', 'info');
+      try {
+        apiDescargarBiblioteca(currentGameDetail.id);
+        showToast('✅ ¡Descarga iniciada!', 'success');
+      } catch (error) {
+        console.error('Error al descargar:', error);
+        showToast('❌ Error al descargar', 'error');
+      }
+    }
+    
+    async function openGameDetailModal(juegoId) {
+      const modal = document.getElementById('gameDetailModal');
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      
+      try {
+        const game = await apiGetJuego(juegoId);
+        if (!game || game.detail) {
+          showToast('❌ No se pudo cargar el juego', 'error');
+          closeGameDetailModal();
+          return;
+        }
+        
+        currentGameDetail = game;
+        renderGameDetailModal(game);
+        loadGameReviews(juegoId);
+        
+      } catch (error) {
+        console.error('Error cargando juego:', error);
+        showToast('❌ Error al cargar los detalles', 'error');
+        closeGameDetailModal();
+      }
+    }
+    
+    function closeGameDetailModal() {
+      const modal = document.getElementById('gameDetailModal');
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+      currentGameDetail = null;
+      selectedRating = 0;
+    }
+    
+    function renderGameDetailModal(game) {
+      const heroContainer = document.getElementById('gameDetailHero');
+      if (game.portada_url) {
+        const imgUrl = getImageUrl(game.portada_url);
+        heroContainer.innerHTML = `<img src="${imgUrl}" alt="${game.titulo}" onerror="this.style.display='none';this.parentElement.innerHTML='<span>${game.titulo.substring(0,2).toUpperCase()}</span>'">`;
+      } else {
+        heroContainer.innerHTML = `<span>${game.titulo.substring(0,2).toUpperCase()}</span>`;
+      }
+      
+      document.getElementById('gameDetailTitle').textContent = game.titulo;
+      document.getElementById('gameDetailGenre').textContent = game.genero || 'Indie';
+      
+      const rating = game.calificacion_promedio || 0;
+      const fullStars = Math.floor(rating);
+      let stars = '★'.repeat(fullStars) + '☆'.repeat(5 - fullStars);
+      document.getElementById('gameDetailStars').textContent = stars;
+      document.getElementById('gameDetailReviews').textContent = game.total_resenas || 0;
+      document.getElementById('gameDetailRating').textContent = rating.toFixed(1);
+      
+      document.getElementById('gameDetailDownloads').textContent = game.total_descargas || 0;
+      document.getElementById('gameDetailSales').textContent = game.total_ventas || 0;
+      document.getElementById('gameDetailCalif').textContent = rating.toFixed(1);
+      document.getElementById('gameDetailSize').textContent = game.tamano_mb ? `${game.tamano_mb.toFixed(1)} MB` : '--';
+      
+      const devName = game.desarrollador?.nombre || 'Desarrollador Indie';
+      document.getElementById('gameDetailDevName').textContent = devName;
+      const devInitials = devName.split(' ').map(w => w[0]).join('').substring(0,2).toUpperCase();
+      document.getElementById('gameDetailDevAvatar').textContent = devInitials;
+      
+      document.getElementById('gameDetailDesc').textContent = game.descripcion || 'Sin descripción disponible.';
+      
+      renderRequirements(game.requisitos);
+    }
+    
+    function renderRequirements(requisitos) {
+      const container = document.getElementById('gameDetailRequirements');
+      
+      if (!requisitos) {
+        container.style.display = 'none';
+        return;
+      }
+      
+      container.style.display = 'block';
+      
+      let req = requisitos;
+      if (typeof requisitos === 'string') {
+        try {
+          req = JSON.parse(requisitos);
+        } catch (e) {
+          container.style.display = 'none';
+          return;
+        }
+      }
+      
+      const minimo = req.minimo || {};
+      const recomendado = req.recomendado || {};
+      
+      const renderReqColumn = (data) => {
+        let html = '';
+        if (data.so) html += `<div class="requirement-item"><div class="requirement-label">SO</div><div class="requirement-value">${data.so}</div></div>`;
+        if (data.procesador) html += `<div class="requirement-item"><div class="requirement-label">PROCESADOR</div><div class="requirement-value">${data.procesador}</div></div>`;
+        if (data.memoria) html += `<div class="requirement-item"><div class="requirement-label">MEMORIA</div><div class="requirement-value">${data.memoria}</div></div>`;
+        if (data.graficos) html += `<div class="requirement-item"><div class="requirement-label">GRÁFICOS</div><div class="requirement-value">${data.graficos}</div></div>`;
+        if (data.almacenamiento) html += `<div class="requirement-item"><div class="requirement-label">ALMACENAMIENTO</div><div class="requirement-value">${data.almacenamiento}</div></div>`;
+        return html || '<p style="color:var(--muted)">No especificado</p>';
+      };
+      
+      document.getElementById('reqMinimo').innerHTML = renderReqColumn(minimo);
+      document.getElementById('reqRecomendado').innerHTML = renderReqColumn(recomendado);
+      
+      const plataformas = req.plataformas || [];
+      if (plataformas.length > 0) {
+        document.getElementById('reqPlataformas').innerHTML = `<div class="requirement-label">PLATAFORMAS</div><div class="requirement-value">${plataformas.join(', ')}</div>`;
+      }
+    }
+    
+    async function loadGameReviews(juegoId) {
+      const reviewsList = document.getElementById('reviewsList');
+      
+      try {
+        const response = await fetch(`${API_URL}/api/resenas/juego/${juegoId}`);
+        const resenas = await response.json();
+        
+        if (!resenas || resenas.length === 0) {
+          reviewsList.innerHTML = `
+            <div class="reviews-empty">
+              <div style="font-size:48px;margin-bottom:12px">💬</div>
+              <p>Aún no hay reseñas para este juego</p>
+              <p style="font-size:13px">¡Sé el primero en dejar una reseña!</p>
+            </div>
+          `;
+          return;
+        }
+        
+        reviewsList.innerHTML = resenas.map(r => {
+          const authorName = r.usuario?.nombre || 'Usuario';
+          const initials = authorName.substring(0,1).toUpperCase();
+          const stars = '★'.repeat(r.calificacion) + '☆'.repeat(5 - r.calificacion);
+          const date = new Date(r.fecha_creacion).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
+          const isRecommended = r.calificacion >= 4;
+          
+          return `
+            <div class="review-item">
+              <div class="review-header">
+                <div class="review-author">
+                  <div class="review-avatar">${initials}</div>
+                  <div>
+                    <div class="review-name">${authorName}</div>
+                    <div class="review-date">Publicada el ${date}</div>
+                  </div>
+                </div>
+                ${isRecommended ? '<span class="review-badge">👍 Recomendado</span>' : ''}
+              </div>
+              <div class="review-stars">${stars}</div>
+              <p class="review-text">${r.comentario || ''}</p>
+            </div>
+          `;
+        }).join('');
+        
+      } catch (error) {
+        console.error('Error cargando reseñas:', error);
+      }
+    }
+    
+    // Sistema de calificación con estrellas
+    document.querySelectorAll('.star-input').forEach(star => {
+      star.addEventListener('click', function() {
+        selectedRating = parseInt(this.dataset.rating);
+        updateStarDisplay();
+      });
+      
+      star.addEventListener('mouseenter', function() {
+        const rating = parseInt(this.dataset.rating);
+        document.querySelectorAll('.star-input').forEach((s, i) => {
+          s.textContent = i < rating ? '★' : '☆';
+          s.style.color = i < rating ? '#fbbf24' : '#4a5568';
+        });
+      });
+    });
+    
+    document.querySelector('.review-rating').addEventListener('mouseleave', updateStarDisplay);
+    
+    function updateStarDisplay() {
+      document.querySelectorAll('.star-input').forEach((s, i) => {
+        s.textContent = i < selectedRating ? '★' : '☆';
+        s.style.color = i < selectedRating ? '#fbbf24' : '#4a5568';
+        s.classList.toggle('active', i < selectedRating);
+      });
+      
+      const texts = ['Selecciona una calificación', 'Malo', 'Regular', 'Bueno', 'Muy bueno', '¡Excelente!'];
+      document.getElementById('ratingText').textContent = texts[selectedRating];
+    }
+    
+    document.getElementById('reviewTextarea').addEventListener('input', function() {
+      document.getElementById('charCount').textContent = `${this.value.length}/1000`;
+    });
+    
+    document.getElementById('submitReviewBtn').addEventListener('click', async function() {
+      if (!currentGameDetail) return;
+      
+      if (selectedRating === 0) {
+        showToast('⚠️ Selecciona una calificación', 'error');
+        return;
+      }
+      
+      const comentario = document.getElementById('reviewTextarea').value.trim();
+      
+      try {
+        const response = await fetch(`${API_URL}/api/resenas/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getAuthToken()}`
+          },
+          body: JSON.stringify({
+            juego_id: currentGameDetail.id,
+            calificacion: selectedRating,
+            comentario: comentario
+          })
+        });
+        
+        if (response.ok) {
+          showToast('✅ ¡Reseña publicada!', 'success');
+          document.getElementById('reviewTextarea').value = '';
+          selectedRating = 0;
+          updateStarDisplay();
+          loadGameReviews(currentGameDetail.id);
+        } else {
+          const error = await response.json();
+          showToast('❌ ' + (error.detail || 'Error al publicar'), 'error');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        showToast('❌ Error al publicar reseña', 'error');
+      }
+    });
     
     async function cargarBiblioteca() {
       const container = document.getElementById('bibliotecaContainer');
@@ -222,17 +768,16 @@
             : `<span>${initials}</span>`;
           
           html += `
-            <article class="biblioteca-card">
+            <article class="biblioteca-card" onclick="openGameDetailModal(${juego.id})">
               <div class="biblioteca-card-thumb">${thumbHtml}</div>
               <div class="biblioteca-card-info">
                 <h3 class="biblioteca-card-title">${juego.titulo}</h3>
                 <p class="biblioteca-card-meta">${juego.genero || 'Indie'} • ⭐ ${(juego.calificacion_promedio || 0).toFixed(1)}</p>
                 <span class="biblioteca-card-badge ${item.es_gratuito ? 'gratis' : 'comprado'}">${item.es_gratuito ? '✨ Gratis' : '💎 Comprado'}</span>
                 <div class="biblioteca-card-actions">
-                  <button class="btn-download" onclick="descargarJuego(${juego.id}, '${juego.titulo.replace(/'/g, "\\'")}')">
+                  <button class="btn-download" onclick="descargarJuego(event, ${juego.id}, '${juego.titulo.replace(/'/g, "\\'")}')">
                     📥 Descargar
                   </button>
-                  <a href="producto-detalle.html?id=${juego.id}" class="btn-info">ℹ️ Info</a>
                 </div>
               </div>
             </article>
@@ -277,6 +822,18 @@
         userProfile.style.display = 'none';
       }
     }
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && document.getElementById('gameDetailModal').classList.contains('active')) {
+        closeGameDetailModal();
+      }
+    });
+    
+    document.getElementById('gameDetailModal').addEventListener('click', (e) => {
+      if (e.target.classList.contains('game-detail-modal')) {
+        closeGameDetailModal();
+      }
+    });
     
     document.addEventListener('DOMContentLoaded', () => {
       checkSession();
