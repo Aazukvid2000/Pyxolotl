@@ -4057,8 +4057,8 @@
     function loadFeaturedGame() {
       // Ordenar por calificación (desc) y luego por fecha (desc)
       const sorted = [...allGamesData].sort((a, b) => {
-        const ratingA = a.calificacion_promedio || 0;
-        const ratingB = b.calificacion_promedio || 0;
+        const ratingA = parseFloat(a.calificacion_promedio) || 0;
+        const ratingB = parseFloat(b.calificacion_promedio) || 0;
         if (ratingB !== ratingA) return ratingB - ratingA;
         return new Date(b.fecha_creacion || 0) - new Date(a.fecha_creacion || 0);
       });
@@ -4082,10 +4082,10 @@
         (featured.descripcion.length > 120 ? featured.descripcion.substring(0, 120) + '...' : featured.descripcion) : 
         `${featured.genero} · Por ${featured.desarrollador_nombre || 'Indie Developer'}`;
       
-      const rating = featured.calificacion_promedio || 0;
+      const rating = parseFloat(featured.calificacion_promedio) || 0;
       document.getElementById('featuredRating').textContent = `★ ${rating.toFixed(1)}`;
       
-      const price = parseFloat(featured.precio || 0);
+      const price = parseFloat(featured.precio) || 0;
       document.getElementById('featuredPrice').textContent = price === 0 ? '✨ GRATIS' : `$${price.toFixed(2)} MXN`;
     }
     
@@ -4234,10 +4234,11 @@
       
       const imgUrl = game.portada_url ? getImageUrl(game.portada_url) : null;
       const initials = game.titulo.substring(0, 2).toUpperCase();
-      const price = parseFloat(game.precio || 0);
-      const rating = game.calificacion_promedio || 0;
-      const reviews = game.total_resenas || 0;
+      const price = parseFloat(game.precio) || 0;
+      const rating = parseFloat(game.calificacion_promedio) || 0;
+      const reviews = parseInt(game.total_resenas) || 0;
       const fecha = game.fecha_creacion ? new Date(game.fecha_creacion).toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+      const starsCount = Math.min(5, Math.max(0, Math.round(rating)));
       
       item.innerHTML = `
         <div class="game-list-img">
@@ -4251,7 +4252,7 @@
           </div>
         </div>
         <div class="game-list-rating">
-          <div class="game-list-stars">${'★'.repeat(Math.round(rating))}${'☆'.repeat(5 - Math.round(rating))}</div>
+          <div class="game-list-stars">${'★'.repeat(starsCount)}${'☆'.repeat(5 - starsCount)}</div>
           <div class="game-list-reviews">(${reviews} reseñas)</div>
         </div>
         <div class="game-list-price">
@@ -4363,9 +4364,13 @@
       const categorySections = document.getElementById('categorySections');
       categorySections.style.display = hasActiveFilters ? 'none' : 'block';
       
+      // Debug: mostrar qué filtros están activos
+      console.log('Filtros activos:', { priceFilter, ratingFilter, genreFilter });
+      
       filteredGames = allGamesData.filter(game => {
-        const price = parseFloat(game.precio || 0);
-        const rating = game.calificacion_promedio || 0;
+        const price = parseFloat(game.precio) || 0;
+        // Usar parseFloat para asegurar comparación numérica correcta
+        const rating = parseFloat(game.calificacion_promedio) || 0;
         const genre = game.genero || '';
         
         // Filtro precio
@@ -4377,14 +4382,22 @@
           if (priceFilter === '200+' && price < 200) return false;
         }
         
-        // Filtro valoración
-        if (ratingFilter && rating < parseFloat(ratingFilter)) return false;
+        // Filtro valoración - comparar con >= para incluir juegos con exactamente esa calificación
+        if (ratingFilter) {
+          const minRating = parseFloat(ratingFilter);
+          if (rating < minRating) {
+            console.log(`Juego "${game.titulo}" excluido: rating ${rating} < ${minRating}`);
+            return false;
+          }
+        }
         
         // Filtro género
         if (genreFilter && genre !== genreFilter) return false;
         
         return true;
       });
+      
+      console.log(`Juegos filtrados: ${filteredGames.length} de ${allGamesData.length}`);
       
       // Actualizar título de la sección
       const listTitle = document.querySelector('.games-list-title');
