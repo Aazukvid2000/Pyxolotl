@@ -505,7 +505,6 @@
         <div class="game-modal-stats">
           <div class="game-modal-stat"><div id="gameModalDescargas" class="game-modal-stat-value">0</div><div class="game-modal-stat-label">Descargas</div></div>
           <div class="game-modal-stat"><div id="gameModalVentas" class="game-modal-stat-value">0</div><div class="game-modal-stat-label">Ventas</div></div>
-          <div class="game-modal-stat"><div id="gameModalCalif" class="game-modal-stat-value">0.0</div><div class="game-modal-stat-label">Calificación</div></div>
           <div class="game-modal-stat"><div id="gameModalSize" class="game-modal-stat-value">--</div><div class="game-modal-stat-label">Tamaño</div></div>
         </div>
         <div class="game-modal-section">
@@ -516,8 +515,18 @@
           <div class="game-modal-section-title">📝 Descripción</div>
           <p id="gameModalDesc" class="game-modal-desc">Sin descripción</p>
         </div>
+        <!-- Screenshots Section -->
+        <div id="gameModalScreenshotsSection" class="game-modal-section" style="display:none">
+          <div class="game-modal-section-title">📸 Capturas de pantalla</div>
+          <div id="gameModalScreenshots" style="display:flex;gap:10px;overflow-x:auto;padding:10px 0"></div>
+        </div>
+        <!-- Plataformas Section -->
+        <div id="gameModalPlataformasSection" class="game-modal-section" style="display:none">
+          <div class="game-modal-section-title">🎮 Plataformas</div>
+          <div id="gameModalPlataformas" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+        </div>
         <div id="gameModalReqSection" class="game-modal-section" style="display:none">
-          <div class="game-modal-section-title">🖥️ Requisitos</div>
+          <div class="game-modal-section-title">🖥️ Requisitos del Sistema</div>
           <div id="gameModalReq" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:12px"></div>
         </div>
       </div>
@@ -537,7 +546,8 @@
       document.body.style.overflow = 'hidden';
       
       try {
-        const game = await apiGetJuego(gameId);
+        // Usar endpoint de admin que permite ver juegos en cualquier estado
+        const game = await apiGetJuegoAdmin(gameId);
         if (!game || game.detail) {
           showToast('❌ No se pudo cargar el juego', 'error');
           closeGameModal();
@@ -571,12 +581,12 @@
       document.getElementById('gameModalPrice').textContent = g.precio > 0 ? '$' + g.precio + ' MXN' : '✨ GRATIS';
       
       const estadoEl = document.getElementById('gameModalEstado');
-      estadoEl.textContent = g.estado || 'aprobado';
+      const estadoTexto = g.estado === 'aprobado' ? 'Aprobado' : g.estado === 'rechazado' ? 'Rechazado' : 'En revisión';
+      estadoEl.textContent = estadoTexto;
       estadoEl.className = 'badge ' + (g.estado === 'aprobado' ? 'badge-success' : g.estado === 'rechazado' ? 'badge-danger' : 'badge-warning');
       
       document.getElementById('gameModalDescargas').textContent = g.total_descargas || 0;
       document.getElementById('gameModalVentas').textContent = g.total_ventas || 0;
-      document.getElementById('gameModalCalif').textContent = (g.calificacion_promedio || 0).toFixed(1);
       document.getElementById('gameModalSize').textContent = g.tamano_mb ? g.tamano_mb.toFixed(1) + ' MB' : '--';
       
       const devName = g.desarrollador?.nombre || 'Desarrollador';
@@ -585,18 +595,78 @@
       
       document.getElementById('gameModalDesc').textContent = g.descripcion || 'Sin descripción disponible.';
       
-      // Requisitos
+      // Screenshots
+      const screenshotsSection = document.getElementById('gameModalScreenshotsSection');
+      const screenshotsContainer = document.getElementById('gameModalScreenshots');
+      if (g.screenshots_urls) {
+        let screenshots = g.screenshots_urls;
+        if (typeof screenshots === 'string') {
+          try { screenshots = JSON.parse(screenshots); } catch(e) { screenshots = []; }
+        }
+        if (screenshots && screenshots.length > 0) {
+          screenshotsSection.style.display = 'block';
+          screenshotsContainer.innerHTML = screenshots.map(url => {
+            const imgUrl = url.startsWith('http') ? url : API_URL + url;
+            return `<img src="${imgUrl}" style="height:100px;border-radius:8px;cursor:pointer;flex-shrink:0" onclick="window.open('${imgUrl}','_blank')" onerror="this.style.display='none'">`;
+          }).join('');
+        } else {
+          screenshotsSection.style.display = 'none';
+        }
+      } else {
+        screenshotsSection.style.display = 'none';
+      }
+      
+      // Plataformas
+      const plataformasSection = document.getElementById('gameModalPlataformasSection');
+      const plataformasContainer = document.getElementById('gameModalPlataformas');
       if (g.requisitos) {
         let req = g.requisitos;
         if (typeof req === 'string') try { req = JSON.parse(req); } catch(e) { req = null; }
-        if (req) {
+        if (req && req.plataformas && req.plataformas.length > 0) {
+          plataformasSection.style.display = 'block';
+          const iconos = { windows: '🪟', mac: '🍎', linux: '🐧', web: '🌐', android: '🤖', ios: '📱' };
+          plataformasContainer.innerHTML = req.plataformas.map(p => 
+            `<span style="background:rgba(123,97,255,0.15);color:var(--accent-1);padding:6px 12px;border-radius:20px;font-size:13px">${iconos[p] || '🎮'} ${p.charAt(0).toUpperCase() + p.slice(1)}</span>`
+          ).join('');
+        } else {
+          plataformasSection.style.display = 'none';
+        }
+      } else {
+        plataformasSection.style.display = 'none';
+      }
+      
+      // Requisitos del sistema
+      if (g.requisitos) {
+        let req = g.requisitos;
+        if (typeof req === 'string') try { req = JSON.parse(req); } catch(e) { req = null; }
+        if (req && (req.minimo || req.recomendado)) {
           document.getElementById('gameModalReqSection').style.display = 'block';
           const min = req.minimo || {};
           const rec = req.recomendado || {};
           document.getElementById('gameModalReq').innerHTML = `
-            <div><strong style="color:var(--accent-1)">Mínimo</strong><br>${min.so || '-'}<br>${min.procesador || '-'}<br>${min.memoria || '-'}</div>
-            <div><strong style="color:var(--accent-2)">Recomendado</strong><br>${rec.so || '-'}<br>${rec.procesador || '-'}<br>${rec.memoria || '-'}</div>
+            <div style="background:rgba(123,97,255,0.08);padding:12px;border-radius:8px">
+              <strong style="color:var(--accent-1);display:block;margin-bottom:8px">MÍNIMO</strong>
+              <div style="color:#aaa;line-height:1.6">
+                ${min.so ? `<div><strong>SO:</strong> ${min.so}</div>` : ''}
+                ${min.procesador ? `<div><strong>CPU:</strong> ${min.procesador}</div>` : ''}
+                ${min.memoria ? `<div><strong>RAM:</strong> ${min.memoria}</div>` : ''}
+                ${min.graficos ? `<div><strong>GPU:</strong> ${min.graficos}</div>` : ''}
+                ${min.almacenamiento ? `<div><strong>Disco:</strong> ${min.almacenamiento}</div>` : ''}
+              </div>
+            </div>
+            <div style="background:rgba(0,212,170,0.08);padding:12px;border-radius:8px">
+              <strong style="color:var(--accent-2);display:block;margin-bottom:8px">RECOMENDADO</strong>
+              <div style="color:#aaa;line-height:1.6">
+                ${rec.so ? `<div><strong>SO:</strong> ${rec.so}</div>` : ''}
+                ${rec.procesador ? `<div><strong>CPU:</strong> ${rec.procesador}</div>` : ''}
+                ${rec.memoria ? `<div><strong>RAM:</strong> ${rec.memoria}</div>` : ''}
+                ${rec.graficos ? `<div><strong>GPU:</strong> ${rec.graficos}</div>` : ''}
+                ${rec.almacenamiento ? `<div><strong>Disco:</strong> ${rec.almacenamiento}</div>` : ''}
+              </div>
+            </div>
           `;
+        } else {
+          document.getElementById('gameModalReqSection').style.display = 'none';
         }
       } else {
         document.getElementById('gameModalReqSection').style.display = 'none';

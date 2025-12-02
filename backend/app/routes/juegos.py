@@ -251,6 +251,24 @@ async def obtener_juego(
 
 # ==================== JUEGOS PENDIENTES (Admin) ====================
 
+@router.get("/admin/juego/{juego_id}", response_model=JuegoResponse)
+async def obtener_juego_admin(
+    juego_id: int,
+    db: Session = Depends(get_db),
+    current_admin: Usuario = Depends(get_current_admin)
+):
+    """Admin puede ver cualquier juego independientemente de su estado"""
+    
+    juego = db.query(Juego).filter(Juego.id == juego_id).first()
+    
+    if not juego:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Juego no encontrado"
+        )
+    
+    return juego
+
 @router.get("/admin/pendientes", response_model=List[JuegoResponse])
 async def obtener_juegos_pendientes(
     db: Session = Depends(get_db),

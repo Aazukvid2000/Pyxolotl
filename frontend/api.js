@@ -418,6 +418,14 @@ async function apiGetJuegosPendientes() {
   return response.json();
 }
 
+// Obtener juego como admin (cualquier estado)
+async function apiGetJuegoAdmin(juegoId) {
+  const response = await fetch(`${API_URL}/api/juegos/admin/juego/${juegoId}`, {
+    headers: getAuthHeaders()
+  });
+  return response.json();
+}
+
 // Aprobar/Rechazar juego
 async function apiAprobarJuego(juegoId, aprobado, motivo = null) {
   const response = await fetch(`${API_URL}/api/juegos/${juegoId}/aprobar`, {
