@@ -645,36 +645,45 @@
           try { req = JSON.parse(req); } catch(e) { req = null; }
         }
         
-        // Verificar si hay datos de requisitos (más flexible)
-        const hasMinimo = req && req.minimo && Object.values(req.minimo).some(v => v);
-        const hasRecomendado = req && req.recomendado && Object.values(req.recomendado).some(v => v);
+        // Verificar si hay datos de requisitos (soportar ambas estructuras: minimo/minimos, recomendado/recomendados)
+        const min = req?.minimo || req?.minimos || {};
+        const rec = req?.recomendado || req?.recomendados || {};
+        
+        const hasMinimo = Object.values(min).some(v => v);
+        const hasRecomendado = Object.values(rec).some(v => v);
         
         if (hasMinimo || hasRecomendado) {
           reqSection.style.display = 'block';
-          const min = req.minimo || {};
-          const rec = req.recomendado || {};
+          
+          // Soportar ambos nombres de propiedades (so/os, procesador/cpu, etc.)
+          const getVal = (obj, ...keys) => {
+            for (const key of keys) {
+              if (obj[key]) return obj[key];
+            }
+            return '';
+          };
           
           reqContainer.innerHTML = `
             <div style="background:rgba(123,97,255,0.08);padding:12px;border-radius:8px">
               <strong style="color:var(--accent-1);display:block;margin-bottom:8px">MÍNIMO</strong>
               <div style="color:#aaa;line-height:1.6">
-                ${min.so ? `<div><strong>SO:</strong> ${min.so}</div>` : ''}
-                ${min.procesador ? `<div><strong>CPU:</strong> ${min.procesador}</div>` : ''}
-                ${min.memoria ? `<div><strong>RAM:</strong> ${min.memoria}</div>` : ''}
-                ${min.graficos ? `<div><strong>GPU:</strong> ${min.graficos}</div>` : ''}
-                ${min.almacenamiento ? `<div><strong>Disco:</strong> ${min.almacenamiento}</div>` : ''}
-                ${!min.so && !min.procesador && !min.memoria && !min.graficos && !min.almacenamiento ? '<div style="color:#666">No especificado</div>' : ''}
+                ${getVal(min, 'so', 'os') ? `<div><strong>SO:</strong> ${getVal(min, 'so', 'os')}</div>` : ''}
+                ${getVal(min, 'procesador', 'cpu') ? `<div><strong>CPU:</strong> ${getVal(min, 'procesador', 'cpu')}</div>` : ''}
+                ${getVal(min, 'memoria', 'ram') ? `<div><strong>RAM:</strong> ${getVal(min, 'memoria', 'ram')}</div>` : ''}
+                ${getVal(min, 'graficos', 'gpu') ? `<div><strong>GPU:</strong> ${getVal(min, 'graficos', 'gpu')}</div>` : ''}
+                ${getVal(min, 'almacenamiento', 'storage') ? `<div><strong>Disco:</strong> ${getVal(min, 'almacenamiento', 'storage')}</div>` : ''}
+                ${!getVal(min, 'so', 'os') && !getVal(min, 'procesador', 'cpu') && !getVal(min, 'memoria', 'ram') && !getVal(min, 'graficos', 'gpu') && !getVal(min, 'almacenamiento', 'storage') ? '<div style="color:#666">No especificado</div>' : ''}
               </div>
             </div>
             <div style="background:rgba(0,212,170,0.08);padding:12px;border-radius:8px">
               <strong style="color:var(--accent-2);display:block;margin-bottom:8px">RECOMENDADO</strong>
               <div style="color:#aaa;line-height:1.6">
-                ${rec.so ? `<div><strong>SO:</strong> ${rec.so}</div>` : ''}
-                ${rec.procesador ? `<div><strong>CPU:</strong> ${rec.procesador}</div>` : ''}
-                ${rec.memoria ? `<div><strong>RAM:</strong> ${rec.memoria}</div>` : ''}
-                ${rec.graficos ? `<div><strong>GPU:</strong> ${rec.graficos}</div>` : ''}
-                ${rec.almacenamiento ? `<div><strong>Disco:</strong> ${rec.almacenamiento}</div>` : ''}
-                ${!rec.so && !rec.procesador && !rec.memoria && !rec.graficos && !rec.almacenamiento ? '<div style="color:#666">No especificado</div>' : ''}
+                ${getVal(rec, 'so', 'os') ? `<div><strong>SO:</strong> ${getVal(rec, 'so', 'os')}</div>` : ''}
+                ${getVal(rec, 'procesador', 'cpu') ? `<div><strong>CPU:</strong> ${getVal(rec, 'procesador', 'cpu')}</div>` : ''}
+                ${getVal(rec, 'memoria', 'ram') ? `<div><strong>RAM:</strong> ${getVal(rec, 'memoria', 'ram')}</div>` : ''}
+                ${getVal(rec, 'graficos', 'gpu') ? `<div><strong>GPU:</strong> ${getVal(rec, 'graficos', 'gpu')}</div>` : ''}
+                ${getVal(rec, 'almacenamiento', 'storage') ? `<div><strong>Disco:</strong> ${getVal(rec, 'almacenamiento', 'storage')}</div>` : ''}
+                ${!getVal(rec, 'so', 'os') && !getVal(rec, 'procesador', 'cpu') && !getVal(rec, 'memoria', 'ram') && !getVal(rec, 'graficos', 'gpu') && !getVal(rec, 'almacenamiento', 'storage') ? '<div style="color:#666">No especificado</div>' : ''}
               </div>
             </div>
           `;
