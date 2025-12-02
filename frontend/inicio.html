@@ -268,8 +268,8 @@
       <!-- Checkboxes de términos y privacidad -->
       <div class="checkbox-container">
         <input type="checkbox" id="acceptTerms" required>
-        <label for="acceptTerms">
-          He leído y acepto los <a href="#" onclick="openTermsModal(event)">términos y condiciones para desarrolladores</a> de Pyxolotl
+        <label for="acceptTerms" id="termsLabel">
+          He leído y acepto los <a href="#" onclick="openTermsModal(event)">términos y condiciones</a> de Pyxolotl
         </label>
       </div>
       
@@ -297,44 +297,10 @@
   <div id="termsModal" class="legal-modal">
     <div class="legal-modal-content">
       <div class="legal-modal-header">
-        <h3>📋 Términos y Condiciones para Desarrolladores</h3>
+        <h3 id="termsModalTitle">📋 Términos y Condiciones</h3>
       </div>
-      <div class="legal-modal-body">
-        <p><strong>Última actualización:</strong> Diciembre 2024</p>
-        
-        <h4>1. Aceptación de los Términos</h4>
-        <p>Al registrarte como desarrollador en Pyxolotl, aceptas cumplir con estos términos y condiciones. Si no estás de acuerdo, no podrás utilizar nuestros servicios.</p>
-        
-        <h4>2. Requisitos para Publicar</h4>
-        <p>Para publicar juegos en Pyxolotl debes:</p>
-        <ul>
-          <li>Ser mayor de 18 años o contar con autorización de un tutor legal</li>
-          <li>Ser el propietario o tener los derechos de distribución del contenido</li>
-          <li>Proporcionar información veraz y actualizada</li>
-        </ul>
-        
-        <h4>3. Contenido Prohibido</h4>
-        <p>No se permite publicar contenido que:</p>
-        <ul>
-          <li>Infrinja derechos de autor o propiedad intelectual</li>
-          <li>Contenga material ilegal, ofensivo o discriminatorio</li>
-          <li>Incluya malware, virus o código malicioso</li>
-          <li>Viole las leyes mexicanas o internacionales</li>
-        </ul>
-        
-        <h4>4. Comisiones y Pagos</h4>
-        <p>Pyxolotl retiene un porcentaje de las ventas como comisión por el uso de la plataforma. Los pagos a desarrolladores se realizan de acuerdo a los términos establecidos en el panel de desarrollador.</p>
-        
-        <h4>5. Responsabilidades</h4>
-        <p>El desarrollador es responsable de:</p>
-        <ul>
-          <li>La calidad y funcionamiento de sus juegos</li>
-          <li>Proporcionar soporte técnico a los usuarios</li>
-          <li>Cumplir con las políticas de la plataforma</li>
-        </ul>
-        
-        <h4>6. Terminación</h4>
-        <p>Pyxolotl se reserva el derecho de suspender o eliminar cuentas que violen estos términos sin previo aviso.</p>
+      <div class="legal-modal-body" id="termsModalBody">
+        <!-- Contenido dinámico -->
       </div>
       <div class="legal-modal-footer">
         <button onclick="closeTermsModal()">Entendido</button>
@@ -435,9 +401,115 @@
       }
     }
     
+    // Contenido de términos para cada tipo de cuenta
+    const termsContent = {
+      comprador: {
+        title: '📋 Términos y Condiciones de Uso',
+        body: `
+          <p><strong>Última actualización:</strong> Diciembre 2024</p>
+          
+          <h4>1. Aceptación de los Términos</h4>
+          <p>Al crear una cuenta en Pyxolotl, aceptas estos términos y condiciones. Si no estás de acuerdo, no podrás utilizar nuestros servicios.</p>
+          
+          <h4>2. Uso de la Plataforma</h4>
+          <p>Como usuario de Pyxolotl puedes:</p>
+          <ul>
+            <li>Explorar y descargar juegos gratuitos</li>
+            <li>Comprar juegos de pago</li>
+            <li>Dejar reseñas y calificaciones</li>
+            <li>Acceder a tu biblioteca de juegos</li>
+          </ul>
+          
+          <h4>3. Compras y Pagos</h4>
+          <p>Al realizar una compra:</p>
+          <ul>
+            <li>Los precios se muestran en Pesos Mexicanos (MXN)</li>
+            <li>Las compras son finales y no reembolsables</li>
+            <li>Los juegos se agregan automáticamente a tu biblioteca</li>
+          </ul>
+          
+          <h4>4. Conducta del Usuario</h4>
+          <p>Te comprometes a:</p>
+          <ul>
+            <li>No compartir tu cuenta con terceros</li>
+            <li>No redistribuir los juegos adquiridos</li>
+            <li>Respetar a otros usuarios y desarrolladores</li>
+            <li>Dejar reseñas honestas y constructivas</li>
+          </ul>
+          
+          <h4>5. Propiedad Intelectual</h4>
+          <p>Los juegos y contenidos son propiedad de sus respectivos desarrolladores. Al comprar, adquieres una licencia de uso personal, no la propiedad del contenido.</p>
+          
+          <h4>6. Terminación</h4>
+          <p>Pyxolotl puede suspender cuentas que violen estos términos.</p>
+        `
+      },
+      desarrollador: {
+        title: '📋 Términos y Condiciones para Desarrolladores',
+        body: `
+          <p><strong>Última actualización:</strong> Diciembre 2024</p>
+          
+          <h4>1. Aceptación de los Términos</h4>
+          <p>Al registrarte como desarrollador en Pyxolotl, aceptas cumplir con estos términos. Si no estás de acuerdo, no podrás utilizar nuestros servicios.</p>
+          
+          <h4>2. Requisitos para Publicar</h4>
+          <p>Para publicar juegos en Pyxolotl debes:</p>
+          <ul>
+            <li>Ser mayor de 18 años o contar con autorización de un tutor legal</li>
+            <li>Ser el propietario o tener los derechos de distribución del contenido</li>
+            <li>Proporcionar información veraz y actualizada</li>
+          </ul>
+          
+          <h4>3. Contenido Prohibido</h4>
+          <p>No se permite publicar contenido que:</p>
+          <ul>
+            <li>Infrinja derechos de autor o propiedad intelectual</li>
+            <li>Contenga material ilegal, ofensivo o discriminatorio</li>
+            <li>Incluya malware, virus o código malicioso</li>
+            <li>Viole las leyes mexicanas o internacionales</li>
+          </ul>
+          
+          <h4>4. Comisiones y Pagos</h4>
+          <p>Pyxolotl retiene un porcentaje de las ventas como comisión. Los pagos se realizan de acuerdo a los términos del panel de desarrollador.</p>
+          
+          <h4>5. Responsabilidades</h4>
+          <p>El desarrollador es responsable de:</p>
+          <ul>
+            <li>La calidad y funcionamiento de sus juegos</li>
+            <li>Proporcionar soporte técnico a los usuarios</li>
+            <li>Cumplir con las políticas de la plataforma</li>
+          </ul>
+          
+          <h4>6. Terminación</h4>
+          <p>Pyxolotl se reserva el derecho de suspender o eliminar cuentas que violen estos términos sin previo aviso.</p>
+        `
+      }
+    };
+    
+    // Actualizar términos cuando cambia el tipo de cuenta
+    function updateTermsContent() {
+      const tipoCuenta = document.getElementById('tipoCuenta').value;
+      const content = termsContent[tipoCuenta];
+      
+      document.getElementById('termsModalTitle').textContent = content.title;
+      document.getElementById('termsModalBody').innerHTML = content.body;
+      
+      // Actualizar texto del label
+      const termsLabel = document.getElementById('termsLabel');
+      if (tipoCuenta === 'desarrollador') {
+        termsLabel.innerHTML = 'He leído y acepto los <a href="#" onclick="openTermsModal(event)">términos y condiciones para desarrolladores</a> de Pyxolotl';
+      } else {
+        termsLabel.innerHTML = 'He leído y acepto los <a href="#" onclick="openTermsModal(event)">términos y condiciones</a> de Pyxolotl';
+      }
+    }
+    
+    // Inicializar contenido de términos
+    document.getElementById('tipoCuenta').addEventListener('change', updateTermsContent);
+    
     // Funciones para modales de términos y privacidad
     function openTermsModal(event) {
       if (event) event.preventDefault();
+      updateTermsContent(); // Asegurar contenido correcto
       document.getElementById('termsModal').classList.add('active');
     }
     
@@ -461,6 +533,9 @@
         closePrivacyModal();
       }
     });
+    
+    // Inicializar contenido al cargar
+    updateTermsContent();
 
     showRegister.addEventListener('click', ()=>{
       loginForm.classList.add('hidden');

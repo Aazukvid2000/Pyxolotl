@@ -72,7 +72,7 @@ class JuegoResponseBase(BaseModel):
 
 class JuegoCreate(JuegoBase):
     tipo_descarga: TipoDescarga = TipoDescarga.ARCHIVO
-    archivo_juego_url: Optional[str] = None
+    archivo_juego_url: Optional[str] = None  # Se llena después del upload
     link_externo: Optional[str] = None
     
     @validator('precio')
@@ -104,6 +104,7 @@ class JuegoResponse(JuegoResponseBase):
     total_ventas: int
     fecha_creacion: datetime
     
+    # Info del desarrollador
     desarrollador: Optional[UsuarioResponse] = None
     
     class Config:
@@ -116,7 +117,7 @@ class JuegoListResponse(BaseModel):
     descripcion: str
     genero: str
     precio: float
-    portada_url: str
+    portada_url: Optional[str] = None
     calificacion_promedio: float
     total_resenas: int
     estado: EstadoJuego
@@ -218,8 +219,8 @@ class JuegosFiltros(BaseModel):
     precio_min: Optional[float] = None
     precio_max: Optional[float] = None
     solo_gratuitos: bool = False
-    ordenar_por: str = "fecha_creacion"
-    orden: str = "desc"
+    ordenar_por: str = "fecha_creacion"  # fecha_creacion, precio, calificacion
+    orden: str = "desc"  # asc o desc
     pagina: int = 1
     por_pagina: int = 20
 

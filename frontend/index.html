@@ -210,6 +210,83 @@
         transform: translateY(0);
       }
     }
+    
+    /* ========== MENÚ MÓVIL ========== */
+    @media (max-width: 900px) {
+      .nav {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 280px;
+        height: 100vh;
+        background: linear-gradient(180deg, #0d1526 0%, #07102a 100%);
+        flex-direction: column;
+        padding: 80px 24px 24px;
+        gap: 12px;
+        z-index: 999;
+        transition: right 0.3s ease;
+        box-shadow: -5px 0 30px rgba(0, 0, 0, 0.5);
+        border-left: 1px solid rgba(123, 97, 255, 0.2);
+        overflow-y: auto;
+      }
+      
+      .nav.open {
+        right: 0;
+      }
+      
+      .nav a {
+        padding: 12px 16px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.03);
+        transition: all 0.2s ease;
+        width: 100%;
+        text-align: left;
+      }
+      
+      .nav a:hover {
+        background: rgba(123, 97, 255, 0.15);
+      }
+      
+      .nav .user-profile {
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid rgba(123, 97, 255, 0.2);
+      }
+      
+      #menuBtn {
+        display: block !important;
+        position: relative;
+        z-index: 1001;
+        font-size: 24px;
+      }
+      
+      /* Overlay cuando el menú está abierto */
+      .menu-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 998;
+      }
+      
+      .menu-overlay.show {
+        display: block;
+      }
+    }
+    
+    @media (min-width: 901px) {
+      #menuBtn {
+        display: none !important;
+      }
+      .menu-overlay {
+        display: none !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -249,6 +326,9 @@
 
     <button id="menuBtn" class="btn btn-ghost" aria-label="menu">☰</button>
   </header>
+  
+  <!-- Overlay para menú móvil -->
+  <div id="menuOverlay" class="menu-overlay"></div>
 
   <!-- Modal de Perfil de Usuario -->
   <div id="profileModal" class="profile-modal">
@@ -3890,6 +3970,42 @@
         checkUserSession();
       }
     });
+    
+    // ============================================
+    // MENÚ MÓVIL
+    // ============================================
+    const menuBtn = document.getElementById('menuBtn');
+    const nav = document.querySelector('.nav');
+    const menuOverlay = document.getElementById('menuOverlay');
+    
+    function toggleMobileMenu() {
+      nav.classList.toggle('open');
+      menuOverlay.classList.toggle('show');
+      
+      if (nav.classList.contains('open')) {
+        menuBtn.textContent = '✕';
+        document.body.style.overflow = 'hidden';
+      } else {
+        menuBtn.textContent = '☰';
+        document.body.style.overflow = '';
+      }
+    }
+    
+    function closeMobileMenu() {
+      nav.classList.remove('open');
+      menuOverlay.classList.remove('show');
+      menuBtn.textContent = '☰';
+      document.body.style.overflow = '';
+    }
+    
+    if (menuBtn && nav && menuOverlay) {
+      menuBtn.addEventListener('click', toggleMobileMenu);
+      menuOverlay.addEventListener('click', closeMobileMenu);
+      
+      nav.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMobileMenu);
+      });
+    }
 
   </script>
 </body>
