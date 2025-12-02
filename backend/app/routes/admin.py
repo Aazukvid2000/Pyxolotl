@@ -74,10 +74,12 @@ class DeleteResponse(BaseModel):
 
 def verificar_admin(user: Usuario):
     """Verifica que el usuario sea administrador"""
-    # Por ahora, verificamos si es el email del admin
-    # Puedes cambiar esto por un campo 'is_admin' en el modelo
-    admin_emails = os.getenv("ADMIN_EMAILS", "admin@pyxolotl.com").split(",")
-    if user.email not in admin_emails:
+    # Verificar por tipo_cuenta O por lista de emails de admin
+    admin_emails = os.getenv("ADMIN_EMAILS", "").split(",")
+    is_admin_by_type = user.tipo_cuenta == "administrador"
+    is_admin_by_email = user.email in admin_emails if admin_emails[0] else False
+    
+    if not (is_admin_by_type or is_admin_by_email):
         raise HTTPException(status_code=403, detail="No tienes permisos de administrador")
 
 def extract_public_id(url: str) -> Optional[str]:

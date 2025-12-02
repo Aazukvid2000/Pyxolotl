@@ -386,6 +386,24 @@ async function apiDeleteJuego(juegoId) {
   return response.json();
 }
 
+// Eliminar SOLO los juegos de un usuario (mantiene la cuenta)
+async function apiDeleteJuegosUsuario(userId) {
+  const response = await fetch(`${API_URL}/api/admin/usuario/${userId}/juegos`, {
+    method: 'DELETE',
+    headers: getAuthHeaders()
+  });
+  return response.json();
+}
+
+// Limpiar usuarios no verificados
+async function apiLimpiarNoVerificados() {
+  const response = await fetch(`${API_URL}/api/admin/usuarios/no-verificados`, {
+    method: 'DELETE',
+    headers: getAuthHeaders()
+  });
+  return response.json();
+}
+
 // Obtener juegos pendientes
 async function apiGetJuegosPendientes() {
   const response = await fetch(`${API_URL}/api/juegos/admin/pendientes`, {
