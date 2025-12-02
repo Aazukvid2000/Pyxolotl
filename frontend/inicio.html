@@ -41,6 +41,116 @@
       text-decoration: underline;
     }
     
+    /* Checkbox estilizado */
+    .checkbox-container {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin: 12px 0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    
+    .checkbox-container input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin: 0;
+      margin-top: 2px;
+      flex-shrink: 0;
+      accent-color: var(--accent-1);
+      cursor: pointer;
+    }
+    
+    .checkbox-container a {
+      color: var(--accent-1);
+      text-decoration: none;
+    }
+    
+    .checkbox-container a:hover {
+      text-decoration: underline;
+    }
+    
+    /* Modal de términos/privacidad */
+    .legal-modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      padding: 20px;
+    }
+    
+    .legal-modal.active {
+      display: flex;
+    }
+    
+    .legal-modal-content {
+      background: linear-gradient(180deg, #151c2c 0%, #0d1526 100%);
+      border: 1px solid rgba(123, 97, 255, 0.3);
+      border-radius: 20px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      animation: modalIn 0.3s ease;
+    }
+    
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
+    .legal-modal-header {
+      padding: 24px;
+      border-bottom: 1px solid rgba(123, 97, 255, 0.2);
+    }
+    
+    .legal-modal-header h3 {
+      margin: 0;
+      font-size: 20px;
+      color: #fff;
+    }
+    
+    .legal-modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      color: #b0b0b0;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    
+    .legal-modal-body h4 {
+      color: var(--accent-1);
+      margin-top: 16px;
+      margin-bottom: 8px;
+    }
+    
+    .legal-modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid rgba(123, 97, 255, 0.2);
+      text-align: center;
+    }
+    
+    .legal-modal-footer button {
+      background: linear-gradient(90deg, var(--accent-2), var(--accent-1));
+      color: #07102a;
+      border: none;
+      padding: 12px 32px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .legal-modal-footer button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(123, 97, 255, 0.4);
+    }
+    
     /* Estilos para el modal */
     .modal-overlay {
       position: fixed;
@@ -155,6 +265,21 @@
         <option value="desarrollador">Desarrollador</option>
       </select>
 
+      <!-- Checkboxes de términos y privacidad -->
+      <div class="checkbox-container">
+        <input type="checkbox" id="acceptTerms" required>
+        <label for="acceptTerms">
+          He leído y acepto los <a href="#" onclick="openTermsModal(event)">términos y condiciones para desarrolladores</a> de Pyxolotl
+        </label>
+      </div>
+      
+      <div class="checkbox-container">
+        <input type="checkbox" id="acceptPrivacy" required>
+        <label for="acceptPrivacy">
+          Acepto la <a href="#" onclick="openPrivacyModal(event)">política de privacidad</a>
+        </label>
+      </div>
+
       <button type="submit" class="btn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;font-weight:600">Crear cuenta</button>
 
       <p style="margin-top:14px;font-size:13px;color:var(--muted);text-align:center">
@@ -165,6 +290,112 @@
 
     <div style="text-align:center;margin-top:20px">
       <a href="/index.html" class="btn btn-ghost" style="width:100%">← Volver al inicio</a>
+    </div>
+  </div>
+
+  <!-- Modal de Términos y Condiciones -->
+  <div id="termsModal" class="legal-modal">
+    <div class="legal-modal-content">
+      <div class="legal-modal-header">
+        <h3>📋 Términos y Condiciones para Desarrolladores</h3>
+      </div>
+      <div class="legal-modal-body">
+        <p><strong>Última actualización:</strong> Diciembre 2024</p>
+        
+        <h4>1. Aceptación de los Términos</h4>
+        <p>Al registrarte como desarrollador en Pyxolotl, aceptas cumplir con estos términos y condiciones. Si no estás de acuerdo, no podrás utilizar nuestros servicios.</p>
+        
+        <h4>2. Requisitos para Publicar</h4>
+        <p>Para publicar juegos en Pyxolotl debes:</p>
+        <ul>
+          <li>Ser mayor de 18 años o contar con autorización de un tutor legal</li>
+          <li>Ser el propietario o tener los derechos de distribución del contenido</li>
+          <li>Proporcionar información veraz y actualizada</li>
+        </ul>
+        
+        <h4>3. Contenido Prohibido</h4>
+        <p>No se permite publicar contenido que:</p>
+        <ul>
+          <li>Infrinja derechos de autor o propiedad intelectual</li>
+          <li>Contenga material ilegal, ofensivo o discriminatorio</li>
+          <li>Incluya malware, virus o código malicioso</li>
+          <li>Viole las leyes mexicanas o internacionales</li>
+        </ul>
+        
+        <h4>4. Comisiones y Pagos</h4>
+        <p>Pyxolotl retiene un porcentaje de las ventas como comisión por el uso de la plataforma. Los pagos a desarrolladores se realizan de acuerdo a los términos establecidos en el panel de desarrollador.</p>
+        
+        <h4>5. Responsabilidades</h4>
+        <p>El desarrollador es responsable de:</p>
+        <ul>
+          <li>La calidad y funcionamiento de sus juegos</li>
+          <li>Proporcionar soporte técnico a los usuarios</li>
+          <li>Cumplir con las políticas de la plataforma</li>
+        </ul>
+        
+        <h4>6. Terminación</h4>
+        <p>Pyxolotl se reserva el derecho de suspender o eliminar cuentas que violen estos términos sin previo aviso.</p>
+      </div>
+      <div class="legal-modal-footer">
+        <button onclick="closeTermsModal()">Entendido</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Política de Privacidad -->
+  <div id="privacyModal" class="legal-modal">
+    <div class="legal-modal-content">
+      <div class="legal-modal-header">
+        <h3>🔒 Política de Privacidad</h3>
+      </div>
+      <div class="legal-modal-body">
+        <p><strong>Última actualización:</strong> Diciembre 2024</p>
+        
+        <h4>1. Información que Recopilamos</h4>
+        <p>Recopilamos la siguiente información:</p>
+        <ul>
+          <li>Datos de registro: nombre, correo electrónico, tipo de cuenta</li>
+          <li>Información de perfil: foto, descripción, sobrenombre</li>
+          <li>Datos de uso: historial de compras, descargas, actividad</li>
+        </ul>
+        
+        <h4>2. Uso de la Información</h4>
+        <p>Utilizamos tu información para:</p>
+        <ul>
+          <li>Proporcionar y mejorar nuestros servicios</li>
+          <li>Procesar transacciones y enviar confirmaciones</li>
+          <li>Comunicarnos contigo sobre tu cuenta</li>
+          <li>Personalizar tu experiencia en la plataforma</li>
+        </ul>
+        
+        <h4>3. Protección de Datos</h4>
+        <p>Implementamos medidas de seguridad para proteger tu información personal, incluyendo encriptación de contraseñas y conexiones seguras HTTPS.</p>
+        
+        <h4>4. Compartir Información</h4>
+        <p>No vendemos ni compartimos tu información personal con terceros, excepto cuando sea necesario para:</p>
+        <ul>
+          <li>Procesar pagos (con proveedores de pago seguros)</li>
+          <li>Cumplir con obligaciones legales</li>
+          <li>Proteger los derechos de Pyxolotl y sus usuarios</li>
+        </ul>
+        
+        <h4>5. Tus Derechos</h4>
+        <p>Tienes derecho a:</p>
+        <ul>
+          <li>Acceder a tu información personal</li>
+          <li>Solicitar corrección o eliminación de datos</li>
+          <li>Cancelar tu cuenta en cualquier momento</li>
+        </ul>
+        
+        <h4>6. Cookies</h4>
+        <p>Utilizamos cookies para mejorar tu experiencia de navegación y recordar tus preferencias de sesión.</p>
+        
+        <h4>7. Contacto</h4>
+        <p>Para consultas sobre privacidad, contáctanos a través de nuestro formulario de soporte.</p>
+      </div>
+      <div class="legal-modal-footer">
+        <button onclick="closePrivacyModal()">Entendido</button>
+      </div>
     </div>
   </div>
 
@@ -203,6 +434,33 @@
         }
       }
     }
+    
+    // Funciones para modales de términos y privacidad
+    function openTermsModal(event) {
+      if (event) event.preventDefault();
+      document.getElementById('termsModal').classList.add('active');
+    }
+    
+    function closeTermsModal() {
+      document.getElementById('termsModal').classList.remove('active');
+    }
+    
+    function openPrivacyModal(event) {
+      if (event) event.preventDefault();
+      document.getElementById('privacyModal').classList.add('active');
+    }
+    
+    function closePrivacyModal() {
+      document.getElementById('privacyModal').classList.remove('active');
+    }
+    
+    // Cerrar modales legales con Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeTermsModal();
+        closePrivacyModal();
+      }
+    });
 
     showRegister.addEventListener('click', ()=>{
       loginForm.classList.add('hidden');
@@ -250,6 +508,16 @@
     // Manejo del registro con BACKEND
     registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
+      
+      // Validar checkboxes
+      const acceptTerms = document.getElementById('acceptTerms').checked;
+      const acceptPrivacy = document.getElementById('acceptPrivacy').checked;
+      
+      if (!acceptTerms || !acceptPrivacy) {
+        showModal('error', 'Debes aceptar los términos y condiciones y la política de privacidad para crear una cuenta', 'Entendido', null);
+        return;
+      }
+      
       const name = document.getElementById('newName').value;
       const email = document.getElementById('newEmail').value;
       const password = document.getElementById('newPassword').value;

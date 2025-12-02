@@ -4,7 +4,7 @@ Rutas de biblioteca y descargas
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from typing import List
 from app.database import get_db
 from app.models import Usuario, BibliotecaItem, Juego, DescargaLog, TipoDescarga
@@ -20,7 +20,9 @@ async def obtener_biblioteca(
     current_user: Usuario = Depends(get_current_active_user)
 ):
     """Obtiene la biblioteca de juegos del usuario"""
-    items = db.query(BibliotecaItem).filter(
+    items = db.query(BibliotecaItem).options(
+        joinedload(BibliotecaItem.juego).joinedload(Juego.desarrollador)
+    ).filter(
         BibliotecaItem.usuario_id == current_user.id
     ).all()
     return items

@@ -6,6 +6,12 @@
   <title>Mi Biblioteca — Pyxolotl</title>
   <link rel="stylesheet" href="styles.css">
   <style>
+    :root {
+      --accent-1: #7b61ff;
+      --accent-2: #00d4aa;
+      --muted: #888;
+    }
+    
     .user-profile { display: flex; align-items: center; gap: 10px; }
     .user-avatar {
       width: 40px; height: 40px; border-radius: 50%;
@@ -14,9 +20,161 @@
       cursor: pointer; overflow: hidden;
     }
     .user-avatar span { color: #07102a; font-weight: bold; font-size: 16px; }
+    
+    /* Biblioteca Grid */
+    .biblioteca-container { min-height: 60vh; padding: 20px 0; }
+    
+    .biblioteca-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    
+    .biblioteca-card {
+      background: linear-gradient(180deg, rgba(123, 97, 255, 0.08) 0%, rgba(0, 212, 170, 0.04) 100%);
+      border: 1px solid rgba(123, 97, 255, 0.2);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .biblioteca-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-1);
+      box-shadow: 0 12px 40px rgba(123, 97, 255, 0.2);
+    }
+    
+    .biblioteca-card-thumb {
+      height: 160px;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 48px; font-weight: bold; color: #07102a; overflow: hidden;
+    }
+    
+    .biblioteca-card-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .biblioteca-card-info { padding: 16px; }
+    .biblioteca-card-title { font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+    .biblioteca-card-meta { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+    
+    .biblioteca-card-badge {
+      display: inline-block; padding: 4px 12px; border-radius: 20px;
+      font-size: 12px; font-weight: 600;
+    }
+    .biblioteca-card-badge.gratis { background: rgba(0, 212, 170, 0.15); color: var(--accent-2); }
+    .biblioteca-card-badge.comprado { background: rgba(123, 97, 255, 0.15); color: var(--accent-1); }
+    
+    /* Modal de Juego */
+    .game-modal {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 10000; align-items: center; justify-content: center; padding: 20px;
+    }
+    .game-modal.active { display: flex; }
+    
+    .game-modal-overlay {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px);
+    }
+    
+    .game-modal-content {
+      position: relative;
+      background: linear-gradient(180deg, #151c2c 0%, #0d1526 100%);
+      border: 1px solid rgba(123, 97, 255, 0.3);
+      border-radius: 24px; max-width: 700px; width: 100%;
+      max-height: 90vh; overflow-y: auto; animation: modalIn 0.3s ease;
+    }
+    
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.95) translateY(20px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    
+    .game-modal-close {
+      position: absolute; top: 16px; right: 16px;
+      width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1); border: none;
+      color: #fff; font-size: 24px; cursor: pointer; z-index: 10;
+      transition: all 0.3s ease;
+    }
+    .game-modal-close:hover { background: rgba(255, 71, 87, 0.3); }
+    
+    .game-modal-hero {
+      height: 220px;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      display: flex; align-items: center; justify-content: center; overflow: hidden;
+    }
+    .game-modal-hero img { width: 100%; height: 100%; object-fit: cover; }
+    .game-modal-hero-initials { font-size: 80px; font-weight: bold; color: #07102a; }
+    
+    .game-modal-body { padding: 24px; }
+    
+    .game-modal-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 20px; flex-wrap: wrap; gap: 16px;
+    }
+    .game-modal-title { font-size: 28px; font-weight: 700; color: #fff; margin: 0; }
+    .game-modal-genre {
+      display: inline-block; padding: 6px 14px;
+      background: rgba(123, 97, 255, 0.15); border-radius: 20px;
+      font-size: 13px; color: var(--accent-1); margin-top: 8px;
+    }
+    .game-modal-price { font-size: 24px; font-weight: 700; color: var(--accent-2); }
+    
+    .game-modal-stats {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+      background: rgba(0, 0, 0, 0.3); border-radius: 12px; padding: 16px; margin-bottom: 20px;
+    }
+    .game-modal-stat { text-align: center; }
+    .game-modal-stat-value { font-size: 20px; font-weight: 700; color: var(--accent-1); }
+    .game-modal-stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; }
+    
+    .game-modal-description { color: #b0b0b0; line-height: 1.7; margin-bottom: 24px; }
+    .game-modal-actions { display: flex; gap: 12px; }
+    
+    .game-modal-btn {
+      flex: 1; padding: 14px 24px; border-radius: 12px;
+      font-size: 15px; font-weight: 600; cursor: pointer;
+      transition: all 0.3s ease; border: none; text-align: center;
+    }
+    .game-modal-btn-primary {
+      background: linear-gradient(90deg, var(--accent-2), var(--accent-1)); color: #07102a;
+    }
+    .game-modal-btn-primary:hover {
+      transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 212, 170, 0.4);
+    }
+    .game-modal-btn-secondary {
+      background: rgba(255, 255, 255, 0.1); color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .game-modal-btn-secondary:hover { background: rgba(255, 255, 255, 0.15); }
+    
+    /* Empty State */
+    .empty-state { text-align: center; padding: 80px 20px; }
+    .empty-state-icon { font-size: 80px; margin-bottom: 20px; }
+    .empty-state h3 { font-size: 24px; color: #fff; margin-bottom: 12px; }
+    .empty-state p { color: var(--muted); margin-bottom: 24px; }
+    
+    /* Loading */
+    .loading-spinner { text-align: center; padding: 60px; }
+    .loading-spinner::after {
+      content: ''; display: inline-block; width: 40px; height: 40px;
+      border: 3px solid rgba(123, 97, 255, 0.3); border-top-color: var(--accent-1);
+      border-radius: 50%; animation: spin 0.8s linear infinite;
+    }
     @keyframes spin { to { transform: rotate(360deg); } }
     
-    /* Footer styles */
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; padding: 16px 24px;
+      border-radius: 12px; color: #fff; font-weight: 500; z-index: 20000;
+      animation: slideIn 0.3s ease; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    .toast.success { background: linear-gradient(90deg, #10b981, #059669); }
+    .toast.error { background: linear-gradient(90deg, #ef4444, #dc2626); }
+    .toast.info { background: linear-gradient(90deg, var(--accent-1), #5b4cd1); }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    
+    /* Footer */
     .pyxolotl-footer {
       background: linear-gradient(180deg, #0a0e1a 0%, #07102a 100%);
       border-top: 1px solid rgba(123, 97, 255, 0.1);
@@ -30,10 +188,9 @@
     .footer-title {
       font-size: 24px; font-weight: 700;
       background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      margin-bottom: 8px; letter-spacing: 1px;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px;
     }
-    .footer-description { color: #b0b0b0; font-size: 14px; line-height: 1.6; margin-bottom: 10px; }
+    .footer-description { color: #b0b0b0; font-size: 14px; line-height: 1.6; }
     .footer-social { display: flex; gap: 12px; margin-top: 8px; }
     .social-link {
       width: 40px; height: 40px; border-radius: 50%;
@@ -45,286 +202,323 @@
     .social-link:hover {
       background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
       color: #07102a; transform: translateY(-3px);
-      box-shadow: 0 4px 12px rgba(123, 97, 255, 0.4);
     }
-    .footer-heading { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; color: #808080; text-transform: uppercase; margin-bottom: 4px; }
+    .footer-heading { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; color: #808080; text-transform: uppercase; }
     .footer-links { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
-    .footer-links li a { color: #b0b0b0; font-size: 14px; text-decoration: none; transition: all 0.2s ease; display: inline-block; }
-    .footer-links li a:hover { color: var(--accent-1); transform: translateX(4px); }
+    .footer-links li a { color: #b0b0b0; font-size: 14px; text-decoration: none; transition: all 0.2s ease; }
+    .footer-links li a:hover { color: var(--accent-1); }
     .footer-bottom { background: #060a16; border-top: 1px solid rgba(123, 97, 255, 0.1); padding: 24px 0; margin-top: 50px; }
     .footer-bottom .footer-container { display: flex; justify-content: space-between; align-items: center; }
     .footer-copyright { color: #808080; font-size: 13px; margin: 0; }
-    .footer-legal { display: flex; gap: 16px; align-items: center; }
+    .footer-legal { display: flex; gap: 16px; }
     .footer-legal a { color: #808080; font-size: 13px; text-decoration: none; }
     .footer-legal a:hover { color: var(--accent-1); }
-    .footer-legal .separator { color: #404040; }
-    @media (max-width: 1024px) {
-      .footer-container { grid-template-columns: repeat(2, 1fr); gap: 40px; }
-      .footer-column:first-child { grid-column: 1 / -1; text-align: center; }
-      .footer-social { justify-content: center; }
-    }
+    
     @media (max-width: 768px) {
-      .pyxolotl-footer { padding: 40px 0 0 0; margin-top: 60px; }
-      .footer-container { grid-template-columns: 1fr; gap: 30px; padding: 0 20px; }
+      .footer-container { grid-template-columns: 1fr; gap: 30px; }
       .footer-bottom .footer-container { flex-direction: column; gap: 16px; text-align: center; }
-      .footer-legal { flex-wrap: wrap; justify-content: center; }
+      .biblioteca-grid { grid-template-columns: 1fr; }
+      .game-modal-header { flex-direction: column; }
+      .game-modal-stats { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-  <header class="container header">
-    <div class="brand" onclick="window.location.href='index.html'" style="cursor:pointer">
-      <img src="PIXOLOTEL.png" alt="Logo Pyxolotl" class="brand-logo" onerror="this.style.display='none'">
-      <div>
-        <div class="site-title">Pyxolotl</div>
-        <div style="font-size:12px;color:var(--muted)">Marketplace de juegos indie mexicanos</div>
-      </div>
-    </div>
-    <nav class="nav">
-      <a href="index.html">🏠 Inicio</a>
-      <a href="biblioteca.html" style="color:var(--accent-1)">📚 Biblioteca</a>
-      <div id="userProfile" class="user-profile">
-        <div class="user-avatar">
-          <span id="userInitials">U</span>
+  <header>
+    <nav class="container">
+      <a href="index.html" class="logo">
+        <img src="./images/icon.png" alt="Pyxolotl" style="height:40px">
+        <div>
+          <strong>Pyxolotl</strong>
+          <small>Marketplace de juegos indie mexicanos</small>
         </div>
-        <span id="userName" style="color:var(--accent-1);font-weight:600">Usuario</span>
-        <button class="btn btn-ghost" onclick="logout()">Cerrar sesión</button>
+      </a>
+      <ul>
+        <li><a href="index.html">🏠 Inicio</a></li>
+        <li><a href="biblioteca.html" class="active">📚 Biblioteca</a></li>
+      </ul>
+      <div id="userProfile" class="user-profile" style="display:none">
+        <span id="userName">Usuario</span>
+        <button id="logoutBtn" class="btn btn-ghost">Cerrar sesión</button>
+      </div>
+      <div id="authButtons">
+        <a href="inicio.html" class="btn btn-ghost">Iniciar sesión</a>
       </div>
     </nav>
   </header>
 
-  <main class="container" style="min-height: 60vh;">
-    <h1>Mi Biblioteca de Juegos</h1>
-    <p style="color:var(--muted)">Todos tus juegos comprados y gratuitos</p>
-
-    <div id="bibliotecaContainer" style="margin-top:40px">
-      <div id="loading" style="text-align:center;padding:60px">
-        <div style="width:40px;height:40px;border:4px solid rgba(123,97,255,0.2);border-top-color:var(--accent-1);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 20px"></div>
-        Cargando biblioteca...
-      </div>
+  <main class="container" style="padding-top:60px">
+    <h1 style="font-size:32px;margin-bottom:8px">📚 Mi Biblioteca de Juegos</h1>
+    <p style="color:var(--muted);margin-bottom:40px">Todos tus juegos comprados y gratuitos</p>
+    <div id="bibliotecaContainer" class="biblioteca-container">
+      <div class="loading-spinner"></div>
     </div>
   </main>
 
-  <!-- Footer -->
+  <!-- Modal de Juego -->
+  <div id="gameModal" class="game-modal">
+    <div class="game-modal-overlay" onclick="closeGameModal()"></div>
+    <div class="game-modal-content">
+      <button class="game-modal-close" onclick="closeGameModal()">×</button>
+      <div id="gameModalHero" class="game-modal-hero"></div>
+      <div class="game-modal-body">
+        <div class="game-modal-header">
+          <div>
+            <h2 id="gameModalTitle" class="game-modal-title"></h2>
+            <span id="gameModalGenre" class="game-modal-genre"></span>
+          </div>
+          <div id="gameModalPrice" class="game-modal-price"></div>
+        </div>
+        <div class="game-modal-stats">
+          <div class="game-modal-stat">
+            <div id="gameModalRating" class="game-modal-stat-value">0.0</div>
+            <div class="game-modal-stat-label">Calificación</div>
+          </div>
+          <div class="game-modal-stat">
+            <div id="gameModalDownloads" class="game-modal-stat-value">0</div>
+            <div class="game-modal-stat-label">Descargas</div>
+          </div>
+          <div class="game-modal-stat">
+            <div id="gameModalSize" class="game-modal-stat-value">0 MB</div>
+            <div class="game-modal-stat-label">Tamaño</div>
+          </div>
+        </div>
+        <p id="gameModalDescription" class="game-modal-description"></p>
+        <div class="game-modal-actions">
+          <button id="gameModalDownloadBtn" class="game-modal-btn game-modal-btn-primary" onclick="downloadCurrentGame()">📥 Descargar Juego</button>
+          <button class="game-modal-btn game-modal-btn-secondary" onclick="closeGameModal()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <footer class="pyxolotl-footer">
     <div class="footer-container">
       <div class="footer-column">
-        <h3 class="footer-title">PYXOLOTL</h3>
+        <div class="footer-title">PYXOLOTL</div>
         <p class="footer-description">Plataforma mexicana de videojuegos indie. Conectando desarrolladores con jugadores apasionados.</p>
         <div class="footer-social">
-          <a href="https://www.instagram.com/pyxo.lotl?igsh=OHRybW00NHA4Nnc4" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="social-link">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-              <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" fill="none" stroke="#07102a" stroke-width="2"/>
-              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="#07102a" stroke-width="2"/>
-            </svg>
-          </a>
-          <a href="https://www.facebook.com/profile.php?id=61584296583769" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="social-link">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-            </svg>
-          </a>
+          <a href="#" class="social-link">📺</a>
+          <a href="#" class="social-link">📘</a>
         </div>
       </div>
       <div class="footer-column">
         <h4 class="footer-heading">DESARROLLADORES</h4>
         <ul class="footer-links">
           <li><a href="publicar-juego.html">Publicar juego</a></li>
-          <li><a href="index.html#about">Acerca de Pyxolotl</a></li>
+          <li><a href="acerca.html">Acerca de Pyxolotl</a></li>
         </ul>
       </div>
       <div class="footer-column">
         <h4 class="footer-heading">AYUDA</h4>
         <ul class="footer-links">
-          <li><a href="faq.html">Preguntas frecuentes</a></li>
-          <li><a href="mailto:soporte@pyxolotl.com">Soporte</a></li>
-          <li><a href="#" onclick="openTermsModal(event)">Términos y condiciones</a></li>
-          <li><a href="#" onclick="openPrivacyModal(event)">Privacidad</a></li>
+          <li><a href="#">Preguntas frecuentes</a></li>
+          <li><a href="#">Soporte</a></li>
         </ul>
       </div>
       <div class="footer-column">
         <h4 class="footer-heading">PYXOLOTL</h4>
         <ul class="footer-links">
           <li><a href="biblioteca.html">Mi biblioteca</a></li>
-          <li><a href="inicio.html#registro">Registrarse</a></li>
           <li><a href="inicio.html">Iniciar sesión</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
       <div class="footer-container">
-        <p class="footer-copyright">© 2025 Pyxolotl. Todos los derechos reservados.</p>
+        <p class="footer-copyright">© 2024 Pyxolotl. Todos los derechos reservados.</p>
         <div class="footer-legal">
-          <a href="#" onclick="openPrivacyModal(event)">Privacidad</a>
-          <span class="separator">·</span>
-          <a href="#" onclick="openTermsModal(event)">Términos</a>
-          <span class="separator">·</span>
-          <a href="faq.html">FAQ</a>
+          <a href="#">Términos</a>
+          <a href="#">Privacidad</a>
         </div>
       </div>
     </div>
   </footer>
 
-  <!-- Modales -->
-  <div id="termsModal" class="modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);z-index:10000;align-items:center;justify-content:center">
-    <div style="background:var(--card);padding:40px;border-radius:20px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto">
-      <h2 style="margin-top:0">Términos y Condiciones</h2>
-      <p style="color:var(--muted);line-height:1.8">Al usar Pyxolotl, aceptas nuestros términos de servicio. Esta plataforma está diseñada para la distribución de videojuegos independientes mexicanos. Los desarrolladores son responsables del contenido que publican.</p>
-      <button onclick="closeTermsModal()" class="btn" style="margin-top:20px;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a">Cerrar</button>
-    </div>
-  </div>
-  <div id="privacyModal" class="modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);z-index:10000;align-items:center;justify-content:center">
-    <div style="background:var(--card);padding:40px;border-radius:20px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto">
-      <h2 style="margin-top:0">Política de Privacidad</h2>
-      <p style="color:var(--muted);line-height:1.8">Pyxolotl respeta tu privacidad. Solo recopilamos información necesaria para el funcionamiento de la plataforma. No vendemos ni compartimos tu información personal.</p>
-      <button onclick="closePrivacyModal()" class="btn" style="margin-top:20px;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a">Cerrar</button>
-    </div>
-  </div>
-
   <script src="api.js"></script>
   <script>
-    function openTermsModal(e) { if(e) e.preventDefault(); document.getElementById('termsModal').style.display = 'flex'; }
-    function closeTermsModal() { document.getElementById('termsModal').style.display = 'none'; }
-    function openPrivacyModal(e) { if(e) e.preventDefault(); document.getElementById('privacyModal').style.display = 'flex'; }
-    function closePrivacyModal() { document.getElementById('privacyModal').style.display = 'none'; }
-
+    let currentGame = null;
+    let bibliotecaItems = [];
+    
+    function showToast(message, type = 'info') {
+      const existing = document.querySelector('.toast');
+      if (existing) existing.remove();
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3500);
+    }
+    
     async function cargarBiblioteca() {
+      const container = document.getElementById('bibliotecaContainer');
+      
       if (!isAuthenticated()) {
-        window.location.href = 'inicio.html';
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">🔒</div>
+            <h3>Inicia sesión para ver tu biblioteca</h3>
+            <p>Necesitas una cuenta para acceder a tus juegos</p>
+            <a href="inicio.html" class="btn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;padding:12px 32px;border-radius:8px;text-decoration:none;display:inline-block">Iniciar sesión</a>
+          </div>
+        `;
         return;
       }
-
+      
       try {
-        const items = await apiGetBiblioteca();
-        const container = document.getElementById('bibliotecaContainer');
+        const response = await apiGetBiblioteca();
+        console.log('Respuesta biblioteca:', response);
         
-        if (!items || items.length === 0 || items.detail) {
+        if (response.detail) throw new Error(response.detail);
+        
+        bibliotecaItems = response || [];
+        
+        if (bibliotecaItems.length === 0) {
           container.innerHTML = `
-            <div style="text-align:center;padding:60px;color:var(--muted)">
-              <div style="font-size:64px;margin-bottom:20px">🎮</div>
-              <h3>No tienes juegos aún</h3>
+            <div class="empty-state">
+              <div class="empty-state-icon">🎮</div>
+              <h3>Tu biblioteca está vacía</h3>
               <p>Explora el catálogo y obtén tu primer juego</p>
-              <a href="index.html" class="btn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;margin-top:20px;display:inline-block">Explorar juegos</a>
+              <a href="index.html" class="btn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;padding:12px 32px;border-radius:8px;text-decoration:none;display:inline-block">Explorar juegos</a>
             </div>
           `;
           return;
         }
-
-        container.innerHTML = '<div class="grid"></div>';
-        const grid = container.querySelector('.grid');
-
-        items.forEach(item => {
+        
+        let html = '<div class="biblioteca-grid">';
+        
+        bibliotecaItems.forEach((item, index) => {
           const juego = item.juego;
           if (!juego) return;
-          const card = document.createElement('article');
-          card.className = 'card';
-          card.innerHTML = `
-            <div class="thumb" style="background:linear-gradient(135deg,var(--accent-1),var(--accent-2));display:flex;align-items:center;justify-content:center;font-size:32px;color:#07102a;font-weight:bold">
-              ${juego.portada_url ? `<img src="${juego.portada_url.startsWith('http') ? juego.portada_url : API_URL + juego.portada_url}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none';this.parentElement.textContent='${juego.titulo.substring(0,2).toUpperCase()}'">` : juego.titulo.substring(0,2).toUpperCase()}
-            </div>
-            <h3>${juego.titulo}</h3>
-            <p style="color:var(--muted)">${juego.genero || 'Indie'} • ${item.es_gratuito ? 'Gratis' : '$' + juego.precio}</p>
-            <div style="margin-top:12px">
-              <button class="btn" onclick="descargarJuego(${juego.id})" style="width:100%;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a">
-                📥 Descargar
-              </button>
-            </div>
+          
+          const initials = juego.titulo.substring(0, 2).toUpperCase();
+          let thumbHtml = `<span>${initials}</span>`;
+          
+          if (juego.portada_url) {
+            let imgUrl = juego.portada_url;
+            if (!imgUrl.startsWith('http')) imgUrl = API_URL + imgUrl;
+            thumbHtml = `<img src="${imgUrl}" alt="${juego.titulo}" onerror="this.parentElement.innerHTML='<span>${initials}</span>'">`;
+          }
+          
+          html += `
+            <article class="biblioteca-card" onclick="openGameModal(${index})">
+              <div class="biblioteca-card-thumb">${thumbHtml}</div>
+              <div class="biblioteca-card-info">
+                <h3 class="biblioteca-card-title">${juego.titulo}</h3>
+                <p class="biblioteca-card-meta">${juego.genero || 'Indie'} • ⭐ ${(juego.calificacion_promedio || 0).toFixed(1)}</p>
+                <span class="biblioteca-card-badge ${item.es_gratuito ? 'gratis' : 'comprado'}">${item.es_gratuito ? '✨ Gratis' : '💎 Comprado'}</span>
+              </div>
+            </article>
           `;
-          grid.appendChild(card);
         });
-
+        
+        html += '</div>';
+        container.innerHTML = html;
+        
       } catch (error) {
-        console.error('Error:', error);
-        document.getElementById('bibliotecaContainer').innerHTML = `
-          <div style="text-align:center;padding:60px;color:var(--muted)">
-            <div style="font-size:64px;margin-bottom:20px">😕</div>
+        console.error('Error cargando biblioteca:', error);
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">😕</div>
             <h3>Error al cargar la biblioteca</h3>
-            <p>Por favor recarga la página o intenta más tarde</p>
-            <button onclick="location.reload()" class="btn btn-ghost" style="margin-top:20px">Recargar</button>
+            <p>${error.message || 'Por favor intenta de nuevo más tarde'}</p>
+            <button onclick="cargarBiblioteca()" class="btn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a;padding:12px 32px;border-radius:8px;border:none;cursor:pointer">Reintentar</button>
           </div>
         `;
       }
     }
-
-    async function descargarJuego(juegoId) {
+    
+    function openGameModal(index) {
+      const item = bibliotecaItems[index];
+      if (!item || !item.juego) return;
+      
+      currentGame = item.juego;
+      const juego = currentGame;
+      const initials = juego.titulo.substring(0, 2).toUpperCase();
+      
+      const heroContainer = document.getElementById('gameModalHero');
+      if (juego.portada_url) {
+        let imgUrl = juego.portada_url;
+        if (!imgUrl.startsWith('http')) imgUrl = API_URL + imgUrl;
+        heroContainer.innerHTML = `<img src="${imgUrl}" alt="${juego.titulo}" onerror="this.parentElement.innerHTML='<span class=\\'game-modal-hero-initials\\'>${initials}</span>'">`;
+      } else {
+        heroContainer.innerHTML = `<span class="game-modal-hero-initials">${initials}</span>`;
+      }
+      
+      document.getElementById('gameModalTitle').textContent = juego.titulo;
+      document.getElementById('gameModalGenre').textContent = juego.genero || 'Indie';
+      document.getElementById('gameModalPrice').textContent = item.es_gratuito ? '✨ GRATIS' : `$${juego.precio} MXN`;
+      document.getElementById('gameModalRating').textContent = (juego.calificacion_promedio || 0).toFixed(1);
+      document.getElementById('gameModalDownloads').textContent = juego.total_descargas || 0;
+      document.getElementById('gameModalSize').textContent = juego.tamano_mb ? `${juego.tamano_mb.toFixed(1)} MB` : 'N/A';
+      document.getElementById('gameModalDescription').textContent = juego.descripcion || 'Sin descripción disponible.';
+      
+      document.getElementById('gameModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closeGameModal() {
+      document.getElementById('gameModal').classList.remove('active');
+      document.body.style.overflow = '';
+      currentGame = null;
+    }
+    
+    async function downloadCurrentGame() {
+      if (!currentGame) return;
+      
+      const btn = document.getElementById('gameModalDownloadBtn');
+      btn.textContent = '⏳ Preparando...';
+      btn.disabled = true;
+      
       try {
-        showToast('📥 Preparando descarga...', 'info');
+        if (!currentGame.archivo_juego_url) throw new Error('Este juego no tiene archivo de descarga');
         
-        // Obtener info del juego primero
-        const juego = await apiGetJuego(juegoId);
+        let downloadUrl = currentGame.archivo_juego_url;
+        if (!downloadUrl.startsWith('http')) downloadUrl = API_URL + downloadUrl;
         
-        if (!juego || juego.detail) {
-          showToast('❌ No se encontró el juego', 'error');
-          return;
-        }
-        
-        // Construir URL de descarga
-        let downloadUrl = juego.archivo_juego_url;
-        
-        if (!downloadUrl) {
-          showToast('❌ Este juego no tiene archivo de descarga', 'error');
-          return;
-        }
-        
-        // Si es ruta relativa, construir URL completa del backend
-        if (!downloadUrl.startsWith('http')) {
-          const backendUrl = window.location.hostname === 'localhost' 
-            ? 'http://localhost:8000'
-            : 'https://pyxolotl-production.up.railway.app';
-          downloadUrl = `${backendUrl}${downloadUrl}`;
-        }
-        
-        showToast('📥 Iniciando descarga...', 'success');
-        
-        // Crear link de descarga
         const link = document.createElement('a');
         link.href = downloadUrl;
-        link.download = `${juego.titulo.replace(/[^a-z0-9]/gi, '_')}.zip`;
-        link.style.display = 'none';
+        link.download = `${currentGame.titulo.replace(/[^a-z0-9]/gi, '_')}.zip`;
+        link.target = '_blank';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         
+        showToast('✅ ¡Descarga iniciada!', 'success');
       } catch (error) {
-        console.error('Error:', error);
-        showToast('❌ Error al descargar: ' + error.message, 'error');
+        console.error('Error al descargar:', error);
+        showToast('❌ ' + (error.message || 'Error al descargar'), 'error');
+      } finally {
+        btn.textContent = '📥 Descargar Juego';
+        btn.disabled = false;
       }
     }
     
-    function showToast(message, type = 'info') {
-      const existing = document.querySelector('.biblioteca-toast');
-      if (existing) existing.remove();
-      
-      const toast = document.createElement('div');
-      toast.className = 'biblioteca-toast';
-      toast.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        padding: 16px 24px;
-        border-radius: 12px;
-        color: white;
-        font-weight: 500;
-        z-index: 10000;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        background: ${type === 'error' ? '#ff4757' : type === 'success' ? '#4CAF50' : '#7b61ff'};
-      `;
-      toast.textContent = message;
-      document.body.appendChild(toast);
-      setTimeout(() => toast.remove(), 3000);
-    }
-
-    function updateUserInfo() {
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeGameModal(); });
+    
+    function checkSession() {
       const user = getCurrentUser();
-      if (user && user.nombre) {
-        document.getElementById('userName').textContent = user.nombre;
-        const initials = user.nombre.split(' ').map(w => w[0]).join('').substring(0,2).toUpperCase();
-        document.getElementById('userInitials').textContent = initials;
+      const authButtons = document.getElementById('authButtons');
+      const userProfile = document.getElementById('userProfile');
+      
+      if (user && isAuthenticated()) {
+        authButtons.style.display = 'none';
+        userProfile.style.display = 'flex';
+        document.getElementById('userName').textContent = user.nombre || 'Usuario';
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+          logout();
+          window.location.href = 'index.html';
+        });
+      } else {
+        authButtons.style.display = 'flex';
+        userProfile.style.display = 'none';
       }
     }
-
-    updateUserInfo();
-    cargarBiblioteca();
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      checkSession();
+      cargarBiblioteca();
+    });
   </script>
 </body>
 </html>
