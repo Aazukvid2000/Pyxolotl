@@ -620,9 +620,9 @@
           <div class="form-group" id="priceGroup" style="display:none">
             <label for="price">Precio (MXN) <span class="required">*</span></label>
             <div class="price-input">
-              <input type="number" id="price" placeholder="Ej: 99.00" step="0.01" min="0">
+              <input type="number" id="price" placeholder="Ej: 99.00" step="0.01" min="0" max="800">
             </div>
-            <div class="help-text">Pyxolotl cobra una comisión del 15%</div>
+            <div class="help-text">Precio máximo: $800 MXN. Pyxolotl cobra una comisión del 15%</div>
           </div>
 
           <div class="form-group">
@@ -1294,6 +1294,17 @@
     if (pricingElement && pricingElement.value === 'paid') {
       const priceInput = document.getElementById('price');
       finalPrice = priceInput ? parseFloat(priceInput.value) || 0 : 0;
+      
+      // Validar precio máximo
+      if (finalPrice > 800) {
+        showToast('❌ El precio máximo permitido es $800 MXN', 'error');
+        return;
+      }
+      
+      if (finalPrice <= 0) {
+        showToast('❌ El precio debe ser mayor a $0 para juegos de pago', 'error');
+        return;
+      }
     }
 
     console.log('✅ Precio:', finalPrice);

@@ -636,14 +636,25 @@
       }
       
       // Requisitos del sistema
+      const reqSection = document.getElementById('gameModalReqSection');
+      const reqContainer = document.getElementById('gameModalReq');
+      
       if (g.requisitos) {
         let req = g.requisitos;
-        if (typeof req === 'string') try { req = JSON.parse(req); } catch(e) { req = null; }
-        if (req && (req.minimo || req.recomendado)) {
-          document.getElementById('gameModalReqSection').style.display = 'block';
+        if (typeof req === 'string') {
+          try { req = JSON.parse(req); } catch(e) { req = null; }
+        }
+        
+        // Verificar si hay datos de requisitos (más flexible)
+        const hasMinimo = req && req.minimo && Object.values(req.minimo).some(v => v);
+        const hasRecomendado = req && req.recomendado && Object.values(req.recomendado).some(v => v);
+        
+        if (hasMinimo || hasRecomendado) {
+          reqSection.style.display = 'block';
           const min = req.minimo || {};
           const rec = req.recomendado || {};
-          document.getElementById('gameModalReq').innerHTML = `
+          
+          reqContainer.innerHTML = `
             <div style="background:rgba(123,97,255,0.08);padding:12px;border-radius:8px">
               <strong style="color:var(--accent-1);display:block;margin-bottom:8px">MÍNIMO</strong>
               <div style="color:#aaa;line-height:1.6">
@@ -652,6 +663,7 @@
                 ${min.memoria ? `<div><strong>RAM:</strong> ${min.memoria}</div>` : ''}
                 ${min.graficos ? `<div><strong>GPU:</strong> ${min.graficos}</div>` : ''}
                 ${min.almacenamiento ? `<div><strong>Disco:</strong> ${min.almacenamiento}</div>` : ''}
+                ${!min.so && !min.procesador && !min.memoria && !min.graficos && !min.almacenamiento ? '<div style="color:#666">No especificado</div>' : ''}
               </div>
             </div>
             <div style="background:rgba(0,212,170,0.08);padding:12px;border-radius:8px">
@@ -662,14 +674,15 @@
                 ${rec.memoria ? `<div><strong>RAM:</strong> ${rec.memoria}</div>` : ''}
                 ${rec.graficos ? `<div><strong>GPU:</strong> ${rec.graficos}</div>` : ''}
                 ${rec.almacenamiento ? `<div><strong>Disco:</strong> ${rec.almacenamiento}</div>` : ''}
+                ${!rec.so && !rec.procesador && !rec.memoria && !rec.graficos && !rec.almacenamiento ? '<div style="color:#666">No especificado</div>' : ''}
               </div>
             </div>
           `;
         } else {
-          document.getElementById('gameModalReqSection').style.display = 'none';
+          reqSection.style.display = 'none';
         }
       } else {
-        document.getElementById('gameModalReqSection').style.display = 'none';
+        reqSection.style.display = 'none';
       }
       
       // Botón descarga
