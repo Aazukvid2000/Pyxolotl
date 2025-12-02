@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.config import settings
 from app.database import engine, Base
-from app.routes import auth, juegos, compras, biblioteca
+from app.routes import auth, juegos, compras, biblioteca, admin
 import logging
 
 # Configurar logging
@@ -29,13 +29,14 @@ app = FastAPI(
     debug=settings.DEBUG
 )
 
-# Configurar CORS
+# Configurar CORS - permitir todos los orígenes para evitar problemas
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.ALLOWED_ORIGINS,
+    allow_origins=["*"],  # Permitir todos los orígenes
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 # Montar directorio de uploads como archivos estáticos
@@ -46,6 +47,7 @@ app.include_router(auth.router)
 app.include_router(juegos.router)
 app.include_router(compras.router)
 app.include_router(biblioteca.router)
+app.include_router(admin.router)
 
 # Ruta raíz
 @app.get("/")

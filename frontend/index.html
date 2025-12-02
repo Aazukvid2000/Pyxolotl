@@ -211,6 +211,227 @@
       }
     }
     
+    /* ========== SCREENSHOTS GALLERY ========== */
+    .game-detail-screenshots {
+      margin: 24px 0;
+    }
+    
+    .game-detail-screenshots h3 {
+      font-size: 18px;
+      margin-bottom: 16px;
+      color: #fff;
+    }
+    
+    .screenshots-gallery {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    
+    .screenshot-item {
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      aspect-ratio: 16/9;
+      background: rgba(123, 97, 255, 0.1);
+    }
+    
+    .screenshot-item:hover {
+      transform: scale(1.03);
+      box-shadow: 0 8px 24px rgba(123, 97, 255, 0.3);
+    }
+    
+    .screenshot-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    /* Modal de imagen grande */
+    .screenshot-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 20000;
+      background: rgba(0, 0, 0, 0.95);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .screenshot-modal.active {
+      display: flex;
+    }
+    
+    .screenshot-modal img {
+      max-width: 90vw;
+      max-height: 90vh;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+    
+    .screenshot-modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 32px;
+      color: #fff;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    
+    @media (max-width: 768px) {
+      .screenshots-gallery {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    /* ========== BIBLIOTECA MODAL ========== */
+    .biblioteca-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 9000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .biblioteca-modal.active {
+      display: flex;
+    }
+    
+    .biblioteca-modal-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+    }
+    
+    .biblioteca-modal-content {
+      position: relative;
+      background: linear-gradient(180deg, #0d1526 0%, #07102a 100%);
+      border: 1px solid rgba(123, 97, 255, 0.3);
+      border-radius: 20px;
+      max-width: 900px;
+      width: 100%;
+      max-height: 85vh;
+      overflow: hidden;
+      animation: slideUp 0.3s ease;
+    }
+    
+    .biblioteca-modal-header {
+      padding: 24px 30px;
+      border-bottom: 1px solid rgba(123, 97, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .biblioteca-modal-header h2 {
+      font-size: 24px;
+      background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 0;
+    }
+    
+    .biblioteca-modal-close {
+      background: none;
+      border: none;
+      font-size: 28px;
+      color: #888;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    
+    .biblioteca-modal-close:hover {
+      color: #fff;
+    }
+    
+    .biblioteca-modal-body {
+      padding: 24px 30px;
+      max-height: calc(85vh - 100px);
+      overflow-y: auto;
+    }
+    
+    .biblioteca-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    
+    .biblioteca-item {
+      background: rgba(123, 97, 255, 0.08);
+      border: 1px solid rgba(123, 97, 255, 0.2);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .biblioteca-item:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-1);
+      box-shadow: 0 8px 24px rgba(123, 97, 255, 0.2);
+    }
+    
+    .biblioteca-item-thumb {
+      height: 120px;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: bold;
+      color: #07102a;
+      overflow: hidden;
+    }
+    
+    .biblioteca-item-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .biblioteca-item-info {
+      padding: 12px;
+    }
+    
+    .biblioteca-item-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .biblioteca-item-meta {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    
+    .biblioteca-empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+    
+    .biblioteca-empty-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+    
+    @media (max-width: 768px) {
+      .biblioteca-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
     /* ========== MENÚ MÓVIL ========== */
     @media (max-width: 900px) {
       .nav {
@@ -304,7 +525,7 @@
     <nav class="nav">
       <a href="#gallery">Juegos</a>
       <a href="#about">Acerca</a>
-      <a href="biblioteca.html">📚 Biblioteca</a>
+      <a href="#" onclick="openBibliotecaModal(event)" id="bibliotecaLink">📚 Biblioteca</a>
       <a class="cta" href="#" onclick="validarPublicarJuego(event)" id="publicarBtn">Presentar juego</a>
       <a class="btn btn-ghost" href="inicio.html" id="loginBtn">Iniciar sesión</a>
       <a class="btn" href="inicio.html#registro" id="registerBtn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a">Registrarse</a>
@@ -329,6 +550,38 @@
   
   <!-- Overlay para menú móvil -->
   <div id="menuOverlay" class="menu-overlay"></div>
+
+  <!-- Modal de Biblioteca -->
+  <div id="bibliotecaModal" class="biblioteca-modal">
+    <div class="biblioteca-modal-overlay" onclick="closeBibliotecaModal()"></div>
+    <div class="biblioteca-modal-content">
+      <div class="biblioteca-modal-header">
+        <h2>📚 Mi Biblioteca</h2>
+        <button class="biblioteca-modal-close" onclick="closeBibliotecaModal()">&times;</button>
+      </div>
+      <div class="biblioteca-modal-body">
+        <div id="bibliotecaLoading" style="text-align:center;padding:40px;">
+          <div style="font-size:48px;animation:pulse 1s infinite">📚</div>
+          <p style="color:var(--muted);margin-top:12px">Cargando tu biblioteca...</p>
+        </div>
+        <div id="bibliotecaEmpty" class="biblioteca-empty" style="display:none;">
+          <div class="biblioteca-empty-icon">📭</div>
+          <h3>Tu biblioteca está vacía</h3>
+          <p>Aún no tienes juegos. ¡Explora el catálogo y encuentra algo que te guste!</p>
+          <button class="btn" onclick="closeBibliotecaModal()" style="margin-top:20px;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a">
+            🎮 Explorar juegos
+          </button>
+        </div>
+        <div id="bibliotecaGrid" class="biblioteca-grid" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Screenshot grande -->
+  <div id="screenshotModal" class="screenshot-modal" onclick="closeScreenshotModal()">
+    <button class="screenshot-modal-close">&times;</button>
+    <img id="screenshotModalImg" src="" alt="Screenshot">
+  </div>
 
   <!-- Modal de Perfil de Usuario -->
   <div id="profileModal" class="profile-modal">
@@ -1264,6 +1517,14 @@
           <div class="game-detail-developer-info">
             <h4 id="gameDetailDevName">Desarrollador</h4>
             <p>Desarrollador Indie</p>
+          </div>
+        </div>
+        
+        <!-- Screenshots Gallery -->
+        <div id="gameDetailScreenshots" class="game-detail-screenshots" style="display:none;">
+          <h3>🖼️ Capturas de pantalla</h3>
+          <div class="screenshots-gallery" id="screenshotsGallery">
+            <!-- Se llenan dinámicamente -->
           </div>
         </div>
         
@@ -2510,6 +2771,9 @@
       const devInitials = devName.split(' ').map(w => w[0]).join('').substring(0,2).toUpperCase();
       document.getElementById('gameDetailDevAvatar').textContent = devInitials;
       
+      // Screenshots
+      renderScreenshots(game.screenshots_urls);
+      
       // Descripción
       document.getElementById('gameDetailDesc').textContent = game.descripcion || 'Sin descripción disponible.';
       
@@ -2525,6 +2789,62 @@
         actionBtn.textContent = '🛒 Agregar al carrito';
         actionBtn.className = 'btn game-detail-btn-primary';
       }
+    }
+    
+    function renderScreenshots(screenshotsUrls) {
+      const container = document.getElementById('gameDetailScreenshots');
+      const gallery = document.getElementById('screenshotsGallery');
+      
+      if (!screenshotsUrls || screenshotsUrls.length === 0) {
+        container.style.display = 'none';
+        return;
+      }
+      
+      // Parsear si es string JSON
+      let screenshots = screenshotsUrls;
+      if (typeof screenshotsUrls === 'string') {
+        try {
+          screenshots = JSON.parse(screenshotsUrls);
+        } catch (e) {
+          container.style.display = 'none';
+          return;
+        }
+      }
+      
+      if (!Array.isArray(screenshots) || screenshots.length === 0) {
+        container.style.display = 'none';
+        return;
+      }
+      
+      // Construir URLs completas
+      const backendUrl = window.location.hostname === 'localhost' 
+        ? 'http://localhost:8000'
+        : 'https://pyxolotl-production.up.railway.app';
+      
+      gallery.innerHTML = screenshots.map(url => {
+        let imgUrl = url;
+        if (!imgUrl.startsWith('http')) {
+          imgUrl = `${backendUrl}${imgUrl}`;
+        }
+        return `
+          <div class="screenshot-item" onclick="openScreenshotModal('${imgUrl}')">
+            <img src="${imgUrl}" alt="Screenshot" onerror="this.parentElement.style.display='none'">
+          </div>
+        `;
+      }).join('');
+      
+      container.style.display = 'block';
+    }
+    
+    function openScreenshotModal(imgUrl) {
+      const modal = document.getElementById('screenshotModal');
+      const img = document.getElementById('screenshotModalImg');
+      img.src = imgUrl;
+      modal.classList.add('active');
+    }
+    
+    function closeScreenshotModal() {
+      document.getElementById('screenshotModal').classList.remove('active');
     }
     
     function renderRequirements(requisitos) {
@@ -4006,6 +4326,108 @@
         link.addEventListener('click', closeMobileMenu);
       });
     }
+    
+    // ============================================
+    // BIBLIOTECA MODAL
+    // ============================================
+    
+    async function openBibliotecaModal(event) {
+      if (event) event.preventDefault();
+      
+      // Verificar si el usuario está autenticado
+      const token = getAuthToken();
+      if (!token) {
+        showToast('⚠️ Inicia sesión para ver tu biblioteca', 'warning');
+        return;
+      }
+      
+      // Mostrar modal
+      const modal = document.getElementById('bibliotecaModal');
+      modal.classList.add('active');
+      document.body.classList.add('modal-open');
+      
+      // Reset estado
+      document.getElementById('bibliotecaLoading').style.display = 'block';
+      document.getElementById('bibliotecaEmpty').style.display = 'none';
+      document.getElementById('bibliotecaGrid').style.display = 'none';
+      
+      // Cargar biblioteca
+      try {
+        const biblioteca = await apiGetBiblioteca();
+        
+        document.getElementById('bibliotecaLoading').style.display = 'none';
+        
+        if (!biblioteca || biblioteca.length === 0) {
+          document.getElementById('bibliotecaEmpty').style.display = 'block';
+          return;
+        }
+        
+        renderBiblioteca(biblioteca);
+        
+      } catch (error) {
+        console.error('Error cargando biblioteca:', error);
+        document.getElementById('bibliotecaLoading').innerHTML = `
+          <div style="font-size:48px">😕</div>
+          <p style="color:#ff6b6b;margin-top:12px">Error al cargar la biblioteca</p>
+          <button class="btn" onclick="openBibliotecaModal()" style="margin-top:16px">Reintentar</button>
+        `;
+      }
+    }
+    
+    function closeBibliotecaModal() {
+      const modal = document.getElementById('bibliotecaModal');
+      modal.classList.remove('active');
+      document.body.classList.remove('modal-open');
+    }
+    
+    function renderBiblioteca(biblioteca) {
+      const grid = document.getElementById('bibliotecaGrid');
+      const backendUrl = window.location.hostname === 'localhost' 
+        ? 'http://localhost:8000'
+        : 'https://pyxolotl-production.up.railway.app';
+      
+      grid.innerHTML = biblioteca.map(item => {
+        const juego = item.juego;
+        if (!juego) return '';
+        
+        let thumbContent;
+        if (juego.portada_url) {
+          let imgUrl = juego.portada_url;
+          if (!imgUrl.startsWith('http')) {
+            imgUrl = `${backendUrl}${imgUrl}`;
+          }
+          thumbContent = `<img src="${imgUrl}" alt="${juego.titulo}" onerror="this.style.display='none';this.parentElement.innerHTML='${juego.titulo.substring(0,2).toUpperCase()}'">`;
+        } else {
+          thumbContent = juego.titulo.substring(0,2).toUpperCase();
+        }
+        
+        const tipoAdq = item.tipo_adquisicion === 'compra' ? '💎' : '✨';
+        
+        return `
+          <div class="biblioteca-item" onclick="openGameDetailModal(${juego.id}); closeBibliotecaModal();">
+            <div class="biblioteca-item-thumb">${thumbContent}</div>
+            <div class="biblioteca-item-info">
+              <div class="biblioteca-item-title">${juego.titulo}</div>
+              <div class="biblioteca-item-meta">${tipoAdq} ${juego.genero || 'Indie'}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      grid.style.display = 'grid';
+    }
+    
+    // Cerrar biblioteca con Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (document.getElementById('bibliotecaModal').classList.contains('active')) {
+          closeBibliotecaModal();
+        }
+        if (document.getElementById('screenshotModal').classList.contains('active')) {
+          closeScreenshotModal();
+        }
+      }
+    });
 
   </script>
 </body>
