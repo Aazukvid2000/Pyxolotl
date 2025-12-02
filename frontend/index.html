@@ -525,7 +525,7 @@
     <nav class="nav">
       <a href="#gallery">Juegos</a>
       <a href="#about">Acerca</a>
-      <a href="#" onclick="openBibliotecaModal(event)" id="bibliotecaLink">📚 Biblioteca</a>
+      <a href="biblioteca.html" id="bibliotecaLink">📚 Biblioteca</a>
       <a class="cta" href="#" onclick="validarPublicarJuego(event)" id="publicarBtn">Presentar juego</a>
       <a class="btn btn-ghost" href="inicio.html" id="loginBtn">Iniciar sesión</a>
       <a class="btn" href="inicio.html#registro" id="registerBtn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#07102a">Registrarse</a>
@@ -2683,6 +2683,8 @@
     // ============================================
     
     let currentGameDetail = null; // Almacena el juego actualmente mostrado en el modal
+    let userBibliotecaIds = []; // IDs de juegos en la biblioteca del usuario
+    let gameIsInLibrary = false; // Flag para saber si el juego actual está en biblioteca
     
     async function openGameDetailModal(gameId) {
       try {
@@ -2691,8 +2693,32 @@
         modal.classList.add('active');
         document.body.classList.add('modal-open');
         
+        // Convertir gameId a número para comparación consistente
+        const gameIdNum = parseInt(gameId);
+        
+        // Cargar biblioteca del usuario para verificar si ya tiene el juego
+        gameIsInLibrary = false;
+        if (isAuthenticated()) {
+          try {
+            const biblioteca = await apiGetBiblioteca();
+            console.log('Biblioteca cargada:', biblioteca);
+            if (biblioteca && Array.isArray(biblioteca)) {
+              userBibliotecaIds = biblioteca.map(item => {
+                const id = item.juego?.id || item.juego_id || item.id;
+                return parseInt(id);
+              }).filter(id => !isNaN(id));
+              console.log('IDs en biblioteca:', userBibliotecaIds);
+              console.log('ID del juego actual:', gameIdNum);
+              gameIsInLibrary = userBibliotecaIds.includes(gameIdNum);
+              console.log('¿Está en biblioteca?:', gameIsInLibrary);
+            }
+          } catch (e) {
+            console.log('No se pudo cargar biblioteca:', e);
+          }
+        }
+        
         // Obtener datos completos del juego desde la API
-        const game = await apiGetJuego(gameId);
+        const game = await apiGetJuego(gameIdNum);
         
         if (!game || game.detail) {
           showToast('❌ No se pudo cargar el juego', 'error');
@@ -2706,7 +2732,7 @@
         renderGameDetailModal(game);
         
         // Cargar reseñas
-        loadGameReviews(gameId);
+        loadGameReviews(gameIdNum);
         
       } catch (error) {
         console.error('Error cargando juego:', error);
@@ -2782,7 +2808,12 @@
       
       // Botón de acción
       const actionBtn = document.getElementById('gameDetailActionBtn');
-      if (game.precio === 0 || game.precio === null) {
+      
+      // Si el juego ya está en la biblioteca, mostrar botón de descarga
+      if (gameIsInLibrary) {
+        actionBtn.textContent = '📥 Descargar';
+        actionBtn.className = 'btn game-detail-btn-download';
+      } else if (game.precio === 0 || game.precio === null) {
         actionBtn.textContent = '🎮 Obtener gratis';
         actionBtn.className = 'btn game-detail-btn-download';
       } else {
@@ -3184,6 +3215,13 @@
       if (!currentGameDetail) return;
       
       const game = currentGameDetail;
+      
+      // Si el juego está en la biblioteca, descargar directamente
+      if (gameIsInLibrary) {
+        showToast('📥 Iniciando descarga...', 'info');
+        downloadGameFile(game);
+        return;
+      }
       
       if (game.precio === 0 || game.precio === null) {
         // Juego gratis - obtener y descargar
