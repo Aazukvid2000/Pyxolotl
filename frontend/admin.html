@@ -6,13 +6,42 @@
   <title>Panel Admin — Pyxolotl</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-    .admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin:30px 0}
-    .stat-card{background:var(--card);padding:24px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.3)}
-    .stat-number{font-size:36px;font-weight:700;color:var(--accent-1);margin:10px 0}
-    .juego-pendiente{background:var(--glass);padding:20px;margin:15px 0;border-radius:10px;border-left:4px solid var(--accent-1)}
+    .admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:20px 0}
+    .stat-card{background:var(--card);padding:16px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.3);text-align:center}
+    .stat-number{font-size:28px;font-weight:700;color:var(--accent-1);margin:6px 0}
+    .stat-label{color:var(--muted);font-size:12px}
+    
+    .admin-tabs{display:flex;gap:8px;margin:24px 0 16px;flex-wrap:wrap}
+    .admin-tab{padding:10px 20px;background:var(--glass);border:none;color:var(--muted);border-radius:8px;cursor:pointer;font-size:14px;transition:all 0.3s}
+    .admin-tab:hover{background:rgba(255,255,255,0.1);color:#fff}
+    .admin-tab.active{background:linear-gradient(90deg,var(--accent-1),var(--accent-2));color:#07102a;font-weight:600}
+    
+    .admin-section{display:none}
+    .admin-section.active{display:block}
+    
+    .admin-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
+    .admin-table th,.admin-table td{padding:10px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.1)}
+    .admin-table th{background:var(--glass);color:var(--muted);font-weight:500;font-size:12px;text-transform:uppercase}
+    .admin-table tr:hover{background:rgba(255,255,255,0.02)}
+    .badge{padding:3px 8px;border-radius:12px;font-size:11px;font-weight:600}
+    .badge-success{background:rgba(67,233,123,0.2);color:#43e97b}
+    .badge-warning{background:rgba(255,193,7,0.2);color:#ffc107}
+    .badge-danger{background:rgba(255,71,87,0.2);color:#ff4757}
+    .badge-info{background:rgba(123,97,255,0.2);color:#7b61ff}
+    
+    .juego-pendiente{background:var(--glass);padding:16px;margin:12px 0;border-radius:10px;border-left:4px solid var(--accent-1)}
     .btn-approve{background:#4CAF50;color:white}
     .btn-reject{background:#ff4757;color:white}
-    .btn-download{background:var(--glass);color:var(--accent-1);text-decoration:none;display:inline-block}
+    .btn-download{background:var(--glass);color:var(--accent-1)}
+    .btn-danger{background:#ff4757;color:white;border:none;padding:5px 10px;border-radius:6px;cursor:pointer;font-size:11px}
+    .btn-danger:hover{background:#ff6b6b}
+    
+    .search-box{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+    .search-box input,.search-box select{padding:8px 12px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);background:var(--glass);color:#fff;font-size:13px}
+    .search-box input{flex:1;min-width:180px}
+    
+    .empty-state{text-align:center;padding:40px 20px;color:var(--muted)}
+    .empty-state-icon{font-size:40px;margin-bottom:12px}
   </style>
 </head>
 <body>
@@ -21,7 +50,7 @@
       <img src="PIXOLOTEL.png" alt="Logo" class="brand-logo">
       <div>
         <div class="site-title">Pyxolotl Admin</div>
-        <div style="font-size:12px;color:var(--muted)">Panel de Administración</div>
+        <div style="font-size:11px;color:var(--muted)">Panel de Administración</div>
       </div>
     </div>
     <nav class="nav">
@@ -35,280 +64,257 @@
 
     <div class="admin-grid">
       <div class="stat-card">
-        <div style="color:var(--muted)">Juegos Pendientes</div>
-        <div class="stat-number" id="statPendientes">0</div>
+        <div class="stat-label">Pendientes</div>
+        <div class="stat-number" id="statPendientes">-</div>
       </div>
       <div class="stat-card">
-        <div style="color:var(--muted)">Total Juegos</div>
-        <div class="stat-number" id="statTotal">0</div>
+        <div class="stat-label">Total Juegos</div>
+        <div class="stat-number" id="statTotal">-</div>
       </div>
       <div class="stat-card">
-        <div style="color:var(--muted)">Usuarios</div>
-        <div class="stat-number" id="statUsuarios">0</div>
+        <div class="stat-label">Aprobados</div>
+        <div class="stat-number" id="statAprobados">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Usuarios</div>
+        <div class="stat-number" id="statUsuarios">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Verificados</div>
+        <div class="stat-number" id="statVerificados">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Compras</div>
+        <div class="stat-number" id="statCompras">-</div>
       </div>
     </div>
 
-    <h2>Juegos Pendientes de Aprobación</h2>
-    <div id="juegosPendientes">
-      <div style="text-align:center;padding:40px;color:var(--muted)">
-        Cargando...
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchTab('pendientes', this)">📋 Pendientes</button>
+      <button class="admin-tab" onclick="switchTab('usuarios', this)">👥 Usuarios</button>
+      <button class="admin-tab" onclick="switchTab('juegos', this)">🎮 Juegos</button>
+    </div>
+
+    <div id="section-pendientes" class="admin-section active">
+      <h2>Juegos Pendientes de Aprobación</h2>
+      <div id="juegosPendientes"><div class="empty-state"><div class="empty-state-icon">⏳</div><p>Cargando...</p></div></div>
+    </div>
+
+    <div id="section-usuarios" class="admin-section">
+      <h2>Gestión de Usuarios</h2>
+      <div class="search-box">
+        <input type="text" id="searchUsuario" placeholder="Buscar..." onkeyup="filtrarUsuarios()">
+        <select id="filterVerificado" onchange="cargarUsuarios()">
+          <option value="">Todos</option>
+          <option value="true">Verificados</option>
+          <option value="false">No verificados</option>
+        </select>
+        <button class="btn btn-danger" onclick="limpiarNoVerificados()">🧹 Limpiar no verificados</button>
       </div>
+      <div id="tablaUsuarios"><div class="empty-state"><div class="empty-state-icon">⏳</div><p>Cargando...</p></div></div>
+    </div>
+
+    <div id="section-juegos" class="admin-section">
+      <h2>Gestión de Juegos</h2>
+      <div class="search-box">
+        <input type="text" id="searchJuego" placeholder="Buscar..." onkeyup="filtrarJuegos()">
+        <select id="filterEstado" onchange="cargarJuegos()">
+          <option value="">Todos</option>
+          <option value="aprobado">Aprobados</option>
+          <option value="en_revision">En revisión</option>
+          <option value="rechazado">Rechazados</option>
+        </select>
+      </div>
+      <div id="tablaJuegos"><div class="empty-state"><div class="empty-state-icon">⏳</div><p>Cargando...</p></div></div>
     </div>
   </main>
 
   <script src="api.js"></script>
   <script>
-    // ============================================
-    // SISTEMA DE TOAST NOTIFICATIONS
-    // ============================================
-    function showToast(message, type = 'info') {
-      // Remover toast anterior si existe
+    let usuariosData = [];
+    let juegosData = [];
+
+    function showToast(msg, type = 'info') {
       const existing = document.querySelector('.admin-toast');
       if (existing) existing.remove();
-      
       const toast = document.createElement('div');
       toast.className = 'admin-toast';
-      toast.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        padding: 16px 24px;
-        border-radius: 12px;
-        color: white;
-        font-weight: 500;
-        z-index: 10000;
-        max-width: 400px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        animation: slideInRight 0.3s ease;
-        background: ${type === 'error' ? '#ff4757' : type === 'success' ? '#4CAF50' : '#7b61ff'};
-      `;
-      toast.innerHTML = `<span>${message}</span>`;
+      toast.style.cssText = `position:fixed;bottom:20px;right:20px;padding:14px 20px;border-radius:10px;color:white;font-weight:500;z-index:10000;box-shadow:0 4px 20px rgba(0,0,0,0.3);background:${type === 'error' ? '#ff4757' : type === 'success' ? '#4CAF50' : '#7b61ff'}`;
+      toast.textContent = msg;
       document.body.appendChild(toast);
-      
-      setTimeout(() => {
-        toast.style.animation = 'slideOutRight 0.3s ease';
-        setTimeout(() => toast.remove(), 300);
-      }, 3000);
+      setTimeout(() => toast.remove(), 3000);
     }
-    
-    // Agregar estilos de animación
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes slideInRight {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-      }
-      @keyframes slideOutRight {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(100%); opacity: 0; }
-      }
-    `;
-    document.head.appendChild(style);
 
-    // Función para construir la URL de descarga correctamente
-    function getDownloadUrl(archivoUrl) {
-      if (!archivoUrl) return '#';
-      
-      // Si ya es una URL completa (Cloudinary), usarla directamente
-      if (archivoUrl.startsWith('http://') || archivoUrl.startsWith('https://')) {
-        return archivoUrl;
-      }
-      
-      // Si es una ruta relativa, construir la URL del backend
-      const backendUrl = window.location.hostname === 'localhost' 
-        ? 'http://localhost:8000'
-        : 'https://pyxolotl-production.up.railway.app';
-      
-      return `${backendUrl}${archivoUrl}`;
+    function switchTab(tab, btn) {
+      document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+      document.getElementById(`section-${tab}`).classList.add('active');
+      if (tab === 'usuarios' && usuariosData.length === 0) cargarUsuarios();
+      if (tab === 'juegos' && juegosData.length === 0) cargarJuegos();
     }
-    
-    // Función para descargar archivo directamente
-    async function downloadGame(archivoUrl, titulo) {
-      const downloadUrl = getDownloadUrl(archivoUrl);
-      
-      showToast(`📥 Iniciando descarga de "${titulo}"...`, 'info');
-      
+
+    async function cargarEstadisticas() {
       try {
-        // Crear link de descarga invisible
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.download = `${titulo.replace(/[^a-z0-9]/gi, '_')}.zip`;
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        setTimeout(() => {
-          showToast(`✅ Descarga iniciada para "${titulo}"`, 'success');
-        }, 500);
-      } catch (error) {
-        console.error('Error al descargar:', error);
-        showToast('❌ Error al iniciar descarga', 'error');
-        // Fallback: abrir en nueva pestaña
-        window.open(downloadUrl, '_blank');
-      }
+        const stats = await apiGetAdminStats();
+        document.getElementById('statTotal').textContent = stats.total_juegos || 0;
+        document.getElementById('statAprobados').textContent = stats.juegos_aprobados || 0;
+        document.getElementById('statUsuarios').textContent = stats.total_usuarios || 0;
+        document.getElementById('statVerificados').textContent = stats.usuarios_verificados || 0;
+        document.getElementById('statCompras').textContent = stats.total_compras || 0;
+      } catch (e) { console.error('Error stats:', e); }
+    }
+
+    function getDownloadUrl(url) {
+      if (!url) return '#';
+      if (url.startsWith('http')) return url;
+      return `${API_URL}${url}`;
     }
 
     async function cargarJuegosPendientes() {
-      const user = getCurrentUser();
-      if (!user || user.tipo_cuenta !== 'administrador') {
-        showToast('Acceso denegado', 'error');
-        setTimeout(() => {
-          window.location.href = 'index.html';
-        }, 1500);
-        return;
-      }
-
       try {
         const juegos = await apiGetJuegosPendientes();
-        const container = document.getElementById('juegosPendientes');
-        
+        const c = document.getElementById('juegosPendientes');
         document.getElementById('statPendientes').textContent = juegos.length;
-
         if (juegos.length === 0) {
-          container.innerHTML = '<p style="color:var(--muted);text-align:center;padding:40px">No hay juegos pendientes</p>';
+          c.innerHTML = '<div class="empty-state"><div class="empty-state-icon">✅</div><p>No hay juegos pendientes</p></div>';
           return;
         }
-
-        container.innerHTML = juegos.map(juego => {
-          return `
-            <div class="juego-pendiente">
-              <h3>${juego.titulo}</h3>
-              <p><strong>Desarrollador:</strong> ${juego.desarrollador?.nombre || 'N/A'}</p>
-              <p><strong>Género:</strong> ${juego.genero} | <strong>Precio:</strong> $${juego.precio}</p>
-              <p style="color:var(--muted)">${juego.descripcion ? juego.descripcion.substring(0, 150) : 'Sin descripción'}...</p>
-              
-              <div style="margin-top:15px;display:flex;gap:10px;flex-wrap:wrap">
-                <button class="btn btn-approve" onclick="aprobarJuego(${juego.id})">
-                  ✅ Aprobar
-                </button>
-                <button class="btn btn-reject" onclick="rechazarJuego(${juego.id})">
-                  ❌ Rechazar
-                </button>
-                <button class="btn btn-download" onclick="downloadGame('${juego.archivo_juego_url}', '${juego.titulo.replace(/'/g, "\\'")}')">
-                  📥 Descargar y Probar
-                </button>
-              </div>
+        c.innerHTML = juegos.map(j => `
+          <div class="juego-pendiente">
+            <h3>${j.titulo}</h3>
+            <p><strong>Dev:</strong> ${j.desarrollador?.nombre || 'N/A'} | <strong>Género:</strong> ${j.genero} | <strong>Precio:</strong> $${j.precio}</p>
+            <p style="color:var(--muted);font-size:13px">${(j.descripcion || '').substring(0, 120)}...</p>
+            <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn btn-approve" onclick="aprobarJuego(${j.id})">✅ Aprobar</button>
+              <button class="btn btn-reject" onclick="rechazarJuego(${j.id})">❌ Rechazar</button>
+              <a href="${getDownloadUrl(j.archivo_juego_url)}" class="btn btn-download" target="_blank">📥 Descargar</a>
             </div>
-          `;
-        }).join('');
-
-      } catch (error) {
-        console.error('Error:', error);
-        document.getElementById('juegosPendientes').innerHTML = 
-          '<p style="color:#ff4757;text-align:center;padding:40px">Error al cargar juegos: ' + error.message + '</p>';
+          </div>
+        `).join('');
+      } catch (e) {
+        document.getElementById('juegosPendientes').innerHTML = '<div class="empty-state"><div class="empty-state-icon">❌</div><p>Error al cargar</p></div>';
       }
     }
 
     async function aprobarJuego(id) {
-      // Crear modal de confirmación
-      const confirmed = await showConfirmModal('¿Aprobar este juego?', 'El juego será publicado y visible para todos los usuarios.');
-      if (!confirmed) return;
-
+      if (!confirm('¿Aprobar este juego?')) return;
       try {
-        const result = await apiAprobarJuego(id, true);
-        
-        if (result.success !== false) {
-          showToast('✅ Juego aprobado y publicado', 'success');
-          cargarJuegosPendientes();
-        } else {
-          showToast('Error: ' + (result.detail || result.message || 'No se pudo aprobar'), 'error');
-        }
-      } catch (error) {
-        console.error('Error al aprobar:', error);
-        showToast('Error al aprobar: ' + error.message, 'error');
-      }
+        await apiAprobarJuego(id, true);
+        showToast('✅ Juego aprobado', 'success');
+        cargarJuegosPendientes();
+        cargarEstadisticas();
+      } catch (e) { showToast('Error: ' + e.message, 'error'); }
     }
 
     async function rechazarJuego(id) {
-      const motivo = await showPromptModal('Motivo del rechazo:', 'Explica brevemente por qué se rechaza el juego');
+      const motivo = prompt('Motivo del rechazo:');
       if (!motivo) return;
-
       try {
-        const result = await apiAprobarJuego(id, false, motivo);
-        
-        if (result.success !== false) {
-          showToast('Juego rechazado. El desarrollador será notificado.', 'info');
-          cargarJuegosPendientes();
-        } else {
-          showToast('Error: ' + (result.detail || result.message || 'No se pudo rechazar'), 'error');
-        }
-      } catch (error) {
-        console.error('Error al rechazar:', error);
-        showToast('Error al rechazar: ' + error.message, 'error');
+        await apiAprobarJuego(id, false, motivo);
+        showToast('Juego rechazado', 'info');
+        cargarJuegosPendientes();
+        cargarEstadisticas();
+      } catch (e) { showToast('Error: ' + e.message, 'error'); }
+    }
+
+    async function cargarUsuarios() {
+      try {
+        const v = document.getElementById('filterVerificado').value;
+        usuariosData = await apiGetAdminUsuarios(0, 100, v || null);
+        renderUsuarios(usuariosData);
+      } catch (e) {
+        document.getElementById('tablaUsuarios').innerHTML = '<div class="empty-state"><div class="empty-state-icon">❌</div><p>Error</p></div>';
       }
     }
-    
-    // ============================================
-    // MODALES PERSONALIZADOS
-    // ============================================
-    function showConfirmModal(title, message) {
-      return new Promise((resolve) => {
-        const overlay = document.createElement('div');
-        overlay.style.cssText = `
-          position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-          background: rgba(0,0,0,0.8); z-index: 9999;
-          display: flex; align-items: center; justify-content: center;
-        `;
-        
-        overlay.innerHTML = `
-          <div style="background: var(--card); padding: 30px; border-radius: 16px; max-width: 400px; text-align: center;">
-            <h3 style="margin: 0 0 12px; color: #fff;">${title}</h3>
-            <p style="color: var(--muted); margin: 0 0 24px;">${message}</p>
-            <div style="display: flex; gap: 12px; justify-content: center;">
-              <button id="confirmNo" class="btn btn-ghost" style="padding: 10px 24px;">Cancelar</button>
-              <button id="confirmYes" class="btn btn-approve" style="padding: 10px 24px;">Confirmar</button>
-            </div>
-          </div>
-        `;
-        
-        document.body.appendChild(overlay);
-        
-        overlay.querySelector('#confirmYes').onclick = () => { overlay.remove(); resolve(true); };
-        overlay.querySelector('#confirmNo').onclick = () => { overlay.remove(); resolve(false); };
-        overlay.onclick = (e) => { if (e.target === overlay) { overlay.remove(); resolve(false); } };
-      });
-    }
-    
-    function showPromptModal(title, placeholder) {
-      return new Promise((resolve) => {
-        const overlay = document.createElement('div');
-        overlay.style.cssText = `
-          position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-          background: rgba(0,0,0,0.8); z-index: 9999;
-          display: flex; align-items: center; justify-content: center;
-        `;
-        
-        overlay.innerHTML = `
-          <div style="background: var(--card); padding: 30px; border-radius: 16px; max-width: 450px; width: 90%;">
-            <h3 style="margin: 0 0 16px; color: #fff;">${title}</h3>
-            <textarea id="promptInput" placeholder="${placeholder}" style="
-              width: 100%; height: 100px; padding: 12px; border-radius: 8px;
-              border: 1px solid rgba(255,255,255,0.1); background: var(--glass);
-              color: #fff; font-size: 14px; resize: none; margin-bottom: 20px;
-            "></textarea>
-            <div style="display: flex; gap: 12px; justify-content: flex-end;">
-              <button id="promptCancel" class="btn btn-ghost" style="padding: 10px 24px;">Cancelar</button>
-              <button id="promptConfirm" class="btn btn-reject" style="padding: 10px 24px;">Rechazar</button>
-            </div>
-          </div>
-        `;
-        
-        document.body.appendChild(overlay);
-        overlay.querySelector('#promptInput').focus();
-        
-        overlay.querySelector('#promptConfirm').onclick = () => {
-          const value = overlay.querySelector('#promptInput').value.trim();
-          overlay.remove();
-          resolve(value || null);
-        };
-        overlay.querySelector('#promptCancel').onclick = () => { overlay.remove(); resolve(null); };
-        overlay.onclick = (e) => { if (e.target === overlay) { overlay.remove(); resolve(null); } };
-      });
+
+    function renderUsuarios(data) {
+      const c = document.getElementById('tablaUsuarios');
+      if (!data || data.length === 0) {
+        c.innerHTML = '<div class="empty-state"><div class="empty-state-icon">👤</div><p>No hay usuarios</p></div>';
+        return;
+      }
+      c.innerHTML = `<table class="admin-table"><thead><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Tipo</th><th>Verificado</th><th>Juegos</th><th>Acciones</th></tr></thead><tbody>${data.map(u => `<tr><td>${u.id}</td><td>${u.nombre}</td><td>${u.email}</td><td><span class="badge ${u.tipo_cuenta === 'administrador' ? 'badge-info' : u.tipo_cuenta === 'desarrollador' ? 'badge-warning' : 'badge-success'}">${u.tipo_cuenta}</span></td><td>${u.verificado ? '<span class="badge badge-success">✓</span>' : '<span class="badge badge-danger">✗</span>'}</td><td>${u.num_juegos || 0}</td><td>${u.tipo_cuenta !== 'administrador' ? `<button class="btn-danger" onclick="eliminarUsuario(${u.id},'${u.nombre.replace(/'/g,"\\'")}')">🗑️</button>` : '-'}</td></tr>`).join('')}</tbody></table>`;
     }
 
-    // Inicializar
-    cargarJuegosPendientes();
+    function filtrarUsuarios() {
+      const s = document.getElementById('searchUsuario').value.toLowerCase();
+      renderUsuarios(usuariosData.filter(u => u.nombre.toLowerCase().includes(s) || u.email.toLowerCase().includes(s)));
+    }
+
+    async function eliminarUsuario(id, nombre) {
+      if (!confirm(`¿Eliminar usuario "${nombre}"? Esta acción NO se puede deshacer.`)) return;
+      try {
+        await apiDeleteUsuario(id);
+        showToast('✅ Usuario eliminado', 'success');
+        cargarUsuarios();
+        cargarEstadisticas();
+      } catch (e) { showToast('Error: ' + e.message, 'error'); }
+    }
+
+    async function limpiarNoVerificados() {
+      if (!confirm('¿Eliminar TODOS los usuarios no verificados?')) return;
+      try {
+        const noVerif = await apiGetAdminUsuarios(0, 500, 'false');
+        let count = 0;
+        for (const u of noVerif) {
+          if (u.tipo_cuenta !== 'administrador') {
+            await apiDeleteUsuario(u.id);
+            count++;
+          }
+        }
+        showToast(`✅ ${count} usuarios eliminados`, 'success');
+        cargarUsuarios();
+        cargarEstadisticas();
+      } catch (e) { showToast('Error: ' + e.message, 'error'); }
+    }
+
+    async function cargarJuegos() {
+      try {
+        const estado = document.getElementById('filterEstado').value;
+        juegosData = await apiGetAdminJuegos(0, 100, estado || null);
+        renderJuegos(juegosData);
+      } catch (e) {
+        document.getElementById('tablaJuegos').innerHTML = '<div class="empty-state"><div class="empty-state-icon">❌</div><p>Error</p></div>';
+      }
+    }
+
+    function renderJuegos(data) {
+      const c = document.getElementById('tablaJuegos');
+      if (!data || data.length === 0) {
+        c.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🎮</div><p>No hay juegos</p></div>';
+        return;
+      }
+      c.innerHTML = `<table class="admin-table"><thead><tr><th>ID</th><th>Título</th><th>Dev</th><th>Precio</th><th>Estado</th><th>Descargas</th><th>Acciones</th></tr></thead><tbody>${data.map(j => `<tr><td>${j.id}</td><td>${j.titulo}</td><td>${j.desarrollador_nombre || 'N/A'}</td><td>${j.precio > 0 ? '$' + j.precio : 'Gratis'}</td><td><span class="badge ${j.estado === 'aprobado' ? 'badge-success' : j.estado === 'rechazado' ? 'badge-danger' : 'badge-warning'}">${j.estado}</span></td><td>${j.total_descargas || 0}</td><td><button class="btn-danger" onclick="eliminarJuego(${j.id},'${j.titulo.replace(/'/g,"\\'")}')">🗑️</button></td></tr>`).join('')}</tbody></table>`;
+    }
+
+    function filtrarJuegos() {
+      const s = document.getElementById('searchJuego').value.toLowerCase();
+      renderJuegos(juegosData.filter(j => j.titulo.toLowerCase().includes(s)));
+    }
+
+    async function eliminarJuego(id, titulo) {
+      if (!confirm(`¿Eliminar juego "${titulo}"? Esta acción NO se puede deshacer.`)) return;
+      try {
+        await apiDeleteJuego(id);
+        showToast('✅ Juego eliminado', 'success');
+        cargarJuegos();
+        cargarJuegosPendientes();
+        cargarEstadisticas();
+      } catch (e) { showToast('Error: ' + e.message, 'error'); }
+    }
+
+    async function init() {
+      const user = getCurrentUser();
+      if (!user || user.tipo_cuenta !== 'administrador') {
+        showToast('⚠️ Acceso denegado', 'error');
+        setTimeout(() => window.location.href = 'index.html', 1500);
+        return;
+      }
+      await Promise.all([cargarEstadisticas(), cargarJuegosPendientes()]);
+    }
+
+    init();
   </script>
 </body>
 </html>

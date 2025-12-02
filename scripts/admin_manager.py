@@ -236,9 +236,9 @@ def eliminar_archivos_juego(juego: Juego) -> int:
         except:
             pass
     
-    # Video
-    if juego.video_url and "cloudinary" in juego.video_url:
-        if delete_cloudinary_resource(juego.video_url, "video"):
+    # Trailer (video)
+    if juego.trailer_url and "cloudinary" in juego.trailer_url:
+        if delete_cloudinary_resource(juego.trailer_url, "video"):
             eliminados += 1
     
     # Archivo del juego

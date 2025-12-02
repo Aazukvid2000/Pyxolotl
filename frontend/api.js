@@ -302,7 +302,7 @@ async function apiProcesarCompra(juegosIds, metodoPago = 'tarjeta') {
 
 // Obtener biblioteca
 async function apiGetBiblioteca() {
-  const response = await fetch(`${API_URL}/api/biblioteca`, {
+  const response = await fetch(`${API_URL}/api/biblioteca/`, {
     headers: getAuthHeaders()
   });
   return response.json();
@@ -339,6 +339,52 @@ async function apiCambiarPassword(currentPassword, newPassword) {
 // ============================================
 // ADMIN - Solo para administradores
 // ============================================
+
+// Obtener estadísticas de admin
+async function apiGetAdminStats() {
+  const response = await fetch(`${API_URL}/api/admin/stats`, {
+    headers: getAuthHeaders()
+  });
+  return response.json();
+}
+
+// Obtener lista de usuarios (admin)
+async function apiGetAdminUsuarios(skip = 0, limit = 50, verificado = null) {
+  let url = `${API_URL}/api/admin/usuarios?skip=${skip}&limit=${limit}`;
+  if (verificado !== null) url += `&verificado=${verificado}`;
+  const response = await fetch(url, {
+    headers: getAuthHeaders()
+  });
+  return response.json();
+}
+
+// Obtener lista de juegos (admin)
+async function apiGetAdminJuegos(skip = 0, limit = 50, estado = null) {
+  let url = `${API_URL}/api/admin/juegos?skip=${skip}&limit=${limit}`;
+  if (estado) url += `&estado=${estado}`;
+  const response = await fetch(url, {
+    headers: getAuthHeaders()
+  });
+  return response.json();
+}
+
+// Eliminar usuario (admin)
+async function apiDeleteUsuario(userId) {
+  const response = await fetch(`${API_URL}/api/admin/usuario/${userId}`, {
+    method: 'DELETE',
+    headers: getAuthHeaders()
+  });
+  return response.json();
+}
+
+// Eliminar juego (admin)
+async function apiDeleteJuego(juegoId) {
+  const response = await fetch(`${API_URL}/api/admin/juego/${juegoId}`, {
+    method: 'DELETE',
+    headers: getAuthHeaders()
+  });
+  return response.json();
+}
 
 // Obtener juegos pendientes
 async function apiGetJuegosPendientes() {
