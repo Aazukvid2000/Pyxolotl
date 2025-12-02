@@ -4161,12 +4161,13 @@
         
         const icon = genreIcons[genre.toLowerCase()] || '🎮';
         const sectionId = `category-${genre.replace(/\s/g, '-')}`;
+        const genreCapitalized = genre.charAt(0).toUpperCase() + genre.slice(1).toLowerCase();
         
         const section = document.createElement('div');
         section.className = 'category-section';
         section.innerHTML = `
           <div class="category-header">
-            <h3 class="category-title">${icon} <span>${genre}</span></h3>
+            <h3 class="category-title">${icon} <span>${genreCapitalized}</span></h3>
             <span class="category-count">${gamesInGenre.length} juegos</span>
           </div>
           <div class="category-scroll-wrapper">
@@ -4355,6 +4356,13 @@
       const ratingFilter = document.getElementById('filterRating').value;
       const genreFilter = document.getElementById('filterGenre').value;
       
+      // Detectar si hay algún filtro activo
+      const hasActiveFilters = priceFilter || ratingFilter || genreFilter;
+      
+      // Ocultar/mostrar categorías según filtros
+      const categorySections = document.getElementById('categorySections');
+      categorySections.style.display = hasActiveFilters ? 'none' : 'block';
+      
       filteredGames = allGamesData.filter(game => {
         const price = parseFloat(game.precio || 0);
         const rating = game.calificacion_promedio || 0;
@@ -4377,6 +4385,19 @@
         
         return true;
       });
+      
+      // Actualizar título de la sección
+      const listTitle = document.querySelector('.games-list-title');
+      if (hasActiveFilters) {
+        let filterDesc = [];
+        if (genreFilter) filterDesc.push(genreFilter.charAt(0).toUpperCase() + genreFilter.slice(1));
+        if (priceFilter === 'free') filterDesc.push('Gratis');
+        else if (priceFilter) filterDesc.push('Precio: ' + priceFilter);
+        if (ratingFilter) filterDesc.push(ratingFilter + '+ ⭐');
+        listTitle.textContent = '🔍 Resultados: ' + (filterDesc.join(' · ') || 'Filtrados');
+      } else {
+        listTitle.textContent = '🕹️ Novedades - Todos los Juegos';
+      }
       
       // Recargar lista
       document.getElementById('gamesList').innerHTML = '';
