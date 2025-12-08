@@ -251,6 +251,30 @@ async function apiGetJuegos(filtros = {}) {
   }
 }
 
+// 🤖 Búsqueda inteligente con IA
+async function apiBusquedaIA(query) {
+  try {
+    const response = await fetch(`${API_URL}/api/juegos/busqueda-ia?query=${encodeURIComponent(query)}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    if (!response.ok) {
+      console.error('Error en búsqueda IA:', response.status);
+      return null;
+    }
+    
+    const data = await response.json();
+    return Array.isArray(data) ? data : [];
+    
+  } catch (error) {
+    console.error('Error en apiBusquedaIA:', error);
+    return null;
+  }
+}
+
 // Obtener detalle de un juego
 async function apiGetJuego(id) {
   const response = await fetch(`${API_URL}/api/juegos/${id}`);

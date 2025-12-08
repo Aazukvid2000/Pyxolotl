@@ -80,6 +80,9 @@ class Settings(BaseSettings):
     DEFAULT_PAGE_SIZE: int = 20
     MAX_PAGE_SIZE: int = 100
     
+    # Anthropic Claude API (Búsqueda Inteligente)
+    ANTHROPIC_API_KEY: Optional[str] = os.getenv("ANTHROPIC_API_KEY")
+    
     # Administrador inicial
     ADMIN_EMAIL: str = "sinuhevidals@gmail.com"
     ADMIN_PASSWORD: str = os.getenv("ADMIN_PASSWORD", "PyxolotlAdmin2025!")

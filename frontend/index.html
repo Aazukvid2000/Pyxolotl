@@ -71,6 +71,60 @@
     .filter-select:focus { outline: none; border-color: var(--accent-1); }
     .filter-select option { background: #1a1f35; color: #fff; }
     
+    /* Botón de Búsqueda IA */
+    .ia-search-btn {
+      padding: 10px 16px;
+      border: 2px solid rgba(123,97,255,0.3);
+      border-radius: 8px;
+      background: rgba(123,97,255,0.1);
+      color: var(--accent-1);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      white-space: nowrap;
+    }
+    .ia-search-btn:hover {
+      background: rgba(123,97,255,0.2);
+      border-color: var(--accent-1);
+      transform: translateY(-2px);
+    }
+    .ia-search-btn.active {
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      color: #07102a;
+      border-color: transparent;
+      box-shadow: 0 4px 15px rgba(123,97,255,0.4);
+    }
+    .ia-search-btn.loading {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+    .ia-search-btn.loading::after {
+      content: '...';
+      animation: dots 1s infinite;
+    }
+    @keyframes dots {
+      0%, 20% { content: '.'; }
+      40% { content: '..'; }
+      60%, 100% { content: '...'; }
+    }
+    
+    /* Indicador de búsqueda IA en resultados */
+    .ia-search-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: linear-gradient(90deg, rgba(123,97,255,0.15), rgba(78,163,255,0.15));
+      border-bottom: 1px solid rgba(123,97,255,0.2);
+      color: var(--accent-1);
+      font-size: 13px;
+    }
+    .ia-search-indicator .ia-icon {
+      font-size: 18px;
+      animation: pulse 2s infinite;
+    }
+    
     /* Dropdown de resultados de búsqueda */
     .search-results-dropdown {
       position: absolute;
@@ -1231,9 +1285,12 @@
         <div class="search-bar">
           <div class="search-input-wrapper">
             <span class="search-icon">🔍</span>
-            <input type="text" id="searchInput" class="search-input" placeholder="Buscar por nombre o género..." autocomplete="off">
+            <input type="text" id="searchInput" class="search-input" placeholder="Buscar juegos... (ej: divertido, acción, relajante)" autocomplete="off">
             <div id="searchDropdown" class="search-results-dropdown"></div>
           </div>
+          <button id="iaSearchBtn" class="ia-search-btn" onclick="toggleIASearch()" title="Activar búsqueda inteligente con IA">
+            🤖 IA
+          </button>
           <div class="filter-group">
             <select id="filterPrice" class="filter-select">
               <option value="">💰 Cualquier precio</option>
@@ -4460,6 +4517,26 @@
     // ============================================
     // BÚSQUEDA Y FILTROS
     // ============================================
+    let iaSearchEnabled = false;
+    
+    function toggleIASearch() {
+      iaSearchEnabled = !iaSearchEnabled;
+      const btn = document.getElementById('iaSearchBtn');
+      const searchInput = document.getElementById('searchInput');
+      
+      if (iaSearchEnabled) {
+        btn.classList.add('active');
+        btn.innerHTML = '🤖 IA ON';
+        searchInput.placeholder = '🤖 Búsqueda IA: describe lo que buscas (ej: divertido, relajante, desafiante)';
+        showToast('🤖 Búsqueda inteligente activada', 'success');
+      } else {
+        btn.classList.remove('active');
+        btn.innerHTML = '🤖 IA';
+        searchInput.placeholder = 'Buscar juegos... (ej: divertido, acción, relajante)';
+        showToast('Búsqueda normal activada', 'info');
+      }
+    }
+    
     function setupSearchAndFilters() {
       const searchInput = document.getElementById('searchInput');
       const searchDropdown = document.getElementById('searchDropdown');
@@ -4471,27 +4548,55 @@
       let searchTimeout;
       searchInput.addEventListener('input', (e) => {
         clearTimeout(searchTimeout);
-        const query = e.target.value.trim().toLowerCase();
+        const query = e.target.value.trim();
         
         if (query.length < 2) {
           searchDropdown.classList.remove('active');
           return;
         }
         
-        searchTimeout = setTimeout(() => {
-          const results = allGamesData.filter(g => 
-            g.titulo.toLowerCase().includes(query) || 
-            (g.genero && g.genero.toLowerCase().includes(query)) ||
-            (g.desarrollador_nombre && g.desarrollador_nombre.toLowerCase().includes(query))
-          ).slice(0, 10);
-          
-          renderSearchResults(results, query);
-        }, 200);
+        // Mayor delay para búsqueda IA (es más costosa)
+        const delay = iaSearchEnabled ? 500 : 200;
+        
+        searchTimeout = setTimeout(async () => {
+          if (iaSearchEnabled) {
+            // Búsqueda con IA
+            await performIASearch(query);
+          } else {
+            // Búsqueda tradicional
+            const results = allGamesData.filter(g => 
+              g.titulo.toLowerCase().includes(query.toLowerCase()) || 
+              (g.genero && g.genero.toLowerCase().includes(query.toLowerCase())) ||
+              (g.desarrollador_nombre && g.desarrollador_nombre.toLowerCase().includes(query.toLowerCase()))
+            ).slice(0, 10);
+            
+            renderSearchResults(results, query, false);
+          }
+        }, delay);
+      });
+      
+      // Enter para búsqueda inmediata
+      searchInput.addEventListener('keypress', async (e) => {
+        if (e.key === 'Enter') {
+          clearTimeout(searchTimeout);
+          const query = e.target.value.trim();
+          if (query.length >= 2) {
+            if (iaSearchEnabled) {
+              await performIASearch(query);
+            } else {
+              const results = allGamesData.filter(g => 
+                g.titulo.toLowerCase().includes(query.toLowerCase()) || 
+                (g.genero && g.genero.toLowerCase().includes(query.toLowerCase()))
+              ).slice(0, 10);
+              renderSearchResults(results, query, false);
+            }
+          }
+        }
       });
       
       // Cerrar dropdown al hacer clic fuera
       document.addEventListener('click', (e) => {
-        if (!e.target.closest('.search-input-wrapper')) {
+        if (!e.target.closest('.search-input-wrapper') && !e.target.closest('.ia-search-btn')) {
           searchDropdown.classList.remove('active');
         }
       });
@@ -4502,16 +4607,67 @@
       });
     }
     
-    function renderSearchResults(results, query) {
+    async function performIASearch(query) {
+      const searchDropdown = document.getElementById('searchDropdown');
+      const iaBtn = document.getElementById('iaSearchBtn');
+      
+      // Mostrar estado de carga
+      iaBtn.classList.add('loading');
+      searchDropdown.innerHTML = `
+        <div class="ia-search-indicator">
+          <span class="ia-icon">🤖</span>
+          <span>Analizando tu búsqueda con IA...</span>
+        </div>
+        <div style="padding:30px;text-align:center;color:#666">
+          <div style="font-size:24px;margin-bottom:8px">🔍</div>
+          Buscando juegos relacionados con "<strong>${query}</strong>"...
+        </div>
+      `;
+      searchDropdown.classList.add('active');
+      
+      try {
+        const results = await apiBusquedaIA(query);
+        iaBtn.classList.remove('loading');
+        
+        if (results === null) {
+          // Error en la API, fallback a búsqueda tradicional
+          showToast('⚠️ Error con IA, usando búsqueda normal', 'warning');
+          const fallbackResults = allGamesData.filter(g => 
+            g.titulo.toLowerCase().includes(query.toLowerCase()) || 
+            (g.genero && g.genero.toLowerCase().includes(query.toLowerCase())) ||
+            (g.descripcion && g.descripcion.toLowerCase().includes(query.toLowerCase()))
+          ).slice(0, 10);
+          renderSearchResults(fallbackResults, query, false);
+        } else {
+          renderSearchResults(results.slice(0, 10), query, true);
+        }
+      } catch (error) {
+        console.error('Error en búsqueda IA:', error);
+        iaBtn.classList.remove('loading');
+        showToast('❌ Error en búsqueda IA', 'error');
+      }
+    }
+    
+    function renderSearchResults(results, query, isIASearch = false) {
       const dropdown = document.getElementById('searchDropdown');
       
+      let header = '';
+      if (isIASearch) {
+        header = `
+          <div class="ia-search-indicator">
+            <span class="ia-icon">🤖</span>
+            <span>Resultados de búsqueda inteligente para "<strong>${query}</strong>"</span>
+          </div>
+        `;
+      }
+      
       if (results.length === 0) {
-        dropdown.innerHTML = '<div class="search-no-results">No se encontraron juegos para "<strong>' + query + '</strong>"</div>';
+        dropdown.innerHTML = header + `<div class="search-no-results">No se encontraron juegos para "<strong>${query}</strong>"${isIASearch ? ' con búsqueda IA' : ''}</div>`;
         dropdown.classList.add('active');
         return;
       }
       
-      dropdown.innerHTML = results.map(game => {
+      dropdown.innerHTML = header + results.map(game => {
         const imgUrl = game.portada_url ? getImageUrl(game.portada_url) : null;
         const initials = game.titulo.substring(0, 2).toUpperCase();
         const price = parseFloat(game.precio || 0);
@@ -4523,7 +4679,7 @@
               ${imgUrl ? `<img src="${imgUrl}" onerror="this.parentElement.textContent='${initials}'">` : initials}
             </div>
             <div class="search-result-info">
-              <div class="search-result-title">${highlightMatch(game.titulo, query)}</div>
+              <div class="search-result-title">${isIASearch ? game.titulo : highlightMatch(game.titulo, query)}</div>
               <div class="search-result-tags">
                 <span class="search-result-tag">${game.genero || 'Indie'}</span>
                 ${game.desarrollador_nombre ? `<span class="search-result-tag">${game.desarrollador_nombre}</span>` : ''}

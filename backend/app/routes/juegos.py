@@ -223,6 +223,153 @@ async def obtener_catalogo(
     
     return juegos
 
+# ==================== BÚSQUEDA INTELIGENTE CON IA ====================
+
+import httpx
+from app.config import settings
+
+@router.get("/busqueda-ia", response_model=List[JuegoListResponse])
+async def busqueda_inteligente(
+    query: str,
+    db: Session = Depends(get_db)
+):
+    """
+    Búsqueda inteligente usando Claude AI.
+    Analiza las descripciones de los juegos para encontrar coincidencias semánticas.
+    """
+    
+    if not query or len(query.strip()) < 2:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="La búsqueda debe tener al menos 2 caracteres"
+        )
+    
+    # Verificar que tenemos la API key
+    if not settings.ANTHROPIC_API_KEY:
+        logger.warning("ANTHROPIC_API_KEY no configurada, usando búsqueda tradicional")
+        # Fallback a búsqueda tradicional
+        juegos = db.query(Juego).filter(
+            Juego.estado == EstadoJuego.APROBADO,
+            or_(
+                Juego.titulo.ilike(f"%{query}%"),
+                Juego.descripcion.ilike(f"%{query}%"),
+                Juego.genero.ilike(f"%{query}%")
+            )
+        ).all()
+        return juegos
+    
+    # Obtener todos los juegos aprobados
+    juegos = db.query(Juego).filter(Juego.estado == EstadoJuego.APROBADO).all()
+    
+    if not juegos:
+        return []
+    
+    # Preparar la información de los juegos para Claude
+    juegos_info = []
+    for j in juegos:
+        juegos_info.append({
+            "id": j.id,
+            "titulo": j.titulo,
+            "descripcion": j.descripcion or "",
+            "genero": j.genero or ""
+        })
+    
+    # Construir el prompt para Claude
+    prompt = f"""Eres un asistente de búsqueda para una tienda de videojuegos indie mexicanos llamada Pyxolotl.
+
+El usuario busca: "{query}"
+
+Aquí está la lista de juegos disponibles:
+{json.dumps(juegos_info, ensure_ascii=False, indent=2)}
+
+Analiza cada juego y devuelve SOLO los IDs de los juegos que coincidan con la búsqueda del usuario.
+Considera:
+- Coincidencias directas en título o descripción
+- Sinónimos y palabras relacionadas
+- El género del juego si es relevante
+- El contexto semántico (ej: "divertido" podría coincidir con juegos casuales o de acción)
+
+Responde ÚNICAMENTE con un array JSON de IDs, sin explicación. Ejemplo: [1, 3, 5]
+Si no hay coincidencias, responde: []"""
+
+    try:
+        # Llamar a la API de Claude
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.post(
+                "https://api.anthropic.com/v1/messages",
+                headers={
+                    "Content-Type": "application/json",
+                    "x-api-key": settings.ANTHROPIC_API_KEY,
+                    "anthropic-version": "2023-06-01"
+                },
+                json={
+                    "model": "claude-3-haiku-20240307",
+                    "max_tokens": 200,
+                    "messages": [
+                        {"role": "user", "content": prompt}
+                    ]
+                }
+            )
+            
+            if response.status_code != 200:
+                logger.error(f"Error de Claude API: {response.status_code} - {response.text}")
+                # Fallback a búsqueda tradicional
+                return db.query(Juego).filter(
+                    Juego.estado == EstadoJuego.APROBADO,
+                    or_(
+                        Juego.titulo.ilike(f"%{query}%"),
+                        Juego.descripcion.ilike(f"%{query}%")
+                    )
+                ).all()
+            
+            result = response.json()
+            content = result.get("content", [{}])[0].get("text", "[]")
+            
+            # Parsear los IDs
+            try:
+                # Limpiar el contenido (por si Claude agrega texto extra)
+                content = content.strip()
+                if content.startswith("[") and "]" in content:
+                    content = content[:content.rfind("]")+1]
+                matched_ids = json.loads(content)
+                
+                if not isinstance(matched_ids, list):
+                    matched_ids = []
+                    
+            except json.JSONDecodeError:
+                logger.warning(f"No se pudo parsear respuesta de Claude: {content}")
+                matched_ids = []
+            
+            # Filtrar juegos por los IDs devueltos
+            if matched_ids:
+                juegos_filtrados = [j for j in juegos if j.id in matched_ids]
+                # Mantener el orden devuelto por Claude
+                juegos_ordenados = sorted(juegos_filtrados, key=lambda x: matched_ids.index(x.id) if x.id in matched_ids else 999)
+                return juegos_ordenados
+            else:
+                return []
+                
+    except httpx.TimeoutException:
+        logger.error("Timeout al llamar a Claude API")
+        # Fallback a búsqueda tradicional
+        return db.query(Juego).filter(
+            Juego.estado == EstadoJuego.APROBADO,
+            or_(
+                Juego.titulo.ilike(f"%{query}%"),
+                Juego.descripcion.ilike(f"%{query}%")
+            )
+        ).all()
+    except Exception as e:
+        logger.error(f"Error en búsqueda inteligente: {str(e)}")
+        # Fallback a búsqueda tradicional
+        return db.query(Juego).filter(
+            Juego.estado == EstadoJuego.APROBADO,
+            or_(
+                Juego.titulo.ilike(f"%{query}%"),
+                Juego.descripcion.ilike(f"%{query}%")
+            )
+        ).all()
+
 # ==================== OBTENER DETALLE DE JUEGO ====================
 
 @router.get("/{juego_id}", response_model=JuegoResponse)
