@@ -83,6 +83,10 @@ class Settings(BaseSettings):
     # Anthropic Claude API (Búsqueda Inteligente)
     ANTHROPIC_API_KEY: Optional[str] = os.getenv("ANTHROPIC_API_KEY")
     
+    # Stripe (Pagos)
+    STRIPE_SECRET_KEY: Optional[str] = os.getenv("STRIPE_SECRET_KEY")
+    STRIPE_PUBLISHABLE_KEY: Optional[str] = os.getenv("STRIPE_PUBLISHABLE_KEY")
+    
     # Administrador inicial
     ADMIN_EMAIL: str = "sinuhevidals@gmail.com"
     ADMIN_PASSWORD: str = os.getenv("ADMIN_PASSWORD", "PyxolotlAdmin2025!")
